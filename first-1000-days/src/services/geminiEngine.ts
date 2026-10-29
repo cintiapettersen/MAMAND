@@ -1,4 +1,4 @@
-import { Citation, RetrievalResult, SupportedLang, TokenUsage, EstimatedCost } from '../types';
+import { Citation, RetrievalResult, SupportedLang, TokenUsage, EstimatedCost } from '../serverTypes';
 import { CONFIG } from '../config';
 
 export interface GeminiEngineResponse {

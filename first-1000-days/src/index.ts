@@ -1,4 +1,4 @@
-import { Env, AskRequestBody, AskResponseBody } from './types';
+import { Env, AskRequestBody, AskResponseBody } from './serverTypes';
 import { CONFIG } from './config';
 import { hashIp, checkRateLimit, checkGlobalDailyQuota, getDailyQuotaStatus } from './services/rateLimiter';
 import { sanitizeUserInput } from './services/piiScrubber';

@@ -1,4 +1,4 @@
-import type { RetrievalResult, SupportedLang, UserPhase } from '../types.ts';
+import type { RetrievalResult, SupportedLang, UserPhase } from '../serverTypes.ts';
 import { EVIDENCE_CATALOG } from '../data/evidenceCatalog.ts';
 import { CONFIG } from '../config.ts';
 

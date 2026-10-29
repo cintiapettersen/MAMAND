@@ -1,4 +1,4 @@
-import type { EvidenceChunk } from '../types.ts';
+import type { EvidenceChunk } from '../serverTypes.ts';
 
 export const EVIDENCE_CATALOG: EvidenceChunk[] = [
   {

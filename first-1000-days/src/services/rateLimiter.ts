@@ -1,5 +1,5 @@
 import { CONFIG } from '../config';
-import { KVNamespaceLike } from '../types';
+import { KVNamespaceLike } from '../serverTypes';
 
 /**
  * ============================================================================

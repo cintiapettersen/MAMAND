@@ -1,4 +1,4 @@
-import type { SupportedLang } from '../types.ts';
+import type { SupportedLang } from '../serverTypes.ts';
 import { CONFIG } from '../config.ts';
 
 export interface EmergencyCheckResult {

@@ -131,10 +131,16 @@ export async function consultEducationalAssistant(
 
       // Respeitar rigorosamente o status retornado pelo servidor (200, 429, 502, 400)
       const data: AskResponse = await res.json();
-      return {
-        ...data,
-        piiWarning: piiDetected ? piiWarning : undefined
-      };
+      // Exceção: o Service Worker devolve um 503 "offline" fabricado quando o gateway
+      // está inalcançável (ex.: publicação demonstrativa sem gateway). Isso equivale a
+      // falha de rede, então seguimos para o modo local em vez de exibir indisponibilidade.
+      const isServiceWorkerOffline = res.status === 503 && (data as any)?.error === 'offline';
+      if (!isServiceWorkerOffline) {
+        return {
+          ...data,
+          piiWarning: piiDetected ? piiWarning : undefined
+        };
+      }
     } catch (err: any) {
       clearTimeout(timeoutId);
       // Se a chamada falhou por aborto ou erro de rede e o gateway não respondeu:

@@ -1,4 +1,4 @@
-import type { Citation, RetrievalResult, SupportedLang } from '../types.ts';
+import type { Citation, RetrievalResult, SupportedLang } from '../serverTypes.ts';
 
 export interface MockAnswerResult {
   answer: string;

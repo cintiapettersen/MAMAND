@@ -1,5 +1,5 @@
 import worker from '../src/index';
-import { Env } from '../src/types';
+import { Env } from '../src/serverTypes';
 import { calculateEstimatedCost } from '../src/services/geminiEngine';
 
 const mockEnv: Env = {
