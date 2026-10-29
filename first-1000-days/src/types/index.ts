@@ -44,6 +44,8 @@ export interface UserProfile {
   mainNeed: MainNeed;
   preferredLanguage?: SupportedLanguage;
   displayName?: string;
+  // País (ISO 3166-1 alfa-2) escolhido pela usuária, usado só para números de emergência
+  country?: string;
   babyName?: string;
   birthDate?: string;
   dueDate?: string;

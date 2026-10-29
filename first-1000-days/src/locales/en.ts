@@ -124,8 +124,6 @@ export const en: TranslationDictionary = {
     hubSupportAction: 'Ask for help',
     alertsModalTitle: 'Warning Signs & Urgent Care',
     alertsModalSubtitle: 'Educational guidelines on when to seek immediate professional medical attention',
-    alertsEmergencyCall: 'Call 192 (SAMU) or your local emergency line immediately',
-    alertsDisqueSaude: 'Contact your health clinic or dial 136 for health guidance',
     alertsCloseBtn: 'Understood, close',
     alertsViewCareBtn: 'View safety guidance in Care'
   },
@@ -389,8 +387,6 @@ export const en: TranslationDictionary = {
     jurisdictionBR: 'Reference National Protocol: Brazil (Ministry of Health of Brazil / Ministério da Saúde)',
     jurisdictionGlobal: 'Global Guideline: World Health Organization (WHO / UNICEF)',
     officialLinkText: 'Access official publication',
-    emergencyCallSAMU: 'Call Emergency 192 (Brazil)',
-    emergencyIntlNotice: 'Emergency guidance references the Brazilian protocol (SAMU 192). If outside Brazil, contact your local emergency services (e.g., 911, 112, 999) immediately.',
     offlineNotice: 'You are currently offline. The assistant requires network access to query the gateway, but the Care Library is 100% available on your device.'
   },
   birthRecord: {
@@ -620,12 +616,29 @@ export const en: TranslationDictionary = {
     remainingMany: '{count} left today',
     limitReached: "That's your 3 cards for today. More tomorrow."
   },
+  region: {
+    nameLabel: 'What should we call you? (optional)',
+    namePlaceholder: 'Your name or nickname',
+    countryLabel: 'Country you are in',
+    countryHelp: 'Only used to show the right emergency numbers. Saved on this device only.',
+    countryOther: 'Other country',
+    countryChoose: 'Select your country',
+    genericEmergency: 'In an emergency, call the emergency number for the country you are in.',
+    setCountryHint: 'Add your country in "Edit" to see local numbers here.',
+    callBtn: 'Call {label}',
+    healthLineSuffix: 'for health advice',
+    emergencySuffix: 'in an emergency',
+    askCountryNotice: 'Emergency number for {country}. If you are in another country, call the local number.',
+    askGenericNotice: 'Call the emergency number for the country you are in.',
+    genericPhrase: 'your local emergency number',
+    restartOnboarding: 'Restart setup'
+  },
   common: {
     loading: 'Loading local data...',
     dbErrorTitle: 'Local Storage Restricted',
     dbErrorDesc: 'IndexedDB could not be initialized in this browser. New records will not be saved.',
     saveError: 'Unable to save to device storage.',
     clearError: 'Error deleting local records.',
-    confirmPhaseReset: 'Would you like to change your stage or restart the quick introduction?'
+    confirmPhaseReset: 'Restart setup? You will answer the first questions again. Your Journey entries stay saved.'
   }
 };

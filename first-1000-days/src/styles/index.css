@@ -1600,6 +1600,28 @@ select:focus-visible {
   color: #FFFFFF;
 }
 
+.alerts-generic-emergency {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #8A3A26;
+}
+
+.alerts-generic-emergency svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.alerts-country-hint {
+  margin: 0;
+  font-size: 0.74rem;
+  color: #7D4C3A;
+}
+
 .alerts-disque-btn {
   display: inline-flex;
   align-items: center;

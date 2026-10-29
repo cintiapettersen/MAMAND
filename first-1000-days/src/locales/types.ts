@@ -111,8 +111,6 @@ export interface TranslationDictionary {
     hubSupportAction: string;
     alertsModalTitle: string;
     alertsModalSubtitle: string;
-    alertsEmergencyCall: string;
-    alertsDisqueSaude: string;
     alertsCloseBtn: string;
     alertsViewCareBtn: string;
   };
@@ -264,8 +262,6 @@ export interface TranslationDictionary {
     jurisdictionBR: string;
     jurisdictionGlobal: string;
     officialLinkText: string;
-    emergencyCallSAMU: string;
-    emergencyIntlNotice: string;
     offlineNotice: string;
   };
   birthRecord: {
@@ -494,6 +490,23 @@ export interface TranslationDictionary {
     remainingOne: string;
     remainingMany: string;
     limitReached: string;
+  };
+  region: {
+    nameLabel: string;
+    namePlaceholder: string;
+    countryLabel: string;
+    countryHelp: string;
+    countryOther: string;
+    countryChoose: string;
+    genericEmergency: string;
+    setCountryHint: string;
+    callBtn: string;
+    healthLineSuffix: string;
+    emergencySuffix: string;
+    askCountryNotice: string;
+    askGenericNotice: string;
+    genericPhrase: string;
+    restartOnboarding: string;
   };
   common: {
     loading: string;

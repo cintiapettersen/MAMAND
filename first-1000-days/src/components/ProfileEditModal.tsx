@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
 import { Baby, Heart, X, Check, Sparkles, Trash2 } from 'lucide-react';
 import { calculateAgeInMonths, formatBabyAgeDetailed } from '../utils/dateUtils';
+import { NameField, CountryField } from './ProfileFields';
 
 interface ProfileEditModalProps {
   profile: UserProfile;
@@ -28,6 +29,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [babyName, setBabyName] = useState<string>(profile.babyName || '');
   const [birthDate, setBirthDate] = useState<string>(profile.birthDate || '');
   const [dueDate, setDueDate] = useState<string>(profile.dueDate || '');
+  const [displayName, setDisplayName] = useState<string>(profile.displayName || '');
+  const [country, setCountry] = useState<string>(profile.country || '');
 
   if (!isOpen) return null;
 
@@ -62,6 +65,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       stageValue,
       mainNeed,
       preferredLanguage: language,
+      displayName: displayName.trim() || undefined,
+      country: country || undefined,
       babyName: babyName.trim() || undefined,
       birthDate: phase === 'baby' && birthDate ? birthDate : undefined,
       dueDate: phase === 'pregnancy' && dueDate ? dueDate : undefined,
@@ -124,6 +129,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Sobre você: nome opcional e país (números de emergência) */}
+          <NameField value={displayName} onChange={setDisplayName} />
+          <CountryField value={country} onChange={setCountry} />
+
           {/* Alternar Fase */}
           <div>
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
@@ -338,10 +347,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <button
               type="button"
               onClick={() => {
-                if (window.confirm(t.common.confirmPhaseReset)) {
-                  onClose();
-                  onReset();
-                }
+                onClose();
+                onReset();
               }}
               style={{
                 background: 'none',
@@ -355,7 +362,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               }}
             >
               <Trash2 size={12} />
-              <span>{t.header.changePhaseTitle}</span>
+              <span>{t.region.restartOnboarding}</span>
             </button>
           </div>
         </form>

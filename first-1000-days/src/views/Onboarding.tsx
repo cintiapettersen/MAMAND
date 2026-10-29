@@ -4,6 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
 import { Baby, Heart, Check, Sparkles } from 'lucide-react';
 import { calculateAgeInMonths, formatBabyAgeDetailed } from '../utils/dateUtils';
+import { detectCountryFromDevice } from '../data/emergencyContacts';
+import { NameField, CountryField } from '../components/ProfileFields';
 
 interface OnboardingProps {
   onComplete: (profile: UserProfile) => void;
@@ -21,6 +23,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
   const [babyName, setBabyName] = useState<string>(initialProfile?.babyName || '');
   const [birthDate, setBirthDate] = useState<string>(initialProfile?.birthDate || '');
   const [dueDate, setDueDate] = useState<string>(initialProfile?.dueDate || '');
+  const [displayName, setDisplayName] = useState<string>(initialProfile?.displayName || '');
+  // País sugerido pelo idioma do aparelho; a usuária confirma ou troca
+  const [country, setCountry] = useState<string>(initialProfile?.country ?? detectCountryFromDevice());
 
   const handleSelectPhase = (selectedPhase: UserPhase) => {
     setPhase(selectedPhase);
@@ -53,6 +58,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
       stageLabel: '',
       mainNeed: need,
       preferredLanguage: language,
+      displayName: displayName.trim() || undefined,
+      country: country || undefined,
       babyName: babyName.trim() || undefined,
       birthDate: phase === 'baby' && birthDate ? birthDate : undefined,
       dueDate: phase === 'pregnancy' && dueDate ? dueDate : undefined,
@@ -161,6 +168,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
                 />
               )}
             </button>
+          </div>
+
+          {/* Sobre você: nome opcional e país (para números de emergência) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '22px' }}>
+            <NameField value={displayName} onChange={setDisplayName} />
+            <CountryField value={country} onChange={setCountry} />
           </div>
 
           <div style={{ marginTop: '24px' }}>

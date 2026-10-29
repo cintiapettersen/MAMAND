@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { UserProfile } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { PageHeader } from '../components/PageHeader';
+import { getEmergencyContact, langKey } from '../data/emergencyContacts';
 import {
   consultEducationalAssistant,
   AskResponse,
@@ -379,11 +380,28 @@ export const AskView: React.FC<AskViewProps> = ({ profile }) => {
                       className="ask-emergency-call-btn"
                     >
                       <PhoneCall size={14} />
-                      <span>{t.ask.emergencyCallSAMU}</span>
+                      <span>
+                        {t.region.callBtn.replace(
+                          '{label}',
+                          getEmergencyContact(profile.country)?.emergency.label[langKey(language)] ?? response.emergencyPhone
+                        )}
+                      </span>
                     </a>
                   </div>
                   <div style={{ fontSize: '0.74rem', color: '#78281F', borderTop: '1px dashed #F5B7B1', paddingTop: '6px' }}>
-                    ℹ️ {t.ask.emergencyIntlNotice}
+                    ℹ️{' '}
+                    {t.region.askCountryNotice.replace(
+                      '{country}',
+                      getEmergencyContact(profile.country)?.name[langKey(language)] ?? ''
+                    )}
+                  </div>
+                </div>
+              )}
+              {/* Sem país informado: nenhum número é sugerido, só a orientação local */}
+              {!response.emergencyPhone && (
+                <div className="ask-emergency-phone-box">
+                  <div style={{ fontSize: '0.8rem', color: '#78281F', lineHeight: 1.45 }}>
+                    {t.region.askGenericNotice} {t.region.setCountryHint}
                   </div>
                 </div>
               )}

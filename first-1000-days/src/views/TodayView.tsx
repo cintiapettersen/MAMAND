@@ -3,6 +3,7 @@ import { UserProfile, JourneyRecord, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { WeeklyMoments } from '../components/WeeklyMoments';
 import { DailyCard } from '../components/DailyCard';
+import { getEmergencyContact, langKey } from '../data/emergencyContacts';
 import {
   Flower2,
   AlertTriangle,
@@ -88,6 +89,11 @@ export const TodayView: React.FC<TodayViewProps> = ({
     return birthRecordStorage.hasSavedRecord();
   }, [profile]);
 
+  // Números de emergência do país informado (sem país: só orientação genérica)
+  const emergencyContact = getEmergencyContact(profile.country);
+  const lk = langKey(language);
+  const firstName = profile.displayName?.trim();
+
   const checklistProgress = useMemo(
     () => countChecklistProgress(maternityChecklistStorage.getState()),
     []
@@ -113,7 +119,13 @@ export const TodayView: React.FC<TodayViewProps> = ({
       <section className="editorial-hero-split">
         <div className="editorial-hero-text">
           <h1 className="editorial-hero-title">
-            {language === 'en' ? 'Hello!' : 'Olá!'}
+            {firstName
+              ? language === 'en'
+                ? `Hello, ${firstName}!`
+                : `Olá, ${firstName}!`
+              : language === 'en'
+                ? 'Hello!'
+                : 'Olá!'}
           </h1>
           <p className="editorial-hero-subtitle">
             {language === 'en'
@@ -529,13 +541,32 @@ export const TodayView: React.FC<TodayViewProps> = ({
 
               {/* Botões de Emergência Imediata */}
               <div className="alerts-emergency-box">
-                <a href="tel:192" className="alerts-emergency-btn">
-                  <PhoneCall size={16} />
-                  <span>{t.today.alertsEmergencyCall}</span>
-                </a>
-                <a href="tel:136" className="alerts-disque-btn">
-                  <span>{t.today.alertsDisqueSaude}</span>
-                </a>
+                {emergencyContact ? (
+                  <>
+                    <a href={`tel:${emergencyContact.emergency.number}`} className="alerts-emergency-btn">
+                      <PhoneCall size={16} />
+                      <span>
+                        {t.region.callBtn.replace('{label}', emergencyContact.emergency.label[lk])}{' '}
+                        {t.region.emergencySuffix}
+                      </span>
+                    </a>
+                    {emergencyContact.healthLine && (
+                      <a href={`tel:${emergencyContact.healthLine.number}`} className="alerts-disque-btn">
+                        <span>
+                          {emergencyContact.healthLine.label[lk]} {t.region.healthLineSuffix}
+                        </span>
+                      </a>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p className="alerts-generic-emergency">
+                      <PhoneCall size={16} />
+                      <span>{t.region.genericEmergency}</span>
+                    </p>
+                    <p className="alerts-country-hint">{t.region.setCountryHint}</p>
+                  </>
+                )}
               </div>
             </div>
 

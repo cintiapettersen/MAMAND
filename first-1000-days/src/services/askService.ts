@@ -1,6 +1,7 @@
 import { UserProfile, SupportedLanguage } from '../types';
 import { sanitizeUserInput } from '../../gateway/src/services/piiScrubber';
 import { checkEmergencySafety } from '../../gateway/src/services/safetyService';
+import { getEmergencyContact, langKey } from '../data/emergencyContacts';
 import { retrieveRelevantEvidence } from '../../gateway/src/services/ragService';
 import { generateMockAnswer } from '../../gateway/src/services/mockEngine';
 
@@ -93,16 +94,26 @@ export async function consultEducationalAssistant(
   // 2. Salvaguarda local imediata de emergência (não depende de rede)
   const emergencyCheck = checkEmergencySafety(sanitized, lang);
   if (emergencyCheck.isEmergency) {
+    // Troca o número genérico pelo do país da usuária; sem país, nenhum número é sugerido
+    const contact = getEmergencyContact(profile.country);
+    const phoneText = contact
+      ? contact.emergency.label[langKey(lang)]
+      : isPt
+        ? 'o número de emergência local'
+        : 'your local emergency number';
+    const answer = emergencyCheck.emergencyPhone
+      ? (emergencyCheck.message || '').split(emergencyCheck.emergencyPhone).join(phoneText)
+      : emergencyCheck.message || '';
     return {
       status: 'emergency',
-      answer: emergencyCheck.message || '',
+      answer,
       citations: [],
       safetyDisclaimer: isPt
         ? 'AVISO: Situação potencialmente urgente. Assistência médica presencial necessária.'
         : 'NOTICE: Potentially acute situation. In-person emergency care required.',
       mode: 'mock',
       isEmergency: true,
-      emergencyPhone: emergencyCheck.emergencyPhone,
+      emergencyPhone: contact?.emergency.number,
       retrievedCount: 0,
       piiWarning
     };

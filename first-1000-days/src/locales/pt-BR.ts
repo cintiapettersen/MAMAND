@@ -124,8 +124,6 @@ export const ptBR: TranslationDictionary = {
     hubSupportAction: 'Pedir ajuda',
     alertsModalTitle: 'Sinais de Alerta e Atenção Médica',
     alertsModalSubtitle: 'Orientações educativas oficiais sobre quando buscar avaliação profissional imediata',
-    alertsEmergencyCall: 'Ligue 192 (SAMU) em caso de urgência',
-    alertsDisqueSaude: 'Disque 136 (SUS) para orientações em saúde',
     alertsCloseBtn: 'Entendido, fechar',
     alertsViewCareBtn: 'Ver orientações de segurança em Cuidados'
   },
@@ -389,8 +387,6 @@ export const ptBR: TranslationDictionary = {
     jurisdictionBR: 'Diretriz Nacional de Referência: Brasil (Ministério da Saúde do Brasil)',
     jurisdictionGlobal: 'Diretriz Global: Organização Mundial da Saúde (OMS / UNICEF)',
     officialLinkText: 'Acessar publicação oficial',
-    emergencyCallSAMU: 'Ligar para o SAMU 192',
-    emergencyIntlNotice: 'Orientação com base no protocolo de emergência brasileiro (SAMU 192). Se estiver fora do Brasil, acione imediatamente o número local de emergência.',
     offlineNotice: 'Você está offline. O assistente requer conexão para consultar o gateway, mas a Biblioteca de Cuidados está 100% disponível no seu aparelho.'
   },
   birthRecord: {
@@ -620,12 +616,29 @@ export const ptBR: TranslationDictionary = {
     remainingMany: 'Restam {count} hoje',
     limitReached: 'Por hoje são essas 3 cartas. Amanhã tem mais.'
   },
+  region: {
+    nameLabel: 'Como podemos te chamar? (opcional)',
+    namePlaceholder: 'Seu nome ou apelido',
+    countryLabel: 'País onde você está',
+    countryHelp: 'Usamos só para mostrar os números de emergência certos. Fica salvo apenas neste aparelho.',
+    countryOther: 'Outro país',
+    countryChoose: 'Selecione o país',
+    genericEmergency: 'Em caso de urgência, ligue para o número de emergência do país onde você está.',
+    setCountryHint: 'Informe seu país em "Editar" para ver os números locais aqui.',
+    callBtn: 'Ligar para {label}',
+    healthLineSuffix: 'para orientações em saúde',
+    emergencySuffix: 'em caso de urgência',
+    askCountryNotice: 'Número de emergência para {country}. Se estiver em outro país, ligue para o número local.',
+    askGenericNotice: 'Ligue para o número de emergência do país onde você está.',
+    genericPhrase: 'o número de emergência local',
+    restartOnboarding: 'Recomeçar a introdução'
+  },
   common: {
     loading: 'Carregando dados locais...',
     dbErrorTitle: 'Armazenamento Local Restrito',
     dbErrorDesc: 'O IndexedDB não pôde ser inicializado neste navegador. Novos registros não serão salvos.',
     saveError: 'Não foi possível gravar no armazenamento do aparelho.',
     clearError: 'Erro ao apagar registros locais.',
-    confirmPhaseReset: 'Deseja alterar a fase ou reiniciar a introdução rápida?'
+    confirmPhaseReset: 'Recomeçar a introdução? Você vai responder as perguntas iniciais de novo. Seus registros da Jornada continuam salvos.'
   }
 };
