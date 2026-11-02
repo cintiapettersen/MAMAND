@@ -1,11 +1,26 @@
-Open Child Health Booklet / Primeiros 1.000 Dias
+MAMAND
 Copyright 2026 Cintia Pettersen
 
-This product includes software developed as part of the Open Child Health Booklet initiative.
+This product includes software originally developed as
+"Open Child Health Booklet / Primeiros 1.000 Dias"
+(https://github.com/cintiapettersen/open-child-health-booklet),
+by the same author.
 
-Historical Attribution:
-- The initial concept documentation and foundational repository files (commit dac145c, dated October 26, 2026) were authored by Cintia Pettersen and initially distributed under the MIT License.
-- Starting from version 0.1.0 (MVP Stage 3), the software source code and accompanying application architecture are licensed under the Apache License, Version 2.0.
+The initial documentation files of that repository (commit dac145c,
+October 26, 2026) were published under the MIT License. The software in
+this repository is licensed under the Apache License, Version 2.0.
 
-Medical Disclaimer:
-This application is designed as an educational and record-keeping tool for families during the first 1,000 days of life. It does not provide medical diagnoses, treatment prescriptions, or clinical triage. Users are advised to seek professional medical advice for any health-related concerns.
+Original written content listed in CONTENT.md is licensed under CC BY 4.0
+once its ownership is confirmed there. Third-party materials remain under
+their own terms: see CONTENT.md and THIRD_PARTY_NOTICES.md.
+
+The MAMAND name and logo are not licensed under the Apache License or
+CC BY 4.0: see TRADEMARKS.md.
+
+Clinical status (clarification, not an additional license term): no health
+content in this repository has a recorded professional review. This public
+distribution does not include the experimental question-answering assistant,
+its AI integration or the warning-sign criteria panel. Earlier versions in
+the repository history (up to commit 7d43d3f) include an older assistant and
+should not be used to advise pregnant people or families. Anyone who
+distributes a modified version is responsible for its health content.

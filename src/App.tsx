@@ -5,11 +5,17 @@ import { indexedDbService } from './services/indexedDbService';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Header } from './components/Header';
 import { Navigation } from './components/Navigation';
+import { ProfileEditModal } from './components/ProfileEditModal';
 import { Onboarding } from './views/Onboarding';
 import { TodayView } from './views/TodayView';
 import { AskView } from './views/AskView';
 import { JourneyView } from './views/JourneyView';
 import { CareView } from './views/CareView';
+import { BirthRecordView } from './components/BirthRecordView';
+import { SupportNetworkView } from './components/SupportNetworkView';
+import { SelfCareView } from './components/SelfCareView';
+import { MaternityChecklistView } from './components/MaternityChecklistView';
+import { HealthChecksView } from './components/HealthChecksView';
 
 const MainApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -18,6 +24,12 @@ const MainApp: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [records, setRecords] = useState<JourneyRecord[]>([]);
   const [storageError, setStorageError] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isBirthRecordOpen, setIsBirthRecordOpen] = useState<boolean>(false);
+  const [isSupportNetworkOpen, setIsSupportNetworkOpen] = useState<boolean>(false);
+  const [isSelfCareOpen, setIsSelfCareOpen] = useState<boolean>(false);
+  const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
+  const [isHealthChecksOpen, setIsHealthChecksOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // 1. Carrega preferências demonstrativas do onboarding (localStorage)
@@ -70,6 +82,16 @@ const MainApp: React.FC = () => {
     }
   };
 
+  const handleDeleteRecord = async (id: string) => {
+    try {
+      const updated = await indexedDbService.deleteRecord(id);
+      setRecords(updated);
+    } catch (err) {
+      console.error('Erro ao excluir registro no IndexedDB:', err);
+      alert(t.common.deleteError);
+    }
+  };
+
   const handleClearRecords = async () => {
     try {
       await indexedDbService.clearAllRecords();
@@ -77,6 +99,20 @@ const MainApp: React.FC = () => {
     } catch (err) {
       console.error('Erro ao limpar IndexedDB:', err);
       alert(t.common.clearError);
+    }
+  };
+
+  const [careCategory, setCareCategory] = useState<string>('all');
+
+  // Cada página nova começa do topo
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activeTab, isBirthRecordOpen, isSupportNetworkOpen, isSelfCareOpen, isChecklistOpen, isHealthChecksOpen]);
+
+  const handleNavigate = (tab: ActiveTab, category?: string) => {
+    setActiveTab(tab);
+    if (category) {
+      setCareCategory(category);
     }
   };
 
@@ -90,18 +126,70 @@ const MainApp: React.FC = () => {
 
   return (
     <div className="app-container">
-      <Header profile={profile} onResetProfile={handleResetProfile} />
+      <Header
+        profile={profile}
+        onResetProfile={handleResetProfile}
+        onEditProfile={() => setIsEditModalOpen(true)}
+      />
+
+      {profile && (
+        <ProfileEditModal
+          profile={profile}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={(updated) => {
+            profileStorage.saveProfile(updated);
+            setProfile(updated);
+          }}
+          onReset={handleResetProfile}
+        />
+      )}
 
       {!profile ? (
         <Onboarding onComplete={handleCompleteOnboarding} />
+      ) : isBirthRecordOpen ? (
+        <BirthRecordView
+          profile={profile}
+          onBack={() => setIsBirthRecordOpen(false)}
+          onProfileUpdated={(updated) => {
+            profileStorage.saveProfile(updated);
+            setProfile(updated);
+          }}
+        />
+      ) : isHealthChecksOpen ? (
+        <HealthChecksView
+          profile={profile}
+          onBack={() => {
+            setIsHealthChecksOpen(false);
+            setActiveTab('journey');
+          }}
+          onProfileUpdated={(updated) => {
+            profileStorage.saveProfile(updated);
+            setProfile(updated);
+          }}
+        />
+      ) : isChecklistOpen ? (
+        <MaternityChecklistView onBack={() => setIsChecklistOpen(false)} />
+      ) : isSelfCareOpen ? (
+        <SelfCareView phase={profile.phase} onBack={() => setIsSelfCareOpen(false)} />
+      ) : isSupportNetworkOpen ? (
+        <SupportNetworkView
+          onBack={() => setIsSupportNetworkOpen(false)}
+          motherName={profile.displayName}
+        />
       ) : (
         <>
           {activeTab === 'today' && (
             <TodayView
               profile={profile}
               records={records}
-              onNavigate={setActiveTab}
+              onNavigate={handleNavigate}
               onAddRecord={handleAddRecord}
+              onOpenBirthRecord={() => setIsBirthRecordOpen(true)}
+              onOpenSupportNetwork={() => setIsSupportNetworkOpen(true)}
+              onOpenSelfCare={() => setIsSelfCareOpen(true)}
+              onOpenChecklist={() => setIsChecklistOpen(true)}
+              onOpenHealthChecks={() => setIsHealthChecksOpen(true)}
             />
           )}
           {activeTab === 'ask' && <AskView profile={profile} />}
@@ -111,6 +199,7 @@ const MainApp: React.FC = () => {
               records={records}
               onAddRecord={handleAddRecord}
               onClearRecords={handleClearRecords}
+              onDeleteRecord={handleDeleteRecord}
               onRestoreRecords={(updated) => setRecords(updated)}
               storageError={storageError}
             />
@@ -119,11 +208,23 @@ const MainApp: React.FC = () => {
             <CareView
               profile={profile}
               onAddRecord={handleAddRecord}
-              onNavigate={setActiveTab}
+              onNavigate={handleNavigate}
+              initialCategory={careCategory}
             />
           )}
 
-          <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+          <Navigation
+            activeTab={activeTab}
+            onTabChange={(tab) => {
+              setIsBirthRecordOpen(false);
+              setIsSupportNetworkOpen(false);
+              setIsSelfCareOpen(false);
+              setIsChecklistOpen(false);
+              setIsHealthChecksOpen(false);
+              setCareCategory('all');
+              setActiveTab(tab);
+            }}
+          />
         </>
       )}
     </div>

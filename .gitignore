@@ -38,3 +38,6 @@ resumo_puericultura_*.txt
 .wrangler
 *.test.cjs
 gateway/scripts/localGateway.cjs
+
+# Piloto privado do Gemini: fica só na máquina local
+gateway/pilot/

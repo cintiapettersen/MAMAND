@@ -1,36 +1,54 @@
-import type { JourneyRecord, UserProfile, SupportedLanguage } from '../types/index.ts';
+import type { JourneyRecord, BirthRecord } from '../types/index.ts';
+import { birthRecordStorage } from './birthRecordStorage.ts';
+import {
+  parseHealthChecksFromBackup,
+  validateHealthCheckRecord,
+  type HealthCheckRecord
+} from '../domain/healthChecks.ts';
 
 const DB_NAME = 'first_1000_days_db';
-const DB_VERSION = 1;
+// Versão 2: acrescenta a store de "Exames e triagens". A atualização a partir da versão 1
+// só cria a store nova; os registros da Jornada não são tocados.
+const DB_VERSION = 2;
 const STORE_NAME = 'journey_records';
+const HEALTH_STORE = 'health_checks';
 
 const getTodayISODate = () => new Date().toISOString().split('T')[0];
-const getYesterdayISODate = () => {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split('T')[0];
-};
 
-const INITIAL_DEMO_RECORDS: JourneyRecord[] = [
+// Só o nome dos arquivos novos mudou (antes: primeiros_1000_dias_backup_…json); o conteúdo e
+// a importação de backups antigos, 1.0 e 1.1, continuam iguais.
+export const backupFilename = (isoDate: string) => `mamand_backup_${isoDate}.json`;
+
+// Versões antigas criavam dois registros de exemplo num banco vazio. Um perfil novo agora
+// começa sem registros. Os exemplos antigos só são removidos se continuam exatamente como
+// foram criados (mesmo id, tipo, marcações e texto); qualquer edição da família os preserva.
+const LEGACY_DEMO_RECORDS: Array<Pick<JourneyRecord, 'id' | 'subject' | 'tags' | 'note'>> = [
   {
     id: 'rec-demo-1',
     subject: 'baby',
     tags: ['Dormiu bem', 'Mamou ou se alimentou normalmente'],
-    note: 'Hoje o dia começou tranquilo. Conseguiu fazer uma soneca de 1h30 direto.',
-    timestamp: new Date().toISOString(),
-    eventDate: getTodayISODate(),
-    dateLabel: 'Hoje, 10:30'
+    note: 'Hoje o dia começou tranquilo. Conseguiu fazer uma soneca de 1h30 direto.'
   },
   {
     id: 'rec-demo-2',
     subject: 'mom',
     tags: ['Consegui um tempo só para mim', 'Recebi apoio prático que fez a diferença'],
-    note: 'Minha mãe ficou com o bebê na sala e consegui tomar um banho demorado e descansar.',
-    timestamp: new Date(Date.now() - 86400000).toISOString(),
-    eventDate: getYesterdayISODate(),
-    dateLabel: 'Ontem, 16:00'
+    note: 'Minha mãe ficou com o bebê na sala e consegui tomar um banho demorado e descansar.'
   }
 ];
+
+export const isUneditedLegacyDemo = (r: JourneyRecord): boolean =>
+  LEGACY_DEMO_RECORDS.some(
+    (d) =>
+      d.id === r.id &&
+      d.subject === r.subject &&
+      d.note === r.note &&
+      Array.isArray(r.tags) &&
+      r.tags.length === d.tags.length &&
+      d.tags.every((tag, i) => r.tags[i] === tag) &&
+      !r.sourceActivityTitle &&
+      !r.contentId
+  );
 
 class IndexedDbService {
   private db: IDBDatabase | null = null;
@@ -57,19 +75,26 @@ class IndexedDbService {
           store.createIndex('by_subject', 'subject', { unique: false });
           store.createIndex('by_timestamp', 'timestamp', { unique: false });
         }
+        if (!db.objectStoreNames.contains(HEALTH_STORE)) {
+          const health = db.createObjectStore(HEALTH_STORE, { keyPath: 'id' });
+          health.createIndex('by_subject', 'subject', { unique: false });
+          health.createIndex('by_updatedAt', 'updatedAt', { unique: false });
+        }
       };
 
       request.onsuccess = async (event) => {
         this.db = (event.target as IDBOpenDBRequest).result;
+        // Outra aba com versão mais nova do app pediu atualização do banco: libera a conexão
+        this.db.onversionchange = () => {
+          this.db?.close();
+          this.db = null;
+        };
 
-        // Se o banco acabou de ser criado e está vazio, insere registros demonstrativos iniciais
+        // Remove os exemplos antigos que nunca foram editados; registros reais não são tocados
         try {
-          const count = await this.countRecords(this.db);
-          if (count === 0) {
-            await this.seedInitialRecords(this.db);
-          }
+          await this.removeLegacyDemoRecords(this.db);
         } catch (e) {
-          console.warn('Aviso ao checar registros iniciais do IndexedDB:', e);
+          console.warn('Aviso ao remover registros de exemplo antigos:', e);
         }
 
         resolve(this.db);
@@ -83,21 +108,17 @@ class IndexedDbService {
     });
   }
 
-  private countRecords(db: IDBDatabase): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.count();
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  private seedInitialRecords(db: IDBDatabase): Promise<void> {
+  private removeLegacyDemoRecords(db: IDBDatabase): Promise<void> {
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       const store = tx.objectStore(STORE_NAME);
-      INITIAL_DEMO_RECORDS.forEach((r) => store.add(r));
+      for (const { id } of LEGACY_DEMO_RECORDS) {
+        const req = store.get(id);
+        req.onsuccess = () => {
+          const rec = req.result as JourneyRecord | undefined;
+          if (rec && isUneditedLegacyDemo(rec)) store.delete(id);
+        };
+      }
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
@@ -158,6 +179,20 @@ class IndexedDbService {
     }
   }
 
+  // Exclui um único registro da Jornada. Só toca na store da Jornada: os exames e triagens
+  // e os demais registros continuam como estavam.
+  public async deleteRecord(id: string): Promise<JourneyRecord[]> {
+    const db = await this.openDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error || new Error('Exclusão cancelada. Nenhum registro foi alterado.'));
+    });
+    return this.getRecords();
+  }
+
   // Limpa todos os registros do IndexedDB de forma explícita
   public async clearAllRecords(): Promise<void> {
     const db = await this.openDB();
@@ -171,15 +206,63 @@ class IndexedDbService {
     });
   }
 
-  // Exportação em formato aberto JSON (Soberania e backup dos dados)
-  public exportAsJson(records: JourneyRecord[]): void {
+  // ---- Exames e triagens (store própria; validação estrita antes de gravar)
+
+  public async getHealthChecks(): Promise<HealthCheckRecord[]> {
+    const db = await this.openDB();
+    return new Promise((resolve, reject) => {
+      const req = db.transaction(HEALTH_STORE, 'readonly').objectStore(HEALTH_STORE).getAll();
+      req.onsuccess = () => {
+        const results = req.result as HealthCheckRecord[];
+        results.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+        resolve(results);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  public async saveHealthCheck(record: HealthCheckRecord): Promise<HealthCheckRecord[]> {
+    const check = validateHealthCheckRecord(record);
+    if (!check.valid) throw new Error(`Registro de exame inválido: ${check.errors.join(', ')}`);
+    const db = await this.openDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(HEALTH_STORE, 'readwrite');
+      tx.objectStore(HEALTH_STORE).put(check.record);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error ?? new Error('Gravação do exame abortada'));
+    });
+    return this.getHealthChecks();
+  }
+
+  public async deleteHealthCheck(id: string): Promise<HealthCheckRecord[]> {
+    const db = await this.openDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(HEALTH_STORE, 'readwrite');
+      tx.objectStore(HEALTH_STORE).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    return this.getHealthChecks();
+  }
+
+  // Exportação em formato aberto JSON (Soberania e backup dos dados).
+  // Versão 1.1: inclui os exames e triagens; arquivos 1.0 continuam importáveis.
+  public exportAsJson(records: JourneyRecord[], healthChecks: HealthCheckRecord[] = []): void {
+    const savedBirthRecord = birthRecordStorage.hasSavedRecord()
+      ? birthRecordStorage.getBirthRecord()
+      : undefined;
+
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(
       JSON.stringify(
         {
-          schemaVersion: '1.0',
+          schemaVersion: '1.1',
+          app: 'First 1,000 Days',
           exportedAt: new Date().toISOString(),
           totalRecords: records.length,
-          records
+          records,
+          birthRecord: savedBirthRecord,
+          healthChecks
         },
         null,
         2
@@ -187,57 +270,16 @@ class IndexedDbService {
     );
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `primeiros_1000_dias_backup_${getTodayISODate()}.json`);
+    downloadAnchor.setAttribute('download', backupFilename(getTodayISODate()));
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
   }
 
   // Exportação em resumo de texto legível (para levar ao pediatra ou consulta médica)
-  public exportAsTextSummary(
-    records: JourneyRecord[],
-    profile: UserProfile,
-    lang: SupportedLanguage = 'pt-BR'
-  ): void {
-    const isEn = lang === 'en';
-    let summary = isEn
-      ? `MONITORING SUMMARY - FIRST 1,000 DAYS\n`
-      : `RELATÓRIO DE ACOMPANHAMENTO - PRIMEIROS 1.000 DIAS\n`;
-    summary += `${isEn ? 'Export Date' : 'Data de Exportação'}: ${new Date().toLocaleDateString(isEn ? 'en-US' : 'pt-BR')}\n`;
-    summary += `${isEn ? 'Current Stage' : 'Fase Atual'}: ${profile.stageLabel}\n`;
-    summary += `${isEn ? 'Total Records' : 'Total de Registros'}: ${records.length}\n`;
-    summary += `------------------------------------------------------------\n\n`;
-
-    records.forEach((rec, idx) => {
-      let subjectLabel = '';
-      if (isEn) {
-        subjectLabel = rec.subject === 'baby' ? 'BABY' : rec.subject === 'mom' ? 'MOTHER' : 'MEMORY';
-      } else {
-        subjectLabel = rec.subject === 'baby' ? 'BEBÊ' : rec.subject === 'mom' ? 'MÃE' : 'MEMÓRIA';
-      }
-
-      summary += `[${idx + 1}] ${isEn ? 'Date' : 'Data'}: ${rec.dateLabel} (${rec.eventDate}) | ${isEn ? 'Type' : 'Tipo'}: ${subjectLabel}\n`;
-      if (rec.tags && rec.tags.length > 0) {
-        summary += `    ${isEn ? 'Tags' : 'Marcações'}: ${rec.tags.join(', ')}\n`;
-      }
-      if (rec.note) {
-        summary += `    ${isEn ? 'Note' : 'Anotação'}: "${rec.note}"\n`;
-      }
-      if (rec.sourceActivityTitle) {
-        summary += `    ${isEn ? 'Practiced Care' : 'Atividade Praticada'}: ${rec.sourceActivityTitle}\n`;
-      }
-      summary += `\n`;
-    });
-
-    summary += isEn
-      ? `\n* Document generated locally by the First 1,000 Days application.\n* Not an official medical record. For informational support during pediatric and clinical visits.\n`
-      : `\n* Documento gerado localmente pelo aplicativo Primeiros 1.000 Dias.\n* Não constitui prontuário médico oficial. Uso informativo para suporte às consultas de puericultura.\n`;
-
-    const filename = isEn
-      ? `pediatric_summary_${getTodayISODate()}.txt`
-      : `resumo_puericultura_${getTodayISODate()}.txt`;
-
-    const dataStr = 'data:text/plain;charset=utf-8,' + encodeURIComponent(summary);
+  // Baixa o resumo em texto montado por buildJourneyTextSummary; tudo acontece no aparelho
+  public downloadTextFile(text: string, filename: string): void {
+    const dataStr = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
     downloadAnchor.setAttribute('download', filename);
@@ -264,12 +306,12 @@ class IndexedDbService {
       return { valid: false, recordCount: 0, errorKey: 'corruptedRecord', errorMessage: 'Estrutura de dados raiz inválida.' };
     }
 
-    if (parsed.schemaVersion !== '1.0') {
+    if (parsed.schemaVersion !== '1.0' && parsed.schemaVersion !== '1.1') {
       return {
         valid: false,
         recordCount: 0,
         errorKey: 'unsupportedVersion',
-        errorMessage: `Versão de esquema "${parsed.schemaVersion || 'desconhecida'}" incompatível (esperado: 1.0).`
+        errorMessage: `Versão de esquema "${parsed.schemaVersion || 'desconhecida'}" incompatível (esperado: 1.0 ou 1.1).`
       };
     }
 
@@ -277,7 +319,21 @@ class IndexedDbService {
       return { valid: false, recordCount: 0, errorKey: 'corruptedRecord', errorMessage: 'Campo "records" deve ser uma lista.' };
     }
 
-    if (parsed.records.length === 0) {
+    // Exames e triagens (1.1): qualquer registro inválido recusa o arquivo inteiro,
+    // para não importar só uma parte sem avisar
+    const healthParse = parseHealthChecksFromBackup(parsed);
+    if (!healthParse.valid) {
+      return {
+        valid: false,
+        recordCount: 0,
+        errorKey: 'corruptedRecord',
+        errorMessage: `Exames e triagens inválidos no arquivo: ${healthParse.errors.slice(0, 3).join('; ')}`
+      };
+    }
+    // undefined = o arquivo não traz a seção (1.0); [] = traz a seção vazia
+    const healthChecks = parsed.schemaVersion === '1.1' && parsed.healthChecks !== undefined ? healthParse.records : undefined;
+
+    if (parsed.records.length === 0 && !(healthChecks && healthChecks.length > 0)) {
       return {
         valid: false,
         recordCount: 0,
@@ -342,18 +398,42 @@ class IndexedDbService {
       });
     }
 
+    let validBirthRecord: BirthRecord | undefined = undefined;
+    if (parsed.birthRecord && typeof parsed.birthRecord === 'object' && !Array.isArray(parsed.birthRecord)) {
+      validBirthRecord = {
+        babyName: typeof parsed.birthRecord.babyName === 'string' ? parsed.birthRecord.babyName : undefined,
+        birthDate: typeof parsed.birthRecord.birthDate === 'string' ? parsed.birthRecord.birthDate : undefined,
+        birthTime: typeof parsed.birthRecord.birthTime === 'string' ? parsed.birthRecord.birthTime : undefined,
+        weightGrams: parsed.birthRecord.weightGrams !== undefined ? parsed.birthRecord.weightGrams : undefined,
+        lengthCm: parsed.birthRecord.lengthCm !== undefined ? parsed.birthRecord.lengthCm : undefined,
+        headCircumferenceCm: parsed.birthRecord.headCircumferenceCm !== undefined ? parsed.birthRecord.headCircumferenceCm : undefined,
+        hospitalName: typeof parsed.birthRecord.hospitalName === 'string' ? parsed.birthRecord.hospitalName : undefined,
+        city: typeof parsed.birthRecord.city === 'string' ? parsed.birthRecord.city : undefined,
+        country: typeof parsed.birthRecord.country === 'string' ? parsed.birthRecord.country : undefined,
+        deliveryType: typeof parsed.birthRecord.deliveryType === 'string' ? parsed.birthRecord.deliveryType : undefined,
+        bloodType: typeof parsed.birthRecord.bloodType === 'string' ? parsed.birthRecord.bloodType : undefined,
+        allergies: typeof parsed.birthRecord.allergies === 'string' ? parsed.birthRecord.allergies : undefined,
+        healthConditions: typeof parsed.birthRecord.healthConditions === 'string' ? parsed.birthRecord.healthConditions : undefined,
+        updatedAt: typeof parsed.birthRecord.updatedAt === 'string' ? parsed.birthRecord.updatedAt : undefined
+      };
+    }
+
     return {
       valid: true,
       version: parsed.schemaVersion,
       recordCount: validRecords.length,
       dateRange: validRecords.length > 0 ? { min: minDate, max: maxDate } : undefined,
       subjectCounts: subjects,
-      records: validRecords
+      records: validRecords,
+      birthRecord: validBirthRecord,
+      healthChecks
     };
   }
 
-  // Restauração atômica com Mesclagem (Adicionar sem duplicar IDs existentes)
-  public async restoreBackupMerge(recordsToImport: JourneyRecord[]): Promise<RestoreResult> {
+  // Restauração atômica com Mesclagem (Adicionar sem duplicar IDs existentes).
+  // Sem `healthChecks` (arquivo 1.0), os exames e triagens do aparelho não são tocados.
+  public async restoreBackupMerge(recordsToImport: JourneyRecord[], healthChecks?: HealthCheckRecord[]): Promise<RestoreResult> {
+    if (healthChecks !== undefined) return this.restoreWithHealthChecks('merge', recordsToImport, healthChecks);
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -402,8 +482,10 @@ class IndexedDbService {
     });
   }
 
-  // Restauração atômica com Substituição Integral (Sobrescrever histórico)
-  public async restoreBackupReplace(recordsToImport: JourneyRecord[]): Promise<RestoreResult> {
+  // Restauração atômica com Substituição Integral (Sobrescrever histórico).
+  // Sem `healthChecks` (arquivo 1.0), os exames e triagens do aparelho são mantidos.
+  public async restoreBackupReplace(recordsToImport: JourneyRecord[], healthChecks?: HealthCheckRecord[]): Promise<RestoreResult> {
+    if (healthChecks !== undefined) return this.restoreWithHealthChecks('replace', recordsToImport, healthChecks);
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -444,6 +526,83 @@ class IndexedDbService {
       };
     });
   }
+
+  // Restauração de arquivo 1.1: Jornada e exames na mesma transação (tudo ou nada)
+  private async restoreWithHealthChecks(
+    mode: 'merge' | 'replace',
+    recordsToImport: JourneyRecord[],
+    healthChecks: HealthCheckRecord[]
+  ): Promise<RestoreResult> {
+    for (const hc of healthChecks) {
+      const check = validateHealthCheckRecord(hc);
+      if (!check.valid) throw new Error(`Exame inválido no backup: ${check.errors.join(', ')}`);
+    }
+    const db = await this.openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction([STORE_NAME, HEALTH_STORE], 'readwrite');
+      const journey = tx.objectStore(STORE_NAME);
+      const health = tx.objectStore(HEALTH_STORE);
+      const result: RestoreResult = {
+        success: true,
+        importedCount: 0,
+        skippedCount: 0,
+        totalInDb: 0,
+        mode,
+        healthChecks: { importedCount: 0, skippedCount: 0 }
+      };
+
+      tx.oncomplete = () => resolve(result);
+      tx.onerror = () => reject(tx.error || new Error('Erro na transação de restauração do backup'));
+      tx.onabort = () => reject(new Error('Restauração abortada. Nenhum dado foi alterado.'));
+
+      const writeAll = (journeyKeys: Set<string>, healthKeys: Set<string>) => {
+        try {
+          for (const rec of recordsToImport) {
+            if (journeyKeys.has(rec.id)) result.skippedCount++;
+            else {
+              journey.add(rec);
+              journeyKeys.add(rec.id);
+              result.importedCount++;
+            }
+          }
+          for (const hc of healthChecks) {
+            if (healthKeys.has(hc.id)) result.healthChecks!.skippedCount++;
+            else {
+              health.add(hc);
+              healthKeys.add(hc.id);
+              result.healthChecks!.importedCount++;
+            }
+          }
+          result.totalInDb = journeyKeys.size;
+        } catch (err) {
+          try { tx.abort(); } catch (_) {}
+          reject(err);
+        }
+      };
+
+      if (mode === 'replace') {
+        journey.clear();
+        health.clear();
+        writeAll(new Set(), new Set());
+        return;
+      }
+
+      const journeyReq = journey.getAllKeys();
+      const healthReq = health.getAllKeys();
+      let pending = 2;
+      const onKeys = () => {
+        pending -= 1;
+        if (pending === 0) {
+          writeAll(
+            new Set((journeyReq.result as IDBValidKey[]).map(String)),
+            new Set((healthReq.result as IDBValidKey[]).map(String))
+          );
+        }
+      };
+      journeyReq.onsuccess = onKeys;
+      healthReq.onsuccess = onKeys;
+    });
+  }
 }
 
 export interface BackupValidationResult {
@@ -453,6 +612,9 @@ export interface BackupValidationResult {
   dateRange?: { min: string; max: string };
   subjectCounts?: { baby: number; mom: number; memory: number };
   records?: JourneyRecord[];
+  birthRecord?: BirthRecord;
+  // Só presente se o arquivo trouxer a seção de exames (1.1)
+  healthChecks?: HealthCheckRecord[];
   errorKey?: 'invalidJson' | 'unsupportedVersion' | 'corruptedRecord' | 'emptyFile';
   errorMessage?: string;
 }
@@ -463,6 +625,8 @@ export interface RestoreResult {
   skippedCount: number;
   totalInDb: number;
   mode: 'merge' | 'replace';
+  // Exames e triagens: ausente quando o arquivo não traz a seção (eles ficam como estão)
+  healthChecks?: { importedCount: number; skippedCount: number };
   errorMessage?: string;
 }
 

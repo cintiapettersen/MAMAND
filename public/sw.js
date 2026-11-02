@@ -9,15 +9,18 @@
  *    - Perguntas pessoais, registros de saúde ou tokens não passam por cache HTTP.
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.2.1';
 const CACHE_NAME = `first-1000-days-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
-  '/icon-192.svg',
-  '/icon-512.svg'
+  '/icon-192.png',
+  '/icon-512.png',
+  '/icon-maskable-512.png',
+  '/apple-touch-icon.png',
+  '/favicon-48.png'
 ];
 
 self.addEventListener('install', (event) => {

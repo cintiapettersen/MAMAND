@@ -43,22 +43,26 @@ test('2. Validação da estratégia do Service Worker e isolamento de privacidad
   assert.match(swContent, /caches\.delete\(key\)/, 'Deve limpar versões anteriores do cache no activate');
 });
 
-test('3. Eliminação de dependência bloqueadora de rede para fontes em index.html', () => {
+test('3. Eliminação de dependência de rede para fontes em index.html', () => {
   const htmlContent = fs.readFileSync(path.resolve('index.html'), 'utf-8');
+  const mainContent = fs.readFileSync(path.resolve('src/main.tsx'), 'utf-8');
 
-  // Verifica que a folha de estilo externa não bloqueia renderização
+  // Fontes hospedadas no próprio app: nada de Google Fonts (privacidade e uso offline)
   assert.ok(
-    htmlContent.includes('media="print"') && htmlContent.includes("this.media='all'"),
-    'Fonte externa do Google deve ser não-bloqueadora com media="print" e onload switch'
+    !/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(htmlContent),
+    'index.html não deve carregar fontes de servidores externos'
   );
+  for (const pkg of ['@fontsource/nunito/', '@fontsource/plus-jakarta-sans/', '@fontsource-variable/fraunces/']) {
+    assert.ok(mainContent.includes(`import '${pkg}`), `main.tsx deve importar a fonte local ${pkg}`);
+  }
   assert.ok(
     htmlContent.includes('<link rel="manifest" href="/manifest.webmanifest" />'),
     'index.html deve referenciar o manifesto PWA'
   );
 });
 
-test('4. Validação de independência offline do IndexedDB e fallback local do assistente', async () => {
+test('4. Fontes com alternativas do sistema para uso offline', async () => {
   const cssContent = fs.readFileSync(path.resolve('src/styles/index.css'), 'utf-8');
   assert.match(cssContent, /--font-body: 'Plus Jakarta Sans', system-ui/, 'Stack de fontes corporais com fallback resiliente do sistema');
-  assert.match(cssContent, /--font-title: 'Fraunces', Georgia/, 'Stack de títulos com fallback resiliente serif');
+  assert.match(cssContent, /--font-title: 'Fraunces Variable', 'Fraunces', Georgia/, 'Stack de títulos com fallback resiliente serif');
 });

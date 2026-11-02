@@ -1,5 +1,5 @@
-import { UserProfile } from '../types';
-import { APP_CONFIG } from '../constants/appConfig';
+import type { UserProfile } from '../types/index.ts';
+import { APP_CONFIG } from '../constants/appConfig.ts';
 
 /**
  * Armazenamento local das preferências de demonstração do onboarding.

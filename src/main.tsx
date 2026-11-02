@@ -1,6 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+// Fontes hospedadas no próprio app (OFL 1.1): funcionam offline e não enviam o IP da usuária a terceiros.
+// Só os pesos usados, nos alfabetos latino e latino estendido (pt, en e línguas nórdicas).
+import '@fontsource/nunito/latin-700.css';
+import '@fontsource/nunito/latin-ext-700.css';
+import '@fontsource/nunito/latin-900.css';
+import '@fontsource/nunito/latin-ext-900.css';
+import '@fontsource/plus-jakarta-sans/latin-400.css';
+import '@fontsource/plus-jakarta-sans/latin-ext-400.css';
+import '@fontsource/plus-jakarta-sans/latin-500.css';
+import '@fontsource/plus-jakarta-sans/latin-ext-500.css';
+import '@fontsource/plus-jakarta-sans/latin-600.css';
+import '@fontsource/plus-jakarta-sans/latin-ext-600.css';
+import '@fontsource/plus-jakarta-sans/latin-700.css';
+import '@fontsource/plus-jakarta-sans/latin-ext-700.css';
+import '@fontsource/plus-jakarta-sans/latin-800.css';
+import '@fontsource/plus-jakarta-sans/latin-ext-800.css';
+import '@fontsource-variable/fraunces/opsz.css';
 import './styles/index.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

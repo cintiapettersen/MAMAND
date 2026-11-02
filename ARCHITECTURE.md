@@ -1,54 +1,28 @@
-# Arquitetura do Sistema
+# Arquitetura do MAMAND
 
-## 1. Visão Geral (Local-First Core & Edge Desacoplado)
+> **Situação (novembro de 2026).** Esta distribuição pública contém só o aplicativo local-first. O assistente experimental de perguntas livres (busca, respostas, integração com IA, detector de sinais e catálogo de evidências) e o painel de critérios de sinais de alerta **não fazem parte dela** enquanto aguardam revisão clínica e regulatória. Nenhum conteúdo de saúde tem revisão profissional registrada. Os dados ficam só no aparelho, **sem criptografia própria**.
 
-O **Primeiros 1.000 Dias / Open Child Health Booklet** foi concebido sob o paradigma **Local-First**, assegurando que toda a lógica de negócio essencial, as regras de triagem de puericultura e a persistência de registros aconteçam diretamente no dispositivo da usuária (*client-side*).
+## 1. Visão geral
 
-O aplicativo opera como uma Progressive Web App (PWA) estática e desacoplada, desenvolvida em **React 18** com **TypeScript** e empacotada com **Vite**, complementada opcionalmente por um Edge Gateway sem estado (*serverless*).
+O **MAMAND** (antes "Primeiros 1.000 Dias" / Open Child Health Booklet) é uma Progressive Web App (PWA) estática, em **React 18**, **TypeScript** e **Vite**. Toda a lógica e todos os registros ficam no aparelho; o app não tem servidor próprio nem faz requisições de rede além de carregar os próprios arquivos.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        DISPOSITIVO DA USUÁRIA                          │
-│                                                                        │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │                    Interface Web (React / PWA)                   │  │
-│  │       - Abas: Hoje, Pergunte (Educativo), Jornada, Cuidados      │  │
-│  │       - PWA Service Worker (Cache-First / Stale-While-Revalidate) │  │
-│  └──────────┬─────────────────────────────┬─────────────────────────┘  │
-│             │                             │                            │
-│             ▼                             ▼                            │
-│  ┌───────────────────────┐   ┌──────────────────────────────────────┐  │
-│  │ Motor de Regras Local │   │        Banco Local Estruturado       │  │
-│  │ (Proatividade Offline)│   │        IndexedDB (`journey_records`) │  │
-│  │ - Ponderação de fase  │   │        - Sem login nem envio de PII  │  │
-│  │ - Resposta a check-in │   │        - Import/Export atômico JSON  │  │
-│  │ - PII Scrubber Cliente│   │        - Resumo formatado em TXT     │  │
-│  │ - Salvaguarda SAMU 192│   │        - Zero dependência de rede    │  │
-│  └───────────────────────┘   └──────────────────────────────────────┘  │
-└───────────────────────────┬────────────────────────────────────────────┘
-                            │ Requisições de IA Educativa (Aba Pergunte)
-                            │ (Apenas pergunta sanitizada + faixa etária)
-                            ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│               SERVIÇO DE EXTENSÃO DESACOPLADO (EDGE GATEWAY)           │
-│                                                                        │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │        Edge API Gateway (Cloudflare Worker na pasta /gateway)    │  │
-│  │        - Stateless Proxy / Rate Limiting / Zero-Body Logging     │  │
-│  │        - Hash efêmero de IP / Quota Diária / Anti-Abuso          │  │
-│  └──────────────┬───────────────────────────────────┬───────────────┘  │
-│                 │                                   │                  │
-│                 ▼                                   ▼                  │
-│  ┌──────────────────────────────┐     ┌─────────────────────────────┐  │
-│  │     Base RAG Lexical/BM25    │     │       Provedor de LLM       │  │
-│  │  (Trechos da Caderneta/OMS)  │     │   (Gemini 3.5 Flash-Lite)   │  │
-│  │  - Citações auditáveis       │     │   - Chave em .dev.vars      │  │
-│  │  - Classificação de relevância│     │   - MOCK_MODE=true padrão   │  │
-│  └──────────────────────────────┘     └─────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                    DISPOSITIVO DA USUÁRIA                    │
+│                                                              │
+│  Interface (React / PWA, pt-BR e en)                         │
+│  - Hoje: check-in, cartas do dia, contatos de emergência     │
+│  - Pergunte: aviso de suspensão e contatos de emergência     │
+│  - Jornada: diário, Exames e triagens, backup e resumo       │
+│  - Cuidados: biblioteca de temas (título, tema e fonte)      │
+│  - Service worker para uso offline                           │
+│                                                              │
+│  Armazenamento local                                         │
+│  - IndexedDB: Jornada e Exames e triagens                    │
+│  - localStorage: perfil, listas e preferências               │
+│  - Exportação e importação em JSON; resumo em TXT            │
+└──────────────────────────────────────────────────────────────┘
 ```
-
----
 
 ## 2. Modelo de Dados Local (IndexedDB)
 
@@ -106,58 +80,15 @@ Para assegurar soberania completa dos dados sem depender de nuvem, o aplicativo 
 
 ---
 
-## 5. Edge Gateway Desacoplado & RAG Educativo
+## 5. Assistente experimental (fora desta distribuição)
 
-A camada de consulta inteligente opera de modo estritamente desacoplado na pasta `/gateway`, desenhada para execução sem servidor (*serverless*) em **Cloudflare Workers**:
+O projeto mantém, em desenvolvimento privado, um assistente experimental de perguntas livres (busca em evidências, respostas simuladas e integração opcional com um modelo de IA). Ele foi retirado desta distribuição porque testes internos encontraram respostas tranquilizadoras a relatos preocupantes, e o conteúdo e os critérios de sinais de alerta ainda não têm revisão profissional.
 
-```
-[ Usuária / PWA ] 
-       │ 
-       │  POST /api/ask { question, phase, stageValue, lang }
-       ▼
-┌────────────────────────────────────────────────────────┐
-│ Cloudflare Workers Edge Gateway                        │
-│ 1. Hash de IP efêmero com sal temporário (Anti-abuso)  │
-│ 2. Rate Limiting (15 req/10min) + Cota Diária (500/dia)│
-│ 3. PII Scrubber (Mascaramento de telefones/CPFs)       │
-│ 4. Salvaguarda Imediata de Emergência (SAMU 192)       │
-│ 5. RAG Retriever (BM25 lexical/semântico ponderado)    │
-│ 6. Seletor de Modo:                                    │
-│    ├─ MOCK_MODE=true: Mock Engine (Custo Zero)         │
-│    └─ MOCK_MODE=false: Gemini 3.5 Flash-Lite (API Key) │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-                           ▼
-          [ Resposta Educativa Fundamentada ]
-          - Texto acolhedor focado em orientações práticas
-          - Citações oficiais (Documento, Edição, Página)
-          - Indicador visual do modo (Mock vs. IA Real)
-          - Estimador de custos oficial ($0,30 in / $2,50 out por milhão)
-          - Aviso ético de saúde não substituível
-```
+- **A separação é temporária.** Os módulos de IA podem voltar a ser abertos depois das revisões clínica e regulatória, em especial se fizerem parte de uma solução financiada com compromisso de código aberto.
+- **Versões anteriores** deste repositório (até o commit `7d43d3f`, outubro de 2026) incluem uma versão antiga do assistente e do gateway, com a aba ativa. Elas continuam no histórico, sob Apache 2.0, e **não devem ser usadas** para orientar gestantes ou famílias.
 
-### Salvaguardas e Governança Clínica
-1. **Credenciais no Servidor:** A chave `GEMINI_API_KEY` reside exclusivamente no arquivo seguro `.dev.vars` (no ambiente de desenvolvimento) ou em `wrangler secret put` (em produção), com zero credenciais no código compilado do frontend.
-2. **Emergências Clínicas:** Situações agudas (como febre em lactente menor de 3 meses, sangramentos ou insuficiência respiratória) disparam imediatamente o aviso de emergência e o telefone do SAMU 192 (ou 911 em inglês), sem gerar chamadas de IA.
-3. **Catálogo de Evidências:** As respostas fundamentam-se em trechos auditáveis do Ministério da Saúde do Brasil e da OMS. Quando uma pergunta não possui evidência correspondente, o assistente emite uma recusa responsável informando a limitação do acervo.
-4. **Resiliência e Fallback Local:** Se o gateway estiver desligado, o frontend dispõe de um motor RAG local idêntico embutido no cliente operando em modo demonstrativo.
+## 6. Implantação por outras organizações
 
----
-
-## 6. Instruções de Implantação para Outras Organizações (Self-Hosting)
-
-Organizações públicas ou do terceiro setor podem implantar o sistema de forma totalmente independente:
-
-### Frontend
-- O build estático (`npm run build`) gera a pasta `dist/`.
-- Pode ser servido em qualquer hospedagem estática compatível com HTTPS (obrigatório para Service Workers).
-- O arquivo `.env` pode definir opcionalmente `VITE_GATEWAY_URL` para apontar para o gateway próprio da organização.
-
-### Edge Gateway
-- Localizado na pasta `gateway/`.
-- Pode ser publicado via Cloudflare Workers (`npx wrangler deploy`) ou executado em contêineres Node.js usando o script `gateway/scripts/localGateway.cjs`.
-- Variáveis de ambiente configuráveis:
-  - `MOCK_MODE`: `true` (padrão) para operar com respostas simuladas auditáveis a custo zero; `false` para acionar a API do Gemini.
-  - `GEMINI_API_KEY`: Chave da API do Google Cloud / Google AI Studio.
-  - `GEMINI_MODEL`: `gemini-3.5-flash-lite`.
-  - `ALLOWED_ORIGIN`: Origens HTTP permitidas para controle de CORS.
+- `npm run build` gera a pasta `dist/`, que pode ser servida em qualquer hospedagem estática com HTTPS (obrigatório para o service worker).
+- O app não precisa de variáveis de ambiente nem de servidor.
+- Quem distribuir uma versão modificada responde pelo próprio conteúdo de saúde e pelas proteções que mantiver ou retirar (veja `CONTENT.md` e `TRADEMARKS.md`).

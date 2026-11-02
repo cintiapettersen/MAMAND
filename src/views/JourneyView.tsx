@@ -1,7 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { UserProfile, JourneyRecord, RecordSubject } from '../types';
 import { indexedDbService } from '../services/indexedDbService';
+import { birthRecordStorage } from '../services/birthRecordStorage';
 import { useLanguage } from '../context/LanguageContext';
+import { PageHeader } from '../components/PageHeader';
+import { displayTag } from '../domain/journeyTags';
+import { formatRecordDate } from '../domain/recordDate';
+import { buildJourneyTextSummary, journeySummaryFilename } from '../domain/journeySummary';
+import { getLocalizedStageLabel } from '../locales';
 import {
   Baby,
   Heart,
@@ -12,6 +18,8 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Lightbulb,
   Calendar,
   AlertCircle,
@@ -23,7 +31,21 @@ import {
   AlertTriangle,
   Upload,
   ShieldAlert,
-  CheckCircle2
+  ShieldCheck,
+  CheckCircle2,
+  Moon,
+  Utensils,
+  Smile,
+  Users,
+  Frown,
+  Activity,
+  Stethoscope,
+  Coffee,
+  MessageCircle,
+  HeartHandshake,
+  Award,
+  Compass,
+  Music
 } from 'lucide-react';
 import { BackupValidationResult } from '../services/indexedDbService';
 
@@ -32,6 +54,7 @@ interface JourneyViewProps {
   records: JourneyRecord[];
   onAddRecord: (record: JourneyRecord) => void;
   onClearRecords: () => void;
+  onDeleteRecord?: (id: string) => void | Promise<void>;
   onRestoreRecords?: (updated: JourneyRecord[]) => void;
   storageError?: string | null;
 }
@@ -47,10 +70,12 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   records,
   onAddRecord,
   onClearRecords,
+  onDeleteRecord,
   onRestoreRecords,
   storageError
 }) => {
   const { language, t } = useLanguage();
+  const dateWords = { today: t.journey.dateTodayPrefix, yesterday: t.journey.dateYesterdayPrefix };
 
   const [isFormOpen, setIsFormOpen] = useState(true);
   const [subject, setSubject] = useState<RecordSubject>('baby');
@@ -64,9 +89,69 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   const [activeFilterSubject, setActiveFilterSubject] = useState<'all' | RecordSubject>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Paginação da Linha do Tempo (5 iniciais com expansão gradual)
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+
+  // Mapeamento semântico de ícones lineares para as opções de registro
+  const getOptionIcon = (tagOrId: string, subj: RecordSubject): React.ReactNode => {
+    if (subj === 'baby') {
+      if (tagOrId.includes('Dormiu') || tagOrId.includes('Slept')) return <Moon size={15} />;
+      if (tagOrId.includes('Mamou') || tagOrId.includes('alimentou') || tagOrId.includes('fed') || tagOrId.includes('Nursed')) return <Utensils size={15} />;
+      if (tagOrId.includes('irritado') || tagOrId.includes('fussier') || tagOrId.includes('irritable')) return <Frown size={15} />;
+      if (tagOrId.includes('descoberta') || tagOrId.includes('marco') || tagOrId.includes('milestone')) return <Sparkles size={15} />;
+      if (tagOrId.includes('consulta') || tagOrId.includes('vacina') || tagOrId.includes('checkup') || tagOrId.includes('vaccine')) return <Stethoscope size={15} />;
+      if (tagOrId.includes('sintoma') || tagOrId.includes('symptom')) return <Activity size={15} />;
+      return <Baby size={15} />;
+    }
+    if (subj === 'mom') {
+      if (tagOrId.includes('conquista') || tagOrId.includes('win')) return <Award size={15} />;
+      if (tagOrId.includes('dificuldade') || tagOrId.includes('challenge')) return <AlertCircle size={15} />;
+      if (tagOrId.includes('tempo só') || tagOrId.includes('myself')) return <Coffee size={15} />;
+      if (tagOrId.includes('conversa') || tagOrId.includes('exchange') || tagOrId.includes('conversation')) return <MessageCircle size={15} />;
+      if (tagOrId.includes('apoio') || tagOrId.includes('support')) return <HeartHandshake size={15} />;
+      if (tagOrId.includes('corpo') || tagOrId.includes('recuperação') || tagOrId.includes('body') || tagOrId.includes('recovery')) return <Activity size={15} />;
+      return <Heart size={15} />;
+    }
+    // memory
+    if (tagOrId === 'first_achievement') return <Award size={15} />;
+    if (tagOrId === 'special_moment') return <Heart size={15} />;
+    if (tagOrId === 'outing') return <Compass size={15} />;
+    if (tagOrId === 'sounds_laughter') return <Music size={15} />;
+    if (tagOrId === 'sweet_gesture') return <Smile size={15} />;
+    if (tagOrId === 'family_visit') return <Users size={15} />;
+    return <Camera size={15} />;
+  };
+
+  const hasUnsavedData = useMemo(() => {
+    return note.trim().length > 0 || selectedTags.length > 0 || selectedMemoryPrompt !== null;
+  }, [note, selectedTags, selectedMemoryPrompt]);
+
+  const handleAttemptCloseForm = () => {
+    if (hasUnsavedData) {
+      setIsDiscardModalOpen(true);
+    } else {
+      setIsFormOpen(false);
+      setValidationError(null);
+    }
+  };
+
+  const handleConfirmDiscard = () => {
+    setIsDiscardModalOpen(false);
+    setSelectedTags([]);
+    setSelectedMemoryPrompt(null);
+    setNote('');
+    setValidationError(null);
+    setIsFormOpen(false);
+  };
+
   // Modais de Exportação, Restauração e Limpeza
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+  // Anotações livres ficam fora do resumo em texto, a menos que a família marque a opção
+  const [summaryIncludesNotes, setSummaryIncludesNotes] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
+  // Registro escolhido para exclusão individual (só ele é apagado, depois de confirmar)
+  const [recordToDelete, setRecordToDelete] = useState<JourneyRecord | null>(null);
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
   const [restoreFileName, setRestoreFileName] = useState<string | null>(null);
   const [restoreValidation, setRestoreValidation] = useState<BackupValidationResult | null>(null);
@@ -129,9 +214,9 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
     try {
       let result;
       if (restoreMode === 'replace') {
-        result = await indexedDbService.restoreBackupReplace(restoreValidation.records);
+        result = await indexedDbService.restoreBackupReplace(restoreValidation.records, restoreValidation.healthChecks);
       } else {
-        result = await indexedDbService.restoreBackupMerge(restoreValidation.records);
+        result = await indexedDbService.restoreBackupMerge(restoreValidation.records, restoreValidation.healthChecks);
       }
 
       const updatedRecords = await indexedDbService.getRecords();
@@ -139,7 +224,14 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         onRestoreRecords(updatedRecords);
       }
 
-      setRestoreSuccessMsg(t.journey.restoreSuccessMsg(result.importedCount, result.skippedCount));
+      if (restoreValidation.birthRecord) {
+        birthRecordStorage.saveBirthRecord(restoreValidation.birthRecord, true);
+      }
+
+      const healthMsg = result.healthChecks
+        ? t.healthChecks.restoreResult(result.healthChecks.importedCount, result.healthChecks.skippedCount)
+        : t.healthChecks.restoreNotInFile;
+      setRestoreSuccessMsg(`${t.journey.restoreSuccessMsg(result.importedCount, result.skippedCount)} ${healthMsg}`);
       setRestoreValidation(null);
       setRestoreFileName(null);
     } catch (err: any) {
@@ -300,7 +392,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         const matchesNote = rec.note?.toLowerCase().includes(query) ?? false;
-        const matchesTags = rec.tags?.some((t) => t.toLowerCase().includes(query)) ?? false;
+        const matchesTags = rec.tags?.some((t) => t.toLowerCase().includes(query) || displayTag(t, language).toLowerCase().includes(query)) ?? false;
         const matchesActivity = rec.sourceActivityTitle?.toLowerCase().includes(query) ?? false;
         if (!matchesNote && !matchesTags && !matchesActivity) return false;
       }
@@ -308,6 +400,15 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
       return true;
     });
   }, [records, selectedYear, selectedMonth, activeFilterSubject, searchQuery]);
+
+  // Reseta a paginação para 5 sempre que filtros de data, busca ou sujeito mudarem
+  useEffect(() => {
+    setVisibleCount(5);
+  }, [selectedYear, selectedMonth, activeFilterSubject, searchQuery]);
+
+  const displayedRecords = useMemo(() => {
+    return filteredRecords.slice(0, visibleCount);
+  }, [filteredRecords, visibleCount]);
 
   const isCurrentMonthView = (() => {
     const today = new Date();
@@ -339,20 +440,13 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         </div>
       )}
 
-      {/* Cabeçalho da Seção com Botão de Exportação */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-        <div>
-          <span className="tag-badge tag-warm" style={{ marginBottom: '6px' }}>
-            {t.journey.badge}
-          </span>
-          <h1 style={{ fontSize: '1.45rem', fontWeight: 600, color: 'var(--text-main)' }}>
-            {t.journey.title}
-          </h1>
-          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-            {t.journey.subtitle}
-          </p>
-        </div>
-
+      {/* Topo padrão com Botão de Exportação */}
+      <PageHeader
+        kicker={t.journey.badge}
+        icon={<Compass size={13} />}
+        title={t.journey.title}
+        subtitle={t.journey.subtitle}
+        action={
         <button
           onClick={() => setIsExportMenuOpen(true)}
           className="btn btn-secondary"
@@ -373,29 +467,52 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
           <Download size={15} />
           <span>{language === 'en' ? 'Backup' : 'Exportar'}</span>
         </button>
-      </div>
+        }
+      />
 
-      {/* Botão para Abrir/Fechar Formulário de Novo Registro */}
-      <div style={{ marginBottom: '16px' }}>
-        <button
-          onClick={() => {
-            setIsFormOpen(!isFormOpen);
-            setValidationError(null);
-          }}
-          className="btn btn-primary"
-          style={{ justifyContent: 'center', gap: '8px' }}
-        >
-          {isFormOpen ? <X size={18} /> : <Plus size={18} />}
-          <span>{isFormOpen ? t.journey.closeBtn : t.journey.newRecordBtn}</span>
-        </button>
-      </div>
+      {/* Botão para Abrir Formulário quando recolhido */}
+      {!isFormOpen && (
+        <div style={{ marginBottom: '16px' }}>
+          <button
+            type="button"
+            onClick={() => setIsFormOpen(true)}
+            className="btn btn-primary"
+            style={{ justifyContent: 'center', gap: '8px' }}
+          >
+            <Plus size={18} />
+            <span>{t.journey.newRecordBtn}</span>
+          </button>
+        </div>
+      )}
 
       {/* FORMULÁRIO DE NOVO REGISTRO */}
       {isFormOpen && (
         <form onSubmit={handleSave} className="card" style={{ border: '2px solid var(--primary-light)', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '1.15rem', fontWeight: 600, marginBottom: '12px' }}>
-            {t.journey.newRecordTitle}
-          </h2>
+          {/* Cabeçalho compacto integrado com controle de fechar */}
+          <div className="journey-form-card-header">
+            <div className="journey-form-title-wrap">
+              <div className="journey-form-header-icon">
+                <Sparkles size={16} color="var(--terracotta)" />
+              </div>
+              <div>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0, color: 'var(--text-main)', fontFamily: 'var(--font-title)' }}>
+                  {t.journey.newRecordTitle}
+                </h2>
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                  {language === 'en' ? 'Record daily moments, milestones and care' : 'Registre os momentos e marcos do dia'}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleAttemptCloseForm}
+              className="journey-form-close-icon-btn"
+              title={t.journey.closeBtn}
+              aria-label={t.journey.closeBtn}
+            >
+              <X size={18} />
+            </button>
+          </div>
 
           {/* 1. QUANDO ACONTECEU? (Seletor de Datas Anteriores) */}
           <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid var(--border-light)' }}>
@@ -499,21 +616,37 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                 {t.journey.optionsSubtitle}
               </div>
 
-              <div className="quick-tags-list">
+              <div className="journey-options-grid">
                 {currentTagsConfig.map((item) => {
                   const isSelected = selectedTags.includes(item.tag);
+                  const selectedClass = isSelected
+                    ? subject === 'baby'
+                      ? 'selected-baby'
+                      : 'selected-mom'
+                    : '';
                   return (
                     <button
                       key={item.tag}
                       type="button"
+                      role="checkbox"
+                      aria-checked={isSelected}
                       onClick={() => handleToggleTag(item.tag)}
-                      className={`quick-tag-chip ${isSelected ? 'selected' : ''}`}
+                      className={`journey-option-card ${selectedClass}`}
                     >
-                      {isSelected && <Check size={13} style={{ marginRight: '4px' }} />}
-                      <span>{item.tag}</span>
-                      {item.isRequired && (
-                        <span style={{ fontSize: '0.72rem', color: '#B23B3B', marginLeft: '3px' }}>*</span>
-                      )}
+                      <div className="journey-option-top-row">
+                        <div className="journey-option-icon-badge">
+                          {getOptionIcon(item.tag, subject)}
+                        </div>
+                        <div className="journey-option-check-circle">
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </div>
+                      <div className="journey-option-label">
+                        {item.tag}
+                        {item.isRequired && (
+                          <span style={{ fontSize: '0.75rem', color: '#B23B3B', marginLeft: '3px', fontWeight: 700 }}>*</span>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
@@ -550,21 +683,32 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                 {t.journey.memorySuggestionsSubtitle}
               </div>
 
-              <div className="quick-tags-list">
+              <div className="journey-options-grid">
                 {t.journey.memorySuggestions.map((sug) => {
                   const isSelected = selectedMemoryPrompt?.id === sug.id;
                   return (
                     <button
                       key={sug.id}
                       type="button"
+                      role="checkbox"
+                      aria-checked={isSelected}
                       onClick={() => {
                         setSelectedMemoryPrompt(isSelected ? null : sug);
                         setValidationError(null);
                       }}
-                      className={`quick-tag-chip ${isSelected ? 'selected' : ''}`}
+                      className={`journey-option-card ${isSelected ? 'selected-memory' : ''}`}
                     >
-                      {isSelected && <Check size={13} style={{ marginRight: '4px' }} />}
-                      <span>{sug.label}</span>
+                      <div className="journey-option-top-row">
+                        <div className="journey-option-icon-badge">
+                          {getOptionIcon(sug.id, 'memory')}
+                        </div>
+                        <div className="journey-option-check-circle">
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </div>
+                      <div className="journey-option-label">
+                        {sug.label}
+                      </div>
                     </button>
                   );
                 })}
@@ -653,17 +797,11 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '14px' }}>
             <button
               type="button"
-              onClick={() => {
-                setIsFormOpen(false);
-                setSelectedTags([]);
-                setSelectedMemoryPrompt(null);
-                setNote('');
-                setValidationError(null);
-              }}
+              onClick={handleAttemptCloseForm}
               className="btn btn-secondary"
-              style={{ width: 'auto', minHeight: '38px', padding: '8px 14px', fontSize: '0.84rem' }}
+              style={{ width: 'auto', minHeight: '38px', padding: '8px 16px', fontSize: '0.84rem' }}
             >
-              {t.journey.closeBtn}
+              {language === 'en' ? 'Cancel' : 'Cancelar'}
             </button>
             <button
               type="submit"
@@ -685,6 +823,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
       )}
 
       {/* BARRA DE FILTROS E BUSCA NA LINHA DO TEMPO */}
+      <h2 className="journey-timeline-title">{t.journey.timelineTitle}</h2>
       <div style={{ marginBottom: '14px' }}>
         {/* Campo de Busca Textual */}
         <div style={{ position: 'relative', marginBottom: '8px' }}>
@@ -816,63 +955,115 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         )}
 
         {filteredRecords.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {filteredRecords.map((rec) => {
-              const isBaby = rec.subject === 'baby';
-              const isMom = rec.subject === 'mom';
+          <div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {displayedRecords.map((rec) => {
+                const isBaby = rec.subject === 'baby';
+                const isMom = rec.subject === 'mom';
 
-              return (
-                <div key={rec.id} className="card" style={{ marginBottom: 0, padding: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span className={`tag-badge ${isBaby ? 'tag-primary' : isMom ? 'tag-sage' : 'tag-warm'}`}>
-                        {isBaby ? t.journey.babyFilter : isMom ? t.journey.momFilter : t.journey.memoryFilter}
+                return (
+                  <div key={rec.id} className="card" style={{ marginBottom: 0, padding: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className={`tag-badge ${isBaby ? 'tag-primary' : isMom ? 'tag-sage' : 'tag-warm'}`}>
+                          {isBaby ? t.journey.babyFilter : isMom ? t.journey.momFilter : t.journey.memoryFilter}
+                        </span>
+                        {rec.sourceActivityTitle && (
+                          <span className="tag-badge tag-warm" style={{ fontSize: '0.7rem' }}>
+                            <Sparkles size={11} /> {language === 'en' ? 'Practiced Care' : 'Cuidado Praticado'}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-soft)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Clock size={12} /> {formatRecordDate(rec, language, dateWords)}
+                        </span>
+                        {onDeleteRecord && (
+                          <button
+                            type="button"
+                            className="journey-record-delete"
+                            onClick={() => setRecordToDelete(rec)}
+                            aria-label={t.journey.deleteRecordAria}
+                            title={t.journey.deleteRecordAria}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
                       </span>
-                      {rec.sourceActivityTitle && (
-                        <span className="tag-badge tag-warm" style={{ fontSize: '0.7rem' }}>
-                          <Sparkles size={11} /> {language === 'en' ? 'Practiced Care' : 'Cuidado Praticado'}
-                        </span>
-                      )}
                     </div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-soft)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                      <Clock size={12} /> {rec.dateLabel}
-                    </span>
+
+                    {rec.tags.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: rec.note ? '8px' : '0' }}>
+                        {rec.tags.map((tg, idx) => (
+                          <span
+                            key={idx}
+                            style={{
+                              fontSize: '0.78rem',
+                              backgroundColor: 'var(--bg-card-muted)',
+                              padding: '3px 8px',
+                              borderRadius: '4px',
+                              color: 'var(--text-main)',
+                              fontWeight: 500
+                            }}
+                          >
+                            ✓ {displayTag(tg, language)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {rec.note && (
+                      <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginTop: '4px', lineHeight: 1.45 }}>
+                        {rec.note}
+                      </p>
+                    )}
+
+                    {rec.sourceActivityTitle && (
+                      <div style={{ marginTop: '8px', fontSize: '0.78rem', color: 'var(--sage)', fontStyle: 'italic' }}>
+                        {language === 'en' ? 'Linked activity:' : 'Atividade vinculada:'} "{rec.sourceActivityTitle}"
+                      </div>
+                    )}
                   </div>
+                );
+              })}
+            </div>
 
-                  {rec.tags.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: rec.note ? '8px' : '0' }}>
-                      {rec.tags.map((tg, idx) => (
-                        <span
-                          key={idx}
-                          style={{
-                            fontSize: '0.78rem',
-                            backgroundColor: 'var(--bg-card-muted)',
-                            padding: '3px 8px',
-                            borderRadius: '4px',
-                            color: 'var(--text-main)',
-                            fontWeight: 500
-                          }}
-                        >
-                          ✓ {tg}
-                        </span>
-                      ))}
-                    </div>
+            {/* Controles de Paginação da Linha do Tempo (5 iniciais, +5 por vez, Mostrar Menos) */}
+            {filteredRecords.length > 5 && (
+              <div className="journey-pagination-wrap">
+                <span className="journey-pagination-info">
+                  {t.journey.showingRecordsCount
+                    ? t.journey.showingRecordsCount(displayedRecords.length, filteredRecords.length)
+                    : `Exibindo ${displayedRecords.length} de ${filteredRecords.length} registros`}
+                </span>
+                <div className="journey-pagination-btn-group">
+                  {visibleCount < filteredRecords.length && (
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount((prev) => Math.min(prev + 5, filteredRecords.length))}
+                      className="journey-pagination-btn"
+                    >
+                      <ChevronDown size={15} />
+                      <span>
+                        {t.journey.showMoreRecordsBtn
+                          ? t.journey.showMoreRecordsBtn(Math.min(5, filteredRecords.length - visibleCount))
+                          : `Ver mais registros (+${Math.min(5, filteredRecords.length - visibleCount)})`}
+                      </span>
+                    </button>
                   )}
-
-                  {rec.note && (
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginTop: '4px', lineHeight: 1.45 }}>
-                      {rec.note}
-                    </p>
-                  )}
-
-                  {rec.sourceActivityTitle && (
-                    <div style={{ marginTop: '8px', fontSize: '0.78rem', color: 'var(--sage)', fontStyle: 'italic' }}>
-                      {language === 'en' ? 'Linked activity:' : 'Atividade vinculada:'} "{rec.sourceActivityTitle}"
-                    </div>
+                  {visibleCount > 5 && (
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount(5)}
+                      className="journey-pagination-btn"
+                    >
+                      <ChevronUp size={15} />
+                      <span>{t.journey.showLessRecordsBtn || 'Mostrar menos'}</span>
+                    </button>
                   )}
                 </div>
-              );
-            })}
+              </div>
+            )}
           </div>
         ) : (
           <div
@@ -900,12 +1091,14 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
               <Calendar size={18} />
             </div>
             <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main)', marginBottom: '4px' }}>
-              {searchQuery ? t.journey.emptySearchTitle : t.journey.emptyMonthTitle}
+              {searchQuery ? t.journey.emptySearchTitle : records.length === 0 ? t.journey.emptyJourneyTitle : t.journey.emptyMonthTitle}
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', maxWidth: '280px', margin: '0 auto 16px auto', lineHeight: 1.4 }}>
               {searchQuery
                 ? t.journey.emptySearchSubtitle
-                : `${t.journey.emptyMonthSubtitle} (${t.journey.months[selectedMonth]}).`}
+                : records.length === 0
+                  ? t.journey.emptyJourneySubtitle
+                  : `${t.journey.emptyMonthSubtitle} (${t.journey.months[selectedMonth]}).`}
             </p>
             {searchQuery && (
               <button
@@ -957,14 +1150,42 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
               </button>
             </div>
 
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.45, marginBottom: '16px' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.45, marginBottom: '14px' }}>
               {t.journey.exportModalDesc}
             </p>
 
+            {t.journey.backupScopeNotice && (
+              <div
+                style={{
+                  backgroundColor: '#FAF8F5',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: '8px',
+                  padding: '10px 12px',
+                  fontSize: '0.78rem',
+                  color: 'var(--text-muted)',
+                  lineHeight: 1.45,
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '8px'
+                }}
+              >
+                <ShieldCheck size={16} color="var(--sage)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span>{t.journey.backupScopeNotice}</span>
+              </div>
+            )}
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <button
-                onClick={() => {
-                  indexedDbService.exportAsJson(records);
+                onClick={async () => {
+                  // Exames e triagens entram no mesmo arquivo; se a leitura falhar, nada é exportado
+                  try {
+                    const healthChecks = await indexedDbService.getHealthChecks();
+                    indexedDbService.exportAsJson(records, healthChecks);
+                  } catch (err) {
+                    console.error('Erro ao ler exames para o backup:', err);
+                    alert(t.healthChecks.loadError);
+                  }
                   setIsExportMenuOpen(false);
                 }}
                 className="btn btn-secondary"
@@ -977,9 +1198,44 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                 </div>
               </button>
 
+              <label
+                data-testid="summary-include-notes"
+                style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '2px 4px 4px', cursor: 'pointer' }}
+              >
+                <input
+                  type="checkbox"
+                  checked={summaryIncludesNotes}
+                  onChange={(e) => setSummaryIncludesNotes(e.target.checked)}
+                  style={{ marginTop: '3px', width: '18px', height: '18px', flexShrink: 0 }}
+                />
+                <span>
+                  <span style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600 }}>{t.journeySummary.includeNotesLabel}</span>
+                  <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                    {t.journeySummary.includeNotesHelp}
+                  </span>
+                </span>
+              </label>
+
               <button
-                onClick={() => {
-                  indexedDbService.exportAsTextSummary(records, profile, language);
+                onClick={async () => {
+                  // Como no backup: se os exames não puderem ser lidos, nada é exportado
+                  try {
+                    const healthChecks = await indexedDbService.getHealthChecks();
+                    const text = buildJourneyTextSummary({
+                      records,
+                      healthChecks,
+                      lang: language,
+                      t,
+                      stageLabel: getLocalizedStageLabel(profile, language, true),
+                      includeNotes: summaryIncludesNotes,
+                      exportDate: new Date()
+                    });
+                    const today = new Date().toISOString().split('T')[0];
+                    indexedDbService.downloadTextFile(text, journeySummaryFilename(t.journeySummary.filenamePrefix, today));
+                  } catch (err) {
+                    console.error('Erro ao montar o resumo em texto:', err);
+                    alert(t.healthChecks.loadError);
+                  }
                   setIsExportMenuOpen(false);
                 }}
                 className="btn btn-secondary"
@@ -1026,6 +1282,42 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                   <span>{t.journey.clearAllDataBtn}</span>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmação da exclusão de um único registro */}
+      {recordToDelete && (
+        <div className="journey-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="deleteRecordTitle">
+          <div className="card journey-confirm-card">
+            <h3 id="deleteRecordTitle" style={{ fontSize: '1.05rem', margin: '0 0 8px' }}>{t.journey.deleteRecordTitle}</h3>
+            <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', lineHeight: 1.45, margin: '0 0 8px' }}>
+              {formatRecordDate(recordToDelete, language, dateWords)}
+              {recordToDelete.tags.length > 0 ? ` · ${recordToDelete.tags.map((tg) => displayTag(tg, language)).join(', ')}` : ''}
+            </p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.45, margin: '0 0 16px' }}>{t.journey.deleteRecordText}</p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setRecordToDelete(null)}
+                className="btn btn-secondary"
+                style={{ flex: 1, minHeight: '40px', fontSize: '0.85rem' }}
+              >
+                {t.journey.deleteRecordCancel}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const id = recordToDelete.id;
+                  setRecordToDelete(null);
+                  await onDeleteRecord?.(id);
+                }}
+                className="btn btn-primary"
+                style={{ flex: 1, minHeight: '40px', fontSize: '0.85rem', backgroundColor: '#B23B3B' }}
+              >
+                {t.journey.deleteRecordConfirm}
+              </button>
             </div>
           </div>
         </div>
@@ -1266,6 +1558,12 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                         )}
                       </div>
                     )}
+                    <div>
+                      •{' '}
+                      {restoreValidation.healthChecks
+                        ? t.healthChecks.restorePreview(restoreValidation.healthChecks.length)
+                        : t.healthChecks.restoreNotInFile}
+                    </div>
                   </div>
                 </div>
 
@@ -1339,6 +1637,11 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                     <div style={{ fontSize: '0.78rem', color: '#7A2E2E', lineHeight: 1.35 }}>
                       {t.journey.restoreConfirmReplaceWarning}
                     </div>
+                    <div style={{ fontSize: '0.78rem', color: '#7A2E2E', lineHeight: 1.35 }}>
+                      {restoreValidation.healthChecks
+                        ? t.healthChecks.restoreReplaceIncludes(restoreValidation.healthChecks.length)
+                        : t.healthChecks.restoreReplaceKeeps}
+                    </div>
                     <label
                       style={{
                         display: 'flex',
@@ -1389,6 +1692,64 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                   {isRestoring ? 'Processando...' : t.journey.restoreExecuteBtn}
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4: CONFIRMAÇÃO DE DESCARTE DE ANOTAÇÕES NÃO SALVAS */}
+      {isDiscardModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.45)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 120,
+            padding: '20px'
+          }}
+        >
+          <div
+            className="card"
+            style={{
+              width: '100%',
+              maxWidth: '360px',
+              padding: '20px',
+              marginBottom: 0,
+              boxShadow: 'var(--shadow-elevated)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#B23B3B', marginBottom: '8px' }}>
+              <AlertCircle size={20} />
+              <h3 style={{ fontSize: '1.05rem', margin: 0, color: 'var(--text-main)' }}>
+                {t.journey.discardConfirmTitle || 'Descartar anotações?'}
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: 1.45, marginBottom: '16px' }}>
+              {t.journey.discardConfirmMessage || 'Você começou a preencher um novo registro. Se fechar agora, as informações digitadas serão perdidas.'}
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                type="button"
+                onClick={() => setIsDiscardModalOpen(false)}
+                className="btn btn-secondary"
+                style={{ flex: 1, minHeight: '38px', fontSize: '0.82rem' }}
+              >
+                {t.journey.discardConfirmKeepBtn || 'Continuar anotando'}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDiscard}
+                className="btn btn-primary"
+                style={{ flex: 1, minHeight: '38px', fontSize: '0.82rem', backgroundColor: '#B23B3B' }}
+              >
+                {t.journey.discardConfirmDiscardBtn || 'Descartar e fechar'}
+              </button>
             </div>
           </div>
         </div>

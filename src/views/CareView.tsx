@@ -1,49 +1,154 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { UserProfile, JourneyRecord, ActiveTab, ContentItem } from '../types';
 import { getContentCatalog } from '../data/contents';
 import { journeyStorage } from '../services/journeyStorage';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
-import { Baby, Flower2, Milk, Sparkles, BookOpen, Check, ArrowRight, ShieldCheck, Shield, AlertCircle } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
+import { CARE_FULL_TEXT_ENABLED, canShowCareInstructions } from '../config/careContentAvailability';
+import {
+  Baby,
+  Heart,
+  Shield,
+  ShieldCheck,
+  Milk,
+  Sparkles,
+  BookOpen,
+  Check,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  HeartHandshake
+} from 'lucide-react';
 
 interface CareViewProps {
   profile: UserProfile;
   onAddRecord: (record: JourneyRecord) => void;
   onNavigate: (tab: ActiveTab) => void;
+  initialCategory?: string;
 }
 
-export const CareView: React.FC<CareViewProps> = ({ profile, onAddRecord, onNavigate }) => {
+const matchesCategory = (item: ContentItem, category: string) => {
+  if (category === 'all') return true;
+  if (category === 'mom' || category === 'wellbeing') {
+    return item.audience === 'mom' || item.category === 'wellbeing' || item.category === 'mom_care';
+  }
+  if (category === 'baby') {
+    return item.audience === 'baby' || item.category === 'baby_care' || item.category === 'development';
+  }
+  return item.category === category;
+};
+
+export const CareView: React.FC<CareViewProps> = ({
+  profile,
+  onAddRecord,
+  onNavigate,
+  initialCategory
+}) => {
   const { language, t } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
   const [activityNote, setActivityNote] = useState<string>('');
   const [activeModalId, setActiveModalId] = useState<string | null>(null);
 
-  const categories = [
-    { id: 'all', label: t.care.catAll },
-    { id: 'safety_prevention', label: t.care.catSafety, icon: Shield },
-    { id: 'wellbeing', label: t.care.catMom, icon: Flower2 },
-    { id: 'development', label: t.care.catDevelopment, icon: Baby },
-    { id: 'feeding', label: t.care.catFeeding, icon: Milk },
-    { id: 'baby_care', label: t.care.catMonitoring, icon: Sparkles }
-  ];
+  // Controle de artigos expandidos individualmente
+  const [expandedArticles, setExpandedArticles] = useState<Record<string, boolean>>({});
+
+  React.useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategory(initialCategory);
+    }
+  }, [initialCategory]);
+
+  const toggleExpand = (artId: string) => {
+    setExpandedArticles((prev) => ({
+      ...prev,
+      [artId]: !prev[artId]
+    }));
+  };
+
+  // 1. Organização dos Filtros Prioritários: Tudo | Mãe | Bebê | Segurança (adaptado à fase)
+  const filterOptions = useMemo(() => {
+    if (profile.phase === 'pregnancy') {
+      return [
+        { id: 'all', label: t.care.catAll, icon: BookOpen },
+        { id: 'mom', label: language === 'en' ? 'Mother' : 'Mãe & Bem-estar', icon: Heart },
+        { id: 'baby', label: language === 'en' ? 'Baby' : 'Bebê', icon: Baby },
+        { id: 'safety_prevention', label: t.care.catSafety, icon: Shield }
+      ];
+    }
+
+    return [
+      { id: 'all', label: t.care.catAll, icon: BookOpen },
+      { id: 'mom', label: language === 'en' ? 'Mother' : 'Mãe', icon: Heart },
+      { id: 'baby', label: t.care.catBaby || (language === 'en' ? 'Baby' : 'Bebê'), icon: Baby },
+      { id: 'safety_prevention', label: t.care.catSafety, icon: Shield },
+      { id: 'feeding', label: t.care.catFeeding, icon: Milk },
+      { id: 'development', label: t.care.catDevelopment, icon: Sparkles }
+    ];
+  }, [profile.phase, language, t]);
 
   // Catálogo no idioma ativo
   const catalog = getContentCatalog(language);
 
   // Filtra catálogo pela fase da usuária
-  const phaseArticles = catalog.filter((item) => {
-    if (item.phase !== 'both' && item.phase !== profile.phase) return false;
-    if (profile.phase === 'baby') {
-      const min = item.minStageMonths ?? 0;
-      const max = item.maxStageMonths ?? 24;
-      return profile.stageValue >= min && profile.stageValue <= max;
-    }
-    return true;
-  });
+  const phaseArticles = useMemo(() => {
+    return catalog.filter((item) => {
+      if (item.phase !== 'both' && item.phase !== profile.phase) return false;
+      if (profile.phase === 'baby') {
+        const min = item.minStageMonths ?? 0;
+        const max = item.maxStageMonths ?? 24;
+        return profile.stageValue >= min && profile.stageValue <= max;
+      }
+      return true;
+    });
+  }, [catalog, profile.phase, profile.stageValue]);
 
-  const filteredArticles = selectedCategory === 'all'
-    ? phaseArticles
-    : phaseArticles.filter((a) => a.category === selectedCategory);
+  // Filtra artigos pela categoria selecionada
+  const filteredArticles = useMemo(() => {
+    return phaseArticles.filter((item) => matchesCategory(item, selectedCategory));
+  }, [phaseArticles, selectedCategory]);
+
+  // Só mostra filtros que têm orientações na fase atual (evita abrir uma lista vazia)
+  const visibleFilterOptions = useMemo(() => {
+    return filterOptions.filter(
+      (opt) => opt.id === 'all' || phaseArticles.some((item) => matchesCategory(item, opt.id))
+    );
+  }, [filterOptions, phaseArticles]);
+
+  // Carrossel: um cartão por vez, com setas e deslize lateral
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const total = filteredArticles.length;
+
+  // Ao trocar de filtro, volta para o primeiro cartão
+  useEffect(() => {
+    trackRef.current?.scrollTo({ left: 0 });
+    setCurrentIndex(0);
+  }, [selectedCategory]);
+
+  // Distância entre o início de um cartão e o próximo (largura + espaço)
+  const getSlideStep = () => {
+    const track = trackRef.current;
+    const slide = track?.children[0] as HTMLElement | undefined;
+    if (!track || !slide) return 0;
+    return slide.offsetWidth + parseFloat(getComputedStyle(track).columnGap || '0');
+  };
+
+  const handleTrackScroll = () => {
+    const step = getSlideStep();
+    if (!trackRef.current || !step) return;
+    setCurrentIndex(Math.min(total - 1, Math.max(0, Math.round(trackRef.current.scrollLeft / step))));
+  };
+
+  const goToSlide = (index: number) => {
+    const step = getSlideStep();
+    if (!trackRef.current || !step) return;
+    trackRef.current.scrollTo({ left: index * step, behavior: 'smooth' });
+    setCurrentIndex(index);
+  };
 
   const handleOpenNoteModal = (artId: string) => {
     setActiveModalId(artId);
@@ -80,134 +185,231 @@ export const CareView: React.FC<CareViewProps> = ({ profile, onAddRecord, onNavi
 
   return (
     <div className="content-area">
-      <div style={{ marginBottom: '18px' }}>
-        <span className="tag-badge tag-warm" style={{ marginBottom: '6px' }}>
-          {t.care.badge}
-        </span>
-        <h1 style={{ fontSize: '1.45rem', fontWeight: 600, color: 'var(--text-main)' }}>
-          {t.care.title}
-        </h1>
-        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-          {language === 'en'
-            ? `Recommended actions for ${localizedStage}. Once completed, you can log them to your Journey.`
-            : `Ações recomendadas para ${localizedStage}. Ao concluir, você pode salvá-las na sua Jornada.`}
-        </p>
-      </div>
+      {/* Topo padrão da Biblioteca de Cuidados */}
+      <PageHeader
+        kicker={t.care.badge}
+        icon={<HeartHandshake size={13} />}
+        title={CARE_FULL_TEXT_ENABLED ? t.care.title : t.care.titleUnderReview}
+        subtitle={CARE_FULL_TEXT_ENABLED ? t.care.stageSubtitle(localizedStage) : t.care.stageSubtitleUnderReview(localizedStage)}
+      />
 
-      {/* Filtros em Pílulas */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '12px' }}>
-        {categories.map((cat) => {
+      {/* 2. Pílulas de Filtros Prioritárias (Tudo | Mãe | Bebê | Segurança | ...) */}
+      <div
+        className="care-filter-scroll"
+        role="tablist"
+        aria-label={language === 'en' ? 'Filter care categories' : 'Filtrar categorias de cuidados'}
+      >
+        {visibleFilterOptions.map((cat) => {
           const isSelected = selectedCategory === cat.id;
+          const IconComponent = cat.icon;
           return (
             <button
               key={cat.id}
+              role="tab"
+              aria-selected={isSelected}
               onClick={() => setSelectedCategory(cat.id)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: 'var(--radius-full)',
-                border: '1.5px solid var(--border-light)',
-                backgroundColor: isSelected ? 'var(--primary)' : '#FFFFFF',
-                color: isSelected ? '#FFFFFF' : 'var(--text-muted)',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.15s ease'
-              }}
+              className={`care-filter-pill ${isSelected ? 'active' : ''}`}
             >
-              {cat.label}
+              <IconComponent size={14} className="filter-pill-icon" />
+              <span>{cat.label}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Lista de Artigos e Ações */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        {filteredArticles.map((art) => {
-          const isRecordedToday = journeyStorage.hasActivityBeenRecorded(art.id);
-          const isModalOpen = activeModalId === art.id;
+      {/* 3. Carrossel de Cartões Editoriais com Medalhão Circular Sobreposto */}
+      {total > 1 && (
+        <div className="care-carousel-nav">
+          <span className="care-carousel-counter" aria-live="polite">
+            {t.care.carouselCounter
+              .replace('{current}', String(currentIndex + 1))
+              .replace('{total}', String(total))}
+          </span>
+          <div className="care-carousel-arrows">
+            <button
+              type="button"
+              className="care-carousel-arrow"
+              onClick={() => goToSlide(currentIndex - 1)}
+              disabled={currentIndex === 0}
+              aria-label={t.care.carouselPrev}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              className="care-carousel-arrow"
+              onClick={() => goToSlide(currentIndex + 1)}
+              disabled={currentIndex >= total - 1}
+              aria-label={t.care.carouselNext}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+      <div
+        className="care-cards-stack care-carousel-track"
+        ref={trackRef}
+        onScroll={handleTrackScroll}
+        aria-roledescription="carousel"
+      >
+        {filteredArticles.length === 0 ? (
+          <div className="care-empty-state">
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', margin: 0 }}>
+              {language === 'en'
+                ? 'No guidelines found for this category.'
+                : 'Nenhuma orientação encontrada para esta categoria.'}
+            </p>
+          </div>
+        ) : (
+          filteredArticles.map((art, index) => {
+            const isRecordedToday = journeyStorage.hasActivityBeenRecorded(art.id);
+            const isModalOpen = activeModalId === art.id;
+            const isSafetyArticle = art.category === 'safety_prevention';
+            const isExpanded = expandedArticles[art.id] || false;
+            // Sem revisão profissional registrada, a demonstração pública não mostra instruções
+            const showInstructions = canShowCareInstructions(art);
 
-          return (
-            <div key={art.id} className="card" style={{ marginBottom: 0 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                <span className="tag-badge tag-sage" style={{ fontSize: '0.72rem' }}>
-                  {art.categoryLabel}
-                </span>
-                {art.validationStatus === 'verified' && (
-                  <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                    <ShieldCheck size={12} color="var(--sage)" /> {language === 'en' ? 'Official Guideline' : 'Fonte Oficial'}
-                  </span>
-                )}
-                {art.validationStatus === 'pending_review' && (
-                  <span style={{ fontSize: '0.72rem', color: '#99631E', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                    <AlertCircle size={12} color="#99631E" /> {language === 'en' ? 'Under Clinical Review' : 'Em Revisão Clínica'}
-                  </span>
-                )}
-                {art.validationStatus === 'demonstrative' && (
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-soft)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                    {language === 'en' ? 'Demonstrative' : 'Demonstrativo'}
-                  </span>
-                )}
-              </div>
+            // Determina a identidade visual do medalhão: Mãe, Bebê ou Segurança
+            const isMomContent = art.audience === 'mom' || art.category === 'wellbeing' || art.category === 'mom_care';
+            const badgeType = isSafetyArticle ? 'shield' : isMomContent ? 'mom' : 'baby';
 
-              <h2 className="card-title" style={{ fontSize: '1.1rem', marginTop: '4px' }}>
-                {art.title}
-              </h2>
-
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '10px', lineHeight: 1.45 }}>
-                {art.educationalText}
-              </p>
-
-              {art.practicalAction && (
+            return (
+              <article
+                key={art.id}
+                className={`care-editorial-card card-badge-${badgeType}`}
+                aria-roledescription="slide"
+                aria-label={t.care.carouselCounter
+                  .replace('{current}', String(index + 1))
+                  .replace('{total}', String(total))}
+              >
+                {/* 1. Pequeno medalhão circular centralizado sobreposto à borda superior */}
                 <div
-                  style={{
-                    backgroundColor: 'var(--warm-gold-light)',
-                    borderLeft: '3px solid var(--warm-gold)',
-                    padding: '10px 12px',
-                    borderRadius: '6px',
-                    fontSize: '0.85rem',
-                    color: '#65481E',
-                    marginBottom: '12px'
-                  }}
+                  className={`care-medallion-badge medallion-${badgeType}`}
+                  aria-hidden="true"
                 >
-                  <strong>{language === 'en' ? 'Recommended practice:' : 'Prática recomendada:'}</strong> {art.practicalAction}
-                </div>
-              )}
-
-              {/* Botão de Registro com Observação Opcional e Prevenção de Toques Repetidos */}
-              <div style={{ paddingTop: '8px', borderTop: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', color: 'var(--text-soft)', marginBottom: '10px' }}>
-                  <BookOpen size={12} />
-                  <span>{art.source}</span>
+                  {isSafetyArticle ? (
+                    <Shield size={14} color="#C76B50" />
+                  ) : isMomContent ? (
+                    <Heart size={14} color="#C76B50" />
+                  ) : (
+                    <Baby size={14} color="#5B8266" />
+                  )}
                 </div>
 
-                {art.practicalAction && (
-                  <div>
+                {/* Cabeçalho do Cartão: Categoria e Validação */}
+                <div className="care-card-header">
+                  <span className={`tag-badge ${isMomContent ? 'tag-primary' : isSafetyArticle ? 'tag-alert' : 'tag-sage'}`} style={{ fontSize: '0.72rem' }}>
+                    {art.categoryLabel}
+                  </span>
+
+                  {/* Selo de revisão clínica só com registro documentado */}
+                  {art.validationStatus === 'clinically_reviewed' && art.clinicalReview && (
+                    <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                      <ShieldCheck size={13} color="var(--sage)" />
+                      <span>{language === 'en' ? 'Reviewed by a health professional' : 'Revisado por profissional de saúde'}</span>
+                    </span>
+                  )}
+                  {/* Selo só com referência pública identificável; não indica revisão clínica */}
+                  {art.validationStatus === 'source_based' && (
+                    <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                      <ShieldCheck size={13} color="var(--sage)" />
+                      <span>{language === 'en' ? 'Based on official sources' : 'Baseado em fontes oficiais'}</span>
+                    </span>
+                  )}
+                  {art.validationStatus === 'pending_review' && (
+                    <span style={{ fontSize: '0.72rem', color: '#99631E', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                      <AlertCircle size={12} color="#99631E" />
+                      <span>{language === 'en' ? 'Under Review' : 'Em Revisão'}</span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Título Editorial com Tipografia Serena */}
+                <h2 className="care-card-title">
+                  {art.title}
+                </h2>
+
+                {showInstructions ? (
+                  <>
+                    {/* Prática Recomendada SEMPRE Visível em Destaque */}
+                    {art.practicalAction && (
+                      <div className={`care-action-box action-box-${badgeType}`}>
+                        <strong style={{ color: isSafetyArticle ? '#9B3E25' : isMomContent ? '#9B5E46' : '#456D50' }}>
+                          {language === 'en' ? 'Practical Idea: ' : 'Ideia prática: '}
+                        </strong>
+                        <span>{art.practicalAction}</span>
+                      </div>
+                    )}
+
+                    {/* Texto Educativo com Redução de Densidade Textual */}
+                    <div className="care-educational-wrap">
+                      {/* Salvaguarda: Artigos de segurança NÃO são escondidos em acordeom */}
+                      {isSafetyArticle ? (
+                        <p className="care-educational-text full">
+                          {art.educationalText}
+                        </p>
+                      ) : (
+                        <>
+                          <p className="care-educational-text">
+                            {isExpanded || art.educationalText.length <= 120
+                              ? art.educationalText
+                              : `${art.educationalText.slice(0, 120)}...`}
+                          </p>
+
+                          {art.educationalText.length > 120 && (
+                            <button
+                              type="button"
+                              onClick={() => toggleExpand(art.id)}
+                              className="care-expand-btn"
+                              aria-expanded={isExpanded}
+                            >
+                              {isExpanded ? (
+                                <>
+                                  <span>{t.care.collapseBtn || (language === 'en' ? 'Collapse' : 'Recolher')}</span>
+                                  <ChevronUp size={13} />
+                                </>
+                              ) : (
+                                <>
+                                  <span>{t.care.expandBtn || (language === 'en' ? 'Read full guidance' : 'Ler orientação completa')}</span>
+                                  <ChevronDown size={13} />
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="care-review-pending" data-testid="care-review-pending">
+                    <strong>{t.care.reviewPendingTitle}</strong>
+                    <span>{t.care.reviewPendingText}</span>
+                  </div>
+                )}
+
+                {/* Rodapé: Citação da Fonte e Ação de Registro na Jornada */}
+                <div className="care-card-footer">
+                  <div className="care-source-note">
+                    <BookOpen size={12} />
+                    <span title={art.source}>{art.source}</span>
+                  </div>
+
+                  {showInstructions && (
+                  <div className="care-action-container">
                     {!isRecordedToday ? (
                       !isModalOpen ? (
                         <button
+                          type="button"
                           onClick={() => handleOpenNoteModal(art.id)}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            backgroundColor: 'var(--primary-light)',
-                            color: 'var(--primary)',
-                            border: '1px solid var(--primary)',
-                            padding: '8px 12px',
-                            borderRadius: 'var(--radius-sm)',
-                            fontSize: '0.8rem',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
+                          className="care-record-btn"
                         >
                           <Check size={14} />
                           <span>{t.care.doActivityBtn}</span>
                         </button>
                       ) : (
-                        <div style={{ backgroundColor: '#FAF7F2', padding: '12px', borderRadius: 'var(--radius-sm)' }}>
-                          <div style={{ fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-main)' }}>
+                        <div className="care-note-modal-inline">
+                          <div style={{ fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-main)' }}>
                             {t.care.modalDesc}
                           </div>
                           <textarea
@@ -215,34 +417,22 @@ export const CareView: React.FC<CareViewProps> = ({ profile, onAddRecord, onNavi
                             onChange={(e) => setActivityNote(e.target.value)}
                             placeholder={t.care.modalPlaceholder}
                             rows={2}
-                            style={{
-                              width: '100%',
-                              padding: '8px',
-                              borderRadius: '4px',
-                              border: '1px solid var(--border-light)',
-                              fontSize: '0.84rem',
-                              fontFamily: 'inherit',
-                              resize: 'none',
-                              marginBottom: '8px'
-                            }}
+                            className="care-note-textarea"
                           />
                           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                             <button
+                              type="button"
                               onClick={() => setActiveModalId(null)}
-                              style={{
-                                background: 'none',
-                                border: 'none',
-                                fontSize: '0.78rem',
-                                color: 'var(--text-muted)',
-                                cursor: 'pointer'
-                              }}
+                              className="btn btn-secondary"
+                              style={{ padding: '6px 12px', fontSize: '0.78rem', minHeight: '34px' }}
                             >
                               {t.care.modalCancelBtn}
                             </button>
                             <button
+                              type="button"
                               onClick={() => handleConfirmActivity(art)}
                               className="btn btn-primary"
-                              style={{ width: 'auto', minHeight: '36px', padding: '6px 14px', fontSize: '0.8rem' }}
+                              style={{ padding: '6px 14px', fontSize: '0.8rem', minHeight: '34px' }}
                             >
                               {t.care.modalConfirmBtn}
                             </button>
@@ -250,35 +440,31 @@ export const CareView: React.FC<CareViewProps> = ({ profile, onAddRecord, onNavi
                         </div>
                       )
                     ) : (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.78rem', color: 'var(--sage)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                          <Check size={14} /> {t.care.activityDoneBadge}
+                      <div className="care-done-row">
+                        <span className="care-done-badge">
+                          <Check size={14} />
+                          <span>{t.care.activityDoneBadge}</span>
                         </span>
                         <button
+                          type="button"
                           onClick={() => onNavigate('journey')}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--primary)',
-                            fontSize: '0.78rem',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '2px'
-                          }}
+                          className="care-journey-link"
                         >
-                          {language === 'en' ? 'View in Journey' : 'Ver na Jornada'} <ArrowRight size={12} />
+                          <span>{language === 'en' ? 'View in Journey' : 'Ver na Jornada'}</span>
+                          <ArrowRight size={12} />
                         </button>
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                  )}
+                </div>
+              </article>
+            );
+          })
+        )}
       </div>
     </div>
   );
 };
+
+export default CareView;
