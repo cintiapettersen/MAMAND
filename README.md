@@ -17,7 +17,7 @@
 
 | Situação | O que inclui |
 |---|---|
-| **Implementado** | Aplicativo web instalável (PWA) em português e inglês, sem login. Telas Hoje, Cuidados (biblioteca de temas com fonte), Jornada (diário da gestação e do bebê), Exames e triagens (registro feito pela família, sem interpretação de resultados), Rede de apoio, Lista para a maternidade, Meu nascimento e contatos de emergência por país. Backup e restauração em JSON e resumo em texto para levar à consulta. Funciona sem internet. |
+| **Implementado** | Aplicativo web instalável (PWA) em português e inglês, sem login. Telas Hoje, Cuidados (biblioteca de temas com fonte), Jornada (diário da gestação e do bebê, com registro de consultas planejadas ou realizadas, sem interpretação do que foi dito), Exames e triagens (registro feito pela família, sem interpretação de resultados), Rede de apoio, Lista para a maternidade, Meu nascimento e contatos de emergência por país. Backup e restauração em JSON e resumo em texto para levar à consulta. Funciona sem internet. |
 | **Testado internamente** | Testes automatizados (`npm test`) de armazenamento, backup e restauração, modo offline, resumo exportado, estrutura internacional, contatos de emergência e conteúdo desta distribuição. Testes não são validação clínica. |
 | **Pendente de validação** | Revisão profissional de todos os conteúdos de saúde; revisão dos critérios de sinais de alerta; avaliação jurídica dos direitos de uso das fontes; política de privacidade; classificação regulatória. |
 | **Planejado** | Listas educativas de exames por país (só depois de revisão profissional e confirmação de direitos); assistente com IA para o público (só depois das revisões clínica e regulatória); piloto com serviços de atenção primária. |

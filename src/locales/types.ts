@@ -1,4 +1,4 @@
-import { MainNeed, RecordSubject } from '../types';
+import { MainNeed, RecordSubject, AppointmentKind } from '../types';
 
 export interface MemorySuggestionItem {
   id: string;
@@ -54,6 +54,15 @@ export interface TranslationDictionary {
     optionalBabyNamePlaceholder?: string;
     optionalBirthDateLabel?: string;
     optionalDueDateLabel?: string;
+    dateErrors: {
+      birthInvalid: string;
+      birthFuture: string;
+      birthTooOld: string;
+      dueInvalid: string;
+      dueTooFar: string;
+      dueTooLongAgo: string;
+      duePassedHint: string;
+    };
     optionalExactAgeHint?: string;
     step3Title: string;
     step3Subtitle: string;
@@ -197,6 +206,38 @@ export interface TranslationDictionary {
     memorySuggestions: MemorySuggestionItem[];
     babyTags: TagDetailItem[];
     momTags: TagDetailItem[];
+    appointment: {
+      tag: string;
+      panelTitle: string;
+      statusQuestion: string;
+      statusPlanned: string;
+      statusDone: string;
+      kindQuestion: string;
+      kinds: Record<AppointmentKind, string>;
+      plannedDateLabel: string;
+      doneDateLabel: string;
+      questionsPlannedLabel: string;
+      questionsDoneLabel: string;
+      questionsPlaceholder: string;
+      whatHappenedLabel: string;
+      whatHappenedPlaceholder: string;
+      nextStepsLabel: string;
+      nextStepsPlaceholder: string;
+      privacyHint: string;
+      plannedOnlyHint: string;
+      badgePlanned: string;
+      badgeDone: string;
+      dateUnset: string;
+      pastPlannedHint: string;
+      editBtn: string;
+      editTitle: string;
+      editHint: string;
+      saveEditBtn: string;
+      cancelEditBtn: string;
+      doneDateRequired: string;
+      doneDateInFuture: string;
+      editError: string;
+    };
     noteLabel: string;
     noteGeneralPlaceholder: string;
     saveRecordBtn: string;
@@ -627,5 +668,7 @@ export interface TranslationDictionary {
     clearError: string;
     deleteError: string;
     confirmPhaseReset: string;
+    confirmPhaseResetBtn: string;
+    cancelBtn: string;
   };
 }

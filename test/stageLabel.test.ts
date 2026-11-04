@@ -79,3 +79,39 @@ test('Com data de nascimento: acima de 24 meses, a idade exibida não fica presa
   // O motor de recomendações continua usando o limite de 24 meses
   assert.strictEqual(calculateAgeInMonths('2024-08-21', ref), 24);
 });
+
+test('Antes de completar 1 mês: só os dias, sem "(0 meses)"', () => {
+  const ref = new Date(2026, 10, 3); // 03/11/2026
+  assert.strictEqual(formatBabyAgeDetailed('2026-10-04', 'pt-BR', ref), '30 dias de vida');
+  assert.strictEqual(formatBabyAgeDetailed('2026-10-04', 'en', ref), '30 days old');
+  assert.strictEqual(formatBabyAgeDetailed('2026-10-03', 'en', ref), '31 days old (1 month)');
+});
+
+test('Datas do perfil: ano digitado errado, futuro e DPP distante são recusados', async () => {
+  const { validateBirthDate, validateDueDate, formatDueDate, isDueDatePast } = await import('../src/utils/dateUtils.ts');
+  const ref = new Date(2026, 10, 3);
+  assert.strictEqual(validateBirthDate('0202-10-04', ref), 'tooOld');
+  assert.strictEqual(validateBirthDate('2026-11-04', ref), 'future');
+  assert.strictEqual(validateBirthDate('2026-02-30', ref), 'invalid');
+  assert.strictEqual(validateBirthDate('2026-10-04', ref), null);
+  assert.strictEqual(validateBirthDate('', ref), null, 'campo opcional');
+  assert.strictEqual(validateDueDate('2027-12-01', ref), 'tooFar');
+  assert.strictEqual(validateDueDate('2026-09-01', ref), 'tooLongAgo');
+  assert.strictEqual(validateDueDate('2026-10-31', ref), null, 'DPP que passou há poucos dias continua aceita');
+  // DPP que já passou: o cabeçalho diz isso, sem presumir que o bebê nasceu
+  assert.ok(isDueDatePast('2026-10-31', ref));
+  assert.match(formatDueDate('2026-10-31', 'en', ref), /^Past due: Oct 31$/);
+  assert.match(formatDueDate('2026-10-31', 'pt-BR', ref), /^DPP passou: 31 de out$/);
+  assert.match(formatDueDate('2026-12-15', 'en', ref), /^Due: Dec 15$/);
+});
+
+test('Recomeçar a introdução usa modal próprio, no idioma do app', async () => {
+  const fs = await import('node:fs');
+  const app = fs.readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
+  assert.ok(!/window\.confirm/.test(app), 'sem o confirm() do navegador');
+  assert.match(app, /isResetConfirmOpen/);
+  const { en } = await import('../src/locales/en.ts');
+  assert.strictEqual(en.common.confirmPhaseResetBtn, 'Restart');
+  assert.strictEqual(en.onboarding.startBtn, 'Start my journey');
+  assert.match(en.region.nameLabel, /not the baby's/);
+});

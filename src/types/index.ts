@@ -61,11 +61,27 @@ export interface UserProfile {
 
 export type RecordSubject = 'baby' | 'mom' | 'memory';
 
+// Consulta de saúde registrada na Jornada (antes ou depois de acontecer). Só anotações da
+// família: o app não interpreta o conteúdo. Veja src/domain/healthAppointment.ts.
+export type AppointmentKind = 'prenatal' | 'postnatal' | 'baby_checkup' | 'vaccination' | 'specialist' | 'other';
+export type AppointmentStatus = 'planned' | 'done';
+
+export interface HealthAppointment {
+  status: AppointmentStatus;
+  kind?: AppointmentKind;
+  dateUnset?: boolean; // planejada sem data: eventDate é o dia em que foi registrada
+  questions?: string;
+  whatHappened?: string;
+  nextSteps?: string;
+  updatedAt?: string; // ISO, última edição
+}
+
 export interface JourneyRecord {
   id: string;
   subject: RecordSubject;
   tags: string[];
   note?: string;
+  appointment?: HealthAppointment;
   sourceActivityTitle?: string;
   contentId?: string; // Evita registros duplicados de atividades de Cuidados
   timestamp: string; // ISO string do momento em que o registro foi criado

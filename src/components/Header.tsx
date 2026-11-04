@@ -4,7 +4,7 @@ import { Pencil } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
 import { getLocalizedStageLabel } from '../locales';
-import { formatBabyAgeDetailed, formatDueDate } from '../utils/dateUtils';
+import { formatBabyAgeDetailed, formatDueDate, isDueDatePast } from '../utils/dateUtils';
 
 interface HeaderProps {
   profile: UserProfile | null;
@@ -32,6 +32,8 @@ export const Header: React.FC<HeaderProps> = ({ profile, onResetProfile, onEditP
     // Gestação
     const stageText = getLocalizedStageLabel(profile, language, true);
     if (profile.dueDate) {
+      // DPP que já passou: só a data, sem a etapa, para caber sem corte no celular
+      if (isDueDatePast(profile.dueDate)) return `♡ ${formatDueDate(profile.dueDate, language)}`;
       return `♡ ${stageText} • ${formatDueDate(profile.dueDate, language)}`;
     }
     return `♡ ${stageText}`;

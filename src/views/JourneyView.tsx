@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { UserProfile, JourneyRecord, RecordSubject } from '../types';
+import { UserProfile, JourneyRecord, RecordSubject, HealthAppointment } from '../types';
 import { indexedDbService } from '../services/indexedDbService';
 import { birthRecordStorage } from '../services/birthRecordStorage';
 import { useLanguage } from '../context/LanguageContext';
 import { PageHeader } from '../components/PageHeader';
-import { displayTag } from '../domain/journeyTags';
-import { formatRecordDate } from '../domain/recordDate';
+import { displayTag, sameTag } from '../domain/journeyTags';
+import { formatRecordDate, formatEventDay, localDate } from '../domain/recordDate';
+import {
+  appointmentEventDate,
+  buildAppointment,
+  draftFromRecord,
+  emptyAppointmentDraft,
+  isPastPlanned,
+  type AppointmentDraft
+} from '../domain/healthAppointment';
+import { AppointmentFields } from '../components/AppointmentFields';
 import { buildJourneyTextSummary, journeySummaryFilename } from '../domain/journeySummary';
 import { getLocalizedStageLabel } from '../locales';
 import {
@@ -45,7 +54,8 @@ import {
   HeartHandshake,
   Award,
   Compass,
-  Music
+  Music,
+  Pencil
 } from 'lucide-react';
 import { BackupValidationResult } from '../services/indexedDbService';
 
@@ -55,6 +65,8 @@ interface JourneyViewProps {
   onAddRecord: (record: JourneyRecord) => void;
   onClearRecords: () => void;
   onDeleteRecord?: (id: string) => void | Promise<void>;
+  // Edita só a consulta de um registro existente; devolve false se nada foi gravado
+  onUpdateAppointment?: (id: string, appointment: HealthAppointment, eventDate: string) => Promise<boolean>;
   onRestoreRecords?: (updated: JourneyRecord[]) => void;
   storageError?: string | null;
 }
@@ -71,6 +83,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   onAddRecord,
   onClearRecords,
   onDeleteRecord,
+  onUpdateAppointment,
   onRestoreRecords,
   storageError
 }) => {
@@ -84,6 +97,17 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   const [note, setNote] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Consulta de saúde: marcação própria, com campos que abrem ao marcá-la
+  const appt = t.journey.appointment;
+  const [apptDraft, setApptDraft] = useState<AppointmentDraft>(emptyAppointmentDraft);
+  const apptSelected = selectedTags.includes(appt.tag);
+  const apptPlanned = apptSelected && apptDraft.status === 'planned';
+  // Edição de uma consulta existente (só ela é regravada)
+  const [recordToEdit, setRecordToEdit] = useState<JourneyRecord | null>(null);
+  const [editDraft, setEditDraft] = useState<AppointmentDraft>(emptyAppointmentDraft);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   // Filtros e Busca na Linha do Tempo
   const [activeFilterSubject, setActiveFilterSubject] = useState<'all' | RecordSubject>('all');
@@ -139,6 +163,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   const handleConfirmDiscard = () => {
     setIsDiscardModalOpen(false);
     setSelectedTags([]);
+    setApptDraft(emptyAppointmentDraft());
     setSelectedMemoryPrompt(null);
     setNote('');
     setValidationError(null);
@@ -263,9 +288,52 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
 
   const handleToggleTag = (tag: string) => {
     setValidationError(null);
+    // Uma consulta planejada fica num registro só dela
+    if (apptPlanned && tag !== appt.tag) return;
+    if (tag === appt.tag && !apptSelected) setApptDraft(emptyAppointmentDraft());
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
+  };
+
+  const handleApptDraftChange = (next: AppointmentDraft) => {
+    if (next.status === 'planned') setSelectedTags([appt.tag]);
+    setApptDraft(next);
+  };
+
+  // Data mostrada no card. Consultas mostram só o dia, porque a hora do registro não é a da
+  // consulta; uma planejada mostra o dia previsto (ou "a definir").
+  const recordDateText = (rec: JourneyRecord) => {
+    if (!rec.appointment) return formatRecordDate(rec, language, dateWords);
+    if (rec.appointment.status === 'planned') {
+      return rec.appointment.dateUnset ? appt.dateUnset : formatEventDay(rec.eventDate, language);
+    }
+    return formatRecordDate({ ...rec, timestamp: '' }, language, dateWords);
+  };
+
+  const openEditAppointment = (rec: JourneyRecord) => {
+    setEditDraft(draftFromRecord(rec));
+    setEditError(null);
+    setRecordToEdit(rec);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!recordToEdit || !onUpdateAppointment) return;
+    const when = appointmentEventDate(editDraft, new Date(recordToEdit.timestamp));
+    if ('error' in when) {
+      setEditError(when.error === 'doneDateRequired' ? appt.doneDateRequired : appt.doneDateInFuture);
+      return;
+    }
+    setIsSavingEdit(true);
+    const ok = await onUpdateAppointment(recordToEdit.id, buildAppointment(editDraft), when.eventDate);
+    setIsSavingEdit(false);
+    if (!ok) {
+      setEditError(appt.editError);
+      return;
+    }
+    setRecordToEdit(null);
+    const [y, m] = when.eventDate.split('-').map(Number);
+    setCurrentDate(new Date(y, m - 1, 1));
   };
 
   const calculateTargetDate = (): { isoDate: string; label: string } => {
@@ -328,18 +396,31 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
       }
     }
 
-    const { isoDate, label: dateLabel } = calculateTargetDate();
+    const now = new Date();
+    let { isoDate, label: dateLabel } = calculateTargetDate();
+    const withAppointment = subject !== 'memory' && apptSelected;
+    if (withAppointment && apptPlanned) {
+      // Planejada: a data é a da consulta (opcional), não a do "Quando aconteceu?"
+      const when = appointmentEventDate(apptDraft, now);
+      if ('eventDate' in when) {
+        isoDate = when.eventDate;
+        dateLabel = when.eventDate;
+      }
+    }
 
     const tagsToSave = subject === 'memory'
       ? (selectedMemoryPrompt ? [selectedMemoryPrompt.label] : [language === 'en' ? 'Affective Memory' : 'Memória Afetiva'])
-      : selectedTags;
+      : apptPlanned
+        ? [appt.tag]
+        : selectedTags;
 
     const newRecord: JourneyRecord = {
       id: `rec-${Date.now()}`,
       subject,
       tags: tagsToSave,
       note: note.trim() || undefined,
-      timestamp: new Date().toISOString(),
+      ...(withAppointment ? { appointment: buildAppointment(apptDraft, now) } : {}),
+      timestamp: now.toISOString(),
       eventDate: isoDate,
       dateLabel
     };
@@ -347,6 +428,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
     onAddRecord(newRecord);
     setSaveSuccess(true);
     setSelectedTags([]);
+    setApptDraft(emptyAppointmentDraft());
     setSelectedMemoryPrompt(null);
     setNote('');
 
@@ -514,7 +596,8 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
             </button>
           </div>
 
-          {/* 1. QUANDO ACONTECEU? (Seletor de Datas Anteriores) */}
+          {/* 1. QUANDO ACONTECEU? (Seletor de Datas Anteriores). Uma consulta planejada tem a própria data. */}
+          {!apptPlanned && (
           <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid var(--border-light)' }}>
             <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px' }}>
               {t.journey.dateSectionTitle}
@@ -581,6 +664,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
               )}
             </div>
           </div>
+          )}
 
           <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '10px' }}>
             {t.journey.subjectSectionTitle}
@@ -595,6 +679,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                 onClick={() => {
                   setSubject(opt.id);
                   setSelectedTags([]);
+                  setApptDraft(emptyAppointmentDraft());
                   setSelectedMemoryPrompt(null);
                   setValidationError(null);
                 }}
@@ -630,6 +715,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                       type="button"
                       role="checkbox"
                       aria-checked={isSelected}
+                      disabled={apptPlanned}
                       onClick={() => handleToggleTag(item.tag)}
                       className={`journey-option-card ${selectedClass}`}
                     >
@@ -650,7 +736,37 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                     </button>
                   );
                 })}
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={apptSelected}
+                  onClick={() => handleToggleTag(appt.tag)}
+                  className={`journey-option-card ${apptSelected ? (subject === 'baby' ? 'selected-baby' : 'selected-mom') : ''}`}
+                  data-testid="appointment-option"
+                >
+                  <div className="journey-option-top-row">
+                    <div className="journey-option-icon-badge">
+                      <Stethoscope size={15} />
+                    </div>
+                    <div className="journey-option-check-circle">
+                      {apptSelected && <Check size={12} strokeWidth={3} />}
+                    </div>
+                  </div>
+                  <div className="journey-option-label">{appt.tag}</div>
+                </button>
               </div>
+
+              {apptSelected && (
+                <AppointmentFields
+                  subject={subject}
+                  value={apptDraft}
+                  onChange={handleApptDraftChange}
+                  showDoneDate={false}
+                  today={localDate(new Date())}
+                  idPrefix="new-appt"
+                  showPlannedOnlyHint
+                />
+              )}
 
               {/* Pergunta inspiradora de apoio se uma opção estiver marcada */}
               {activeDetailConfig && (
@@ -963,11 +1079,19 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
 
                 return (
                   <div key={rec.id} className="card" style={{ marginBottom: 0, padding: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '4px 6px', marginBottom: '8px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span className={`tag-badge ${isBaby ? 'tag-primary' : isMom ? 'tag-sage' : 'tag-warm'}`}>
                           {isBaby ? t.journey.babyFilter : isMom ? t.journey.momFilter : t.journey.memoryFilter}
                         </span>
+                        {rec.appointment && (
+                          <span
+                            className={`journey-appt-status ${rec.appointment.status === 'planned' ? 'is-planned' : 'is-done'}`}
+                            data-testid="appointment-status"
+                          >
+                            {rec.appointment.status === 'planned' ? appt.badgePlanned : appt.badgeDone}
+                          </span>
+                        )}
                         {rec.sourceActivityTitle && (
                           <span className="tag-badge tag-warm" style={{ fontSize: '0.7rem' }}>
                             <Sparkles size={11} /> {language === 'en' ? 'Practiced Care' : 'Cuidado Praticado'}
@@ -976,8 +1100,20 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                       </div>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-soft)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                          <Clock size={12} /> {formatRecordDate(rec, language, dateWords)}
+                          <Clock size={12} /> {recordDateText(rec)}
                         </span>
+                        {rec.appointment && onUpdateAppointment && (
+                          <button
+                            type="button"
+                            className="journey-record-delete journey-record-edit"
+                            onClick={() => openEditAppointment(rec)}
+                            aria-label={appt.editBtn}
+                            title={appt.editBtn}
+                            data-testid="appointment-edit"
+                          >
+                            <Pencil size={14} />
+                          </button>
+                        )}
                         {onDeleteRecord && (
                           <button
                             type="button"
@@ -1009,6 +1145,35 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                             ✓ {displayTag(tg, language)}
                           </span>
                         ))}
+                      </div>
+                    )}
+
+                    {rec.appointment && (
+                      <div className="journey-appt-summary" data-testid="appointment-summary">
+                        {rec.appointment.kind && (
+                          <p className="journey-appt-kind">{appt.kinds[rec.appointment.kind]}</p>
+                        )}
+                        {rec.appointment.questions && (
+                          <div>
+                            <span className="journey-appt-label">
+                              {rec.appointment.status === 'planned' ? appt.questionsPlannedLabel : appt.questionsDoneLabel}
+                            </span>
+                            <p>{rec.appointment.questions}</p>
+                          </div>
+                        )}
+                        {rec.appointment.whatHappened && (
+                          <div>
+                            <span className="journey-appt-label">{appt.whatHappenedLabel}</span>
+                            <p>{rec.appointment.whatHappened}</p>
+                          </div>
+                        )}
+                        {rec.appointment.nextSteps && (
+                          <div>
+                            <span className="journey-appt-label">{appt.nextStepsLabel}</span>
+                            <p>{rec.appointment.nextSteps}</p>
+                          </div>
+                        )}
+                        {isPastPlanned(rec) && <p className="journey-appt-hint">{appt.pastPlannedHint}</p>}
                       </div>
                     )}
 
@@ -1287,13 +1452,58 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         </div>
       )}
 
+      {/* Edição de uma consulta: só este registro é regravado */}
+      {recordToEdit && (
+        <div className="journey-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="editAppointmentTitle">
+          <div className="card journey-confirm-card journey-appt-edit-card">
+            <h3 id="editAppointmentTitle" style={{ fontSize: '1.05rem', margin: '0 0 4px' }}>{appt.editTitle}</h3>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0 0 10px' }}>{appt.editHint}</p>
+            <AppointmentFields
+              subject={recordToEdit.subject}
+              value={editDraft}
+              onChange={(next) => {
+                setEditDraft(next);
+                setEditError(null);
+              }}
+              showDoneDate
+              today={localDate(new Date())}
+              idPrefix="edit-appt"
+              allowPlanned={recordToEdit.tags.every((tg) => sameTag(tg, appt.tag))}
+            />
+            {editError && (
+              <p role="alert" style={{ fontSize: '0.8rem', color: '#B23B3B', margin: '8px 0 0' }}>{editError}</p>
+            )}
+            <div style={{ display: 'flex', gap: '10px', marginTop: '14px' }}>
+              <button
+                type="button"
+                onClick={() => setRecordToEdit(null)}
+                className="btn btn-secondary"
+                style={{ flex: 1, minHeight: '40px', fontSize: '0.85rem' }}
+              >
+                {appt.cancelEditBtn}
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveEdit}
+                disabled={isSavingEdit}
+                className="btn btn-primary"
+                style={{ flex: 1, minHeight: '40px', fontSize: '0.85rem' }}
+                data-testid="appointment-edit-save"
+              >
+                {appt.saveEditBtn}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Confirmação da exclusão de um único registro */}
       {recordToDelete && (
         <div className="journey-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="deleteRecordTitle">
           <div className="card journey-confirm-card">
             <h3 id="deleteRecordTitle" style={{ fontSize: '1.05rem', margin: '0 0 8px' }}>{t.journey.deleteRecordTitle}</h3>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', lineHeight: 1.45, margin: '0 0 8px' }}>
-              {formatRecordDate(recordToDelete, language, dateWords)}
+              {recordDateText(recordToDelete)}
               {recordToDelete.tags.length > 0 ? ` · ${recordToDelete.tags.map((tg) => displayTag(tg, language)).join(', ')}` : ''}
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.45, margin: '0 0 16px' }}>{t.journey.deleteRecordText}</p>

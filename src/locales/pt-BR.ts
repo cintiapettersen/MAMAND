@@ -46,6 +46,15 @@ export const ptBR: TranslationDictionary = {
     optionalBabyNamePlaceholder: 'Como podemos chamar o bebê?',
     optionalBirthDateLabel: 'Data de nascimento (opcional)',
     optionalDueDateLabel: 'Data prevista do parto (DPP, opcional)',
+    dateErrors: {
+      birthInvalid: 'Confira a data de nascimento.',
+      birthFuture: 'A data de nascimento não pode ser no futuro.',
+      birthTooOld: 'Confira o ano: a data de nascimento precisa estar nos últimos 5 anos.',
+      dueInvalid: 'Confira a data prevista do parto.',
+      dueTooFar: 'Confira a data: a data prevista do parto fica no máximo 10 meses à frente.',
+      dueTooLongAgo: 'Essa data prevista passou há mais de 6 semanas. Se o bebê já nasceu, escolha "Meu bebê já nasceu" acima.',
+      duePassedHint: 'A data prevista já passou. Se o bebê já nasceu, escolha "Meu bebê já nasceu" acima para registrar o nascimento.'
+    },
     optionalExactAgeHint: 'Calcula automaticamente a idade exata e os dias de vida',
     step3Title: 'O que mais precisa de atenção hoje?',
     step3Subtitle: 'Você pode mudar isso a qualquer momento. Suas orientações diárias serão personalizadas com base nesta escolha.',
@@ -73,7 +82,7 @@ export const ptBR: TranslationDictionary = {
     },
     nextBtn: 'Continuar',
     backBtn: 'Voltar',
-    startBtn: 'Começar com calma'
+    startBtn: 'Começar minha jornada'
   },
   today: {
     badge: 'Hoje com você',
@@ -265,11 +274,6 @@ export const ptBR: TranslationDictionary = {
         placeholder: 'Ex: Tentou segurar o brinquedo com as duas mãozinhas...'
       },
       {
-        tag: 'Teve consulta ou vacina',
-        question: 'Como foi a consulta ou a vacina?',
-        placeholder: 'Ex: Consulta de rotina, vacinas dos 2 meses, orientações do pediatra...'
-      },
-      {
         tag: 'Apresentou algum sintoma',
         question: 'Qual sintoma você notou com atenção?',
         placeholder: 'Ex: Febre baixa após vacina, nariz com secreção transparente...',
@@ -309,6 +313,45 @@ export const ptBR: TranslationDictionary = {
         placeholder: 'Ex: Sinto menos dores nas costas hoje...'
       }
     ],
+    appointment: {
+      tag: 'Consulta de saúde',
+      panelTitle: 'Consulta de saúde',
+      statusQuestion: 'Já aconteceu ou está planejada?',
+      statusPlanned: 'Está planejada',
+      statusDone: 'Já aconteceu',
+      kindQuestion: 'Que tipo de consulta? (opcional)',
+      kinds: {
+        prenatal: 'Pré-natal',
+        postnatal: 'Pós-parto',
+        baby_checkup: 'Acompanhamento do bebê',
+        vaccination: 'Vacinação',
+        specialist: 'Especialista',
+        other: 'Outra'
+      },
+      plannedDateLabel: 'Quando vai ser? (opcional)',
+      doneDateLabel: 'Quando aconteceu?',
+      questionsPlannedLabel: 'Perguntas que quero fazer',
+      questionsDoneLabel: 'Perguntas que levei',
+      questionsPlaceholder: 'Ex.: É normal sentir azia à noite?',
+      whatHappenedLabel: 'O que aconteceu ou o que me explicaram',
+      whatHappenedPlaceholder: 'Ex.: Mediram a pressão e conversamos sobre o sono',
+      nextStepsLabel: 'Próximos passos',
+      nextStepsPlaceholder: 'Ex.: Voltar em 4 semanas, marcar exame de sangue',
+      privacyHint: 'Só para a sua organização. O app não interpreta o que foi dito na consulta.',
+      plannedOnlyHint: 'Uma consulta planejada fica num registro só dela. Para guardar outros momentos de hoje, crie outro registro.',
+      badgePlanned: 'Planejada',
+      badgeDone: 'Realizada',
+      dateUnset: 'Data a definir',
+      pastPlannedHint: 'Se a consulta já aconteceu, você pode atualizar este registro.',
+      editBtn: 'Editar consulta',
+      editTitle: 'Editar consulta',
+      editHint: 'Só esta consulta será alterada.',
+      saveEditBtn: 'Salvar alterações',
+      cancelEditBtn: 'Cancelar',
+      doneDateRequired: 'Escolha quando a consulta aconteceu.',
+      doneDateInFuture: 'Uma consulta que já aconteceu não pode ter data no futuro.',
+      editError: 'Não foi possível salvar as alterações. Nenhum registro foi alterado.'
+    },
     noteLabel: 'Seu relato:',
     noteGeneralPlaceholder: 'Escreva um breve relato sobre esse momento...',
     saveRecordBtn: 'Salvar Registro',
@@ -400,7 +443,7 @@ export const ptBR: TranslationDictionary = {
     birthTimeLabel: 'Horário de nascimento',
     birthTimePlaceholder: 'Ex: 08:42',
     weightLabel: 'Peso ao nascer (gramas)',
-    weightPlaceholder: 'Ex: 3420 ou 3.420 g',
+    weightPlaceholder: 'Ex.: 3420 g',
     lengthLabel: 'Comprimento (cm)',
     lengthPlaceholder: 'Ex: 51 cm',
     headCircumferenceLabel: 'Perímetro cefálico (cm)',
@@ -747,7 +790,7 @@ export const ptBR: TranslationDictionary = {
     careCountryLabel: 'País do acompanhamento de saúde (opcional)',
     careCountryHelp: 'Onde você faz o pré-natal ou as consultas do bebê. Fica salvo só neste aparelho e não muda os números de emergência.',
     careCountryNone: 'Prefiro não informar',
-    nameLabel: 'Como podemos te chamar? (opcional)',
+    nameLabel: 'Seu nome, não o do bebê (opcional)',
     namePlaceholder: 'Seu nome ou apelido',
     countryLabel: 'País onde você está',
     countryHelp: 'Usamos só para mostrar os números de emergência certos. Fica salvo apenas neste aparelho.',
@@ -769,6 +812,8 @@ export const ptBR: TranslationDictionary = {
     saveError: 'Não foi possível gravar no armazenamento do aparelho.',
     clearError: 'Erro ao apagar registros locais.',
     deleteError: 'Não foi possível excluir o registro.',
-    confirmPhaseReset: 'Recomeçar a introdução? Você vai responder as perguntas iniciais de novo. Seus registros da Jornada continuam salvos.'
+    confirmPhaseReset: 'Você vai responder as perguntas iniciais de novo. Seus registros da Jornada continuam salvos.',
+    confirmPhaseResetBtn: 'Recomeçar',
+    cancelBtn: 'Cancelar'
   }
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserProfile, ActiveTab, JourneyRecord } from './types';
+import { UserProfile, ActiveTab, JourneyRecord, HealthAppointment } from './types';
 import { profileStorage } from './services/profileStorage';
 import { indexedDbService } from './services/indexedDbService';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
@@ -16,6 +16,7 @@ import { SupportNetworkView } from './components/SupportNetworkView';
 import { SelfCareView } from './components/SelfCareView';
 import { MaternityChecklistView } from './components/MaternityChecklistView';
 import { HealthChecksView } from './components/HealthChecksView';
+import { SplashScreen } from './components/SplashScreen';
 
 const MainApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -25,6 +26,8 @@ const MainApp: React.FC = () => {
   const [records, setRecords] = useState<JourneyRecord[]>([]);
   const [storageError, setStorageError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  // Confirmação própria para recomeçar a introdução (no idioma do app, sem o confirm() do navegador)
+  const [isResetConfirmOpen, setIsResetConfirmOpen] = useState<boolean>(false);
   const [isBirthRecordOpen, setIsBirthRecordOpen] = useState<boolean>(false);
   const [isSupportNetworkOpen, setIsSupportNetworkOpen] = useState<boolean>(false);
   const [isSelfCareOpen, setIsSelfCareOpen] = useState<boolean>(false);
@@ -65,11 +68,12 @@ const MainApp: React.FC = () => {
     setActiveTab('today');
   };
 
-  const handleResetProfile = () => {
-    if (window.confirm(t.common.confirmPhaseReset)) {
-      profileStorage.clearProfile();
-      setProfile(null);
-    }
+  const handleResetProfile = () => setIsResetConfirmOpen(true);
+
+  const handleConfirmReset = () => {
+    setIsResetConfirmOpen(false);
+    profileStorage.clearProfile();
+    setProfile(null);
   };
 
   const handleAddRecord = async (newRecord: JourneyRecord) => {
@@ -89,6 +93,17 @@ const MainApp: React.FC = () => {
     } catch (err) {
       console.error('Erro ao excluir registro no IndexedDB:', err);
       alert(t.common.deleteError);
+    }
+  };
+
+  const handleUpdateAppointment = async (id: string, appointment: HealthAppointment, eventDate: string) => {
+    try {
+      const updated = await indexedDbService.updateAppointment(id, appointment, eventDate);
+      setRecords(updated);
+      return true;
+    } catch (err) {
+      console.error('Erro ao editar consulta no IndexedDB:', err);
+      return false;
     }
   };
 
@@ -143,6 +158,35 @@ const MainApp: React.FC = () => {
           }}
           onReset={handleResetProfile}
         />
+      )}
+
+      {isResetConfirmOpen && (
+        <div className="journey-confirm-overlay" role="alertdialog" aria-modal="true" aria-labelledby="resetConfirmTitle" style={{ zIndex: 1100 }}>
+          <div className="card journey-confirm-card">
+            <h3 id="resetConfirmTitle" style={{ fontSize: '1.05rem', margin: '0 0 8px' }}>{t.region.restartOnboarding}</h3>
+            <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', lineHeight: 1.45, margin: '0 0 16px' }}>{t.common.confirmPhaseReset}</p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setIsResetConfirmOpen(false)}
+                className="btn btn-secondary"
+                style={{ flex: 1, minHeight: '40px', fontSize: '0.85rem' }}
+                autoFocus
+              >
+                {t.common.cancelBtn}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmReset}
+                className="btn btn-primary"
+                style={{ flex: 1, minHeight: '40px', fontSize: '0.85rem' }}
+                data-testid="reset-confirm"
+              >
+                {t.common.confirmPhaseResetBtn}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {!profile ? (
@@ -200,6 +244,7 @@ const MainApp: React.FC = () => {
               onAddRecord={handleAddRecord}
               onClearRecords={handleClearRecords}
               onDeleteRecord={handleDeleteRecord}
+              onUpdateAppointment={handleUpdateAppointment}
               onRestoreRecords={(updated) => setRecords(updated)}
               storageError={storageError}
             />
@@ -235,6 +280,7 @@ export const App: React.FC = () => {
   return (
     <LanguageProvider>
       <MainApp />
+      <SplashScreen />
     </LanguageProvider>
   );
 };

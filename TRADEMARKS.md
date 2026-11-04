@@ -14,7 +14,8 @@ especialmente uma com conteúdo de saúde alterado, com o MAMAND.
 - O nome **MAMAND™**.
 - O logotipo: a palavra "MAMAND" na composição visual usada no app.
 - O símbolo do app: a figura de mãe e bebê formando um coração, em traço
-  rosa claro sobre fundo terracota (ícones em `public/`).
+  rosa claro sobre fundo terracota (ícones em `public/` e o desenho vetorial
+  da tela de abertura em `src/components/SplashScreen.tsx`).
 
 **Titular:** Cintia Pettersen, pessoa física.
 
@@ -29,8 +30,8 @@ Os arquivos do repositório podem ser usados, copiados, modificados e
 redistribuídos nos termos da Apache License 2.0. Para os textos confirmados
 em `CONTENT.md`, valem os termos da CC BY 4.0.
 
-> **⚠️ Pendente: decisão da titular.** Os ícones e o símbolo em `public/`
-> estão no repositório e, sem outra indicação, seguem a Apache 2.0. Ainda não
+> **⚠️ Pendente: decisão da titular.** Os ícones e o símbolo em `public/` e
+> em `src/components/SplashScreen.tsx` estão no repositório e, sem outra indicação, seguem a Apache 2.0. Ainda não
 > foi decidido se os arquivos do logotipo ficarão fora dessa licença. Em
 > qualquer caso, a licença dos arquivos não concede o uso do nome ou do
 > logotipo como marca (abaixo).
@@ -72,8 +73,9 @@ Precisa de autorização prévia, por escrito:
 
 ## Ao publicar um fork modificado
 
-1. Escolha outro nome. Troque os ícones em `public/` e o
-   `manifest.webmanifest`, se eles tiverem o logotipo.
+1. Escolha outro nome. Troque os ícones em `public/`, o
+   `manifest.webmanifest` e o desenho da tela de abertura
+   (`src/components/SplashScreen.tsx`), se eles tiverem o logotipo.
 2. Troque o nome nos textos de interface (`src/locales/`) e no `index.html`.
 3. Mantenha `LICENSE`, `NOTICE` e os créditos de `CONTENT.md` (item 2).
 

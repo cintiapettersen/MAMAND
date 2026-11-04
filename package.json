@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "test": "node --test --test-timeout=60000 test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/contentClassification.test.ts test/stageLabel.test.ts test/internationalStructure.test.ts test/healthChecksStorage.test.ts test/journeySummary.test.ts test/publicDemo.test.ts test/publicDistribution.test.ts test/uxRevision.test.ts test/recordDate.test.ts"
+    "test": "node --test --test-timeout=60000 test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/contentClassification.test.ts test/stageLabel.test.ts test/internationalStructure.test.ts test/healthChecksStorage.test.ts test/journeySummary.test.ts test/publicDemo.test.ts test/publicDistribution.test.ts test/uxRevision.test.ts test/recordDate.test.ts test/healthAppointment.test.ts"
   },
   "engines": {
     "node": ">=20"

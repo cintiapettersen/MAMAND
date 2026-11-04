@@ -26,6 +26,10 @@ const TAG_PAIRS: TagPair[] = [
   { pt: 'Bebê: Curioso', en: 'Baby: Curious' },
   { pt: 'Bebê: Sonolento', en: 'Baby: Sleepy' },
   { pt: 'Bebê: Pedindo colo', en: 'Baby: Needing comfort' },
+  // Consulta de saúde (Mãe e Bebê)
+  { pt: ptBR.journey.appointment.tag, en: en.journey.appointment.tag },
+  // Marcação antiga do bebê, substituída por "Consulta de saúde"; registros antigos continuam iguais
+  { pt: 'Teve consulta ou vacina', en: 'Had a checkup or vaccine' },
 ];
 
 // Marcações do formulário "Novo registro": mesma posição nas listas pt e en

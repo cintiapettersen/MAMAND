@@ -3,7 +3,15 @@ import { UserProfile, UserPhase, MainNeed } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
 import { Baby, Heart, X, Check, Sparkles, Trash2 } from 'lucide-react';
-import { calculateAgeInMonths, formatBabyAgeDetailed } from '../utils/dateUtils';
+import {
+  calculateAgeInMonths,
+  formatBabyAgeDetailed,
+  birthDateBounds,
+  dueDateBounds,
+  validateBirthDate,
+  validateDueDate,
+  isDueDatePast
+} from '../utils/dateUtils';
 import { NameField, CountryField, CareCountryField } from './ProfileFields';
 
 interface ProfileEditModalProps {
@@ -47,9 +55,19 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
+  const de = t.onboarding.dateErrors;
+  const birthError = phase === 'baby' ? validateBirthDate(birthDate) : null;
+  const dueError = phase === 'pregnancy' ? validateDueDate(dueDate) : null;
+  const birthErrorText = birthError === 'future' ? de.birthFuture : birthError === 'tooOld' ? de.birthTooOld : birthError ? de.birthInvalid : null;
+  const dueErrorText = dueError === 'tooFar' ? de.dueTooFar : dueError === 'tooLongAgo' ? de.dueTooLongAgo : dueError ? de.dueInvalid : null;
+  const hasDateError = !!(birthErrorText || dueErrorText);
+  const birthLimits = birthDateBounds();
+  const dueLimits = dueDateBounds();
+
   const handleBirthDateChange = (dateVal: string) => {
     setBirthDate(dateVal);
-    if (dateVal) {
+    // A etapa só é ajustada a partir de uma data plausível (um ano digitado errado não vira "1 a 2 anos")
+    if (dateVal && !validateBirthDate(dateVal)) {
       const months = calculateAgeInMonths(dateVal);
       if (months === 0) setStageValue(0);
       else if (months <= 3) setStageValue(2);
@@ -61,6 +79,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (hasDateError) return;
     const updated: UserProfile = {
       ...profile,
       phase,
@@ -217,6 +236,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   type="date"
                   value={birthDate}
                   onChange={(e) => handleBirthDateChange(e.target.value)}
+                    min={birthLimits.min}
+                    max={birthLimits.max}
+                    aria-invalid={!!birthErrorText}
+                    aria-describedby={birthErrorText ? 'editBirthDateError' : undefined}
                   style={{
                     width: '100%',
                     padding: '8px 12px',
@@ -226,7 +249,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     backgroundColor: 'var(--bg-main)'
                   }}
                 />
-                {birthDate && (
+                {birthErrorText && (
+                  <p id="editBirthDateError" role="alert" className="profile-date-error">{birthErrorText}</p>
+                )}
+                {birthDate && !birthErrorText && (
                   <div
                     style={{
                       marginTop: '6px',
@@ -263,6 +289,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
+                  min={dueLimits.min}
+                  max={dueLimits.max}
+                  aria-invalid={!!dueErrorText}
+                  aria-describedby={dueErrorText ? 'editDueDateError' : undefined}
                 style={{
                   width: '100%',
                   padding: '8px 12px',
@@ -272,6 +302,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   backgroundColor: 'var(--bg-main)'
                 }}
               />
+              {dueErrorText && (
+                <p id="editDueDateError" role="alert" className="profile-date-error">{dueErrorText}</p>
+              )}
+              {!dueErrorText && phase === 'pregnancy' && isDueDatePast(dueDate) && (
+                <p className="profile-date-hint">{de.duePassedHint}</p>
+              )}
             </div>
           )}
 
@@ -339,6 +375,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             </button>
             <button
               type="submit"
+              disabled={hasDateError}
               className="btn btn-primary"
               style={{ flex: 1.5, minHeight: '44px', justifyContent: 'center' }}
             >

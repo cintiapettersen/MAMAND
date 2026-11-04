@@ -16,7 +16,7 @@ export interface RecordMoment {
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const pad = (n: number) => String(n).padStart(2, '0');
-const localDate = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+export const localDate = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
 const isValidIsoDate = (v: unknown): v is string => {
   if (typeof v !== 'string' || !ISO_DATE.test(v)) return false;
@@ -48,6 +48,10 @@ const formatDay = (iso: string, lang: SupportedLanguage, opts: Intl.DateTimeForm
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(y, m - 1, d).toLocaleDateString(locale(lang), opts);
 };
+
+// Só o dia, sem hora: "12 de nov. de 2026" (consultas planejadas)
+export const formatEventDay = (iso: string, lang: SupportedLanguage) =>
+  isValidIsoDate(iso) ? formatDay(iso, lang, { day: 'numeric', month: 'short', year: 'numeric' }) : iso;
 
 export interface RelativeLabels {
   today: string;

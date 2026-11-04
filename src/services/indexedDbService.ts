@@ -5,6 +5,8 @@ import {
   validateHealthCheckRecord,
   type HealthCheckRecord
 } from '../domain/healthChecks.ts';
+import { applyAppointmentEdit, parseAppointment } from '../domain/healthAppointment.ts';
+import type { HealthAppointment } from '../types/index.ts';
 
 const DB_NAME = 'first_1000_days_db';
 // Versão 2: acrescenta a store de "Exames e triagens". A atualização a partir da versão 1
@@ -189,6 +191,29 @@ class IndexedDbService {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
       tx.onabort = () => reject(tx.error || new Error('Exclusão cancelada. Nenhum registro foi alterado.'));
+    });
+    return this.getRecords();
+  }
+
+  // Edita a consulta de um registro existente. Lê e regrava só esse registro, pela mesma chave,
+  // numa única transação; se ele não existe ou não é uma consulta, nada é gravado.
+  public async updateAppointment(id: string, appointment: HealthAppointment, eventDate: string): Promise<JourneyRecord[]> {
+    const db = await this.openDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.get(id);
+      req.onsuccess = () => {
+        const existing = req.result as JourneyRecord | undefined;
+        if (!existing || !existing.appointment) {
+          tx.abort();
+          return;
+        }
+        store.put(applyAppointmentEdit(existing, appointment, eventDate));
+      };
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error || new Error('Consulta não encontrada. Nenhum registro foi alterado.'));
     });
     return this.getRecords();
   }
@@ -392,6 +417,7 @@ class IndexedDbService {
         note: typeof rec.note === 'string' ? rec.note : '',
         sourceActivityTitle: typeof rec.sourceActivityTitle === 'string' ? rec.sourceActivityTitle : undefined,
         contentId: typeof rec.contentId === 'string' ? rec.contentId : undefined,
+        appointment: parseAppointment(rec.appointment),
         timestamp,
         eventDate: rec.eventDate,
         dateLabel

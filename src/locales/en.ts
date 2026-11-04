@@ -46,6 +46,15 @@ export const en: TranslationDictionary = {
     optionalBabyNamePlaceholder: 'How should we call the baby?',
     optionalBirthDateLabel: 'Date of birth (optional)',
     optionalDueDateLabel: 'Due date (optional)',
+    dateErrors: {
+      birthInvalid: 'Check the date of birth.',
+      birthFuture: 'The date of birth cannot be in the future.',
+      birthTooOld: 'Check the year: the date of birth must be within the last 5 years.',
+      dueInvalid: 'Check the due date.',
+      dueTooFar: 'Check the date: a due date is at most 10 months ahead.',
+      dueTooLongAgo: 'This due date was more than 6 weeks ago. If the baby has been born, choose "My baby is born" above.',
+      duePassedHint: 'The due date has passed. If the baby has been born, choose "My baby is born" above to record the birth.'
+    },
     optionalExactAgeHint: 'Automatically calculates exact age and days of life',
     step3Title: 'What needs the most attention today?',
     step3Subtitle: 'You can change this at any time. Your daily recommendations will prioritize this choice.',
@@ -73,7 +82,7 @@ export const en: TranslationDictionary = {
     },
     nextBtn: 'Continue',
     backBtn: 'Back',
-    startBtn: 'Begin with Calm'
+    startBtn: 'Start my journey'
   },
   today: {
     badge: 'Today with you',
@@ -265,11 +274,6 @@ export const en: TranslationDictionary = {
         placeholder: 'E.g., Tried grasping the toy with both hands...'
       },
       {
-        tag: 'Had a checkup or vaccine',
-        question: 'How did the appointment or vaccine go?',
-        placeholder: "E.g., Routine checkup, 2-month vaccines, the pediatrician's advice..."
-      },
-      {
         tag: 'Showed a symptom',
         question: 'Which symptom did you observe closely?',
         placeholder: 'E.g., Mild fever after vaccination, clear runny nose...',
@@ -309,6 +313,45 @@ export const en: TranslationDictionary = {
         placeholder: 'E.g., Backache felt noticeably milder today...'
       }
     ],
+    appointment: {
+      tag: 'Health appointment',
+      panelTitle: 'Health appointment',
+      statusQuestion: 'Has it happened or is it planned?',
+      statusPlanned: 'It is planned',
+      statusDone: 'It has happened',
+      kindQuestion: 'What kind of appointment? (optional)',
+      kinds: {
+        prenatal: 'Prenatal',
+        postnatal: 'Postnatal',
+        baby_checkup: 'Baby checkup',
+        vaccination: 'Vaccination',
+        specialist: 'Specialist',
+        other: 'Other'
+      },
+      plannedDateLabel: 'When is it? (optional)',
+      doneDateLabel: 'When did it happen?',
+      questionsPlannedLabel: 'Questions I want to ask',
+      questionsDoneLabel: 'Questions I brought',
+      questionsPlaceholder: 'E.g. Is heartburn at night normal?',
+      whatHappenedLabel: 'What happened or what I was told',
+      whatHappenedPlaceholder: 'E.g. They checked my blood pressure and we talked about sleep',
+      nextStepsLabel: 'Next steps',
+      nextStepsPlaceholder: 'E.g. Come back in 4 weeks, book a blood test',
+      privacyHint: 'For your own notes. The app does not interpret what you were told.',
+      plannedOnlyHint: 'A planned appointment gets a record of its own. To save other moments from today, create another record.',
+      badgePlanned: 'Planned',
+      badgeDone: 'Happened',
+      dateUnset: 'Date to be set',
+      pastPlannedHint: 'If the appointment has already happened, you can update this record.',
+      editBtn: 'Edit appointment',
+      editTitle: 'Edit appointment',
+      editHint: 'Only this appointment will be changed.',
+      saveEditBtn: 'Save changes',
+      cancelEditBtn: 'Cancel',
+      doneDateRequired: 'Choose when the appointment happened.',
+      doneDateInFuture: 'An appointment that has happened cannot have a future date.',
+      editError: 'The changes could not be saved. No record was changed.'
+    },
     noteLabel: 'Your note:',
     noteGeneralPlaceholder: 'Write a brief note about this moment...',
     saveRecordBtn: 'Save Entry',
@@ -400,7 +443,7 @@ export const en: TranslationDictionary = {
     birthTimeLabel: 'Time of birth',
     birthTimePlaceholder: 'e.g. 08:42',
     weightLabel: 'Birth weight (grams)',
-    weightPlaceholder: 'e.g. 3420 or 3,420 g',
+    weightPlaceholder: 'e.g. 3420 g',
     lengthLabel: 'Length (cm)',
     lengthPlaceholder: 'e.g. 51 cm',
     headCircumferenceLabel: 'Head circumference (cm)',
@@ -747,7 +790,7 @@ export const en: TranslationDictionary = {
     careCountryLabel: 'Country where you receive healthcare (optional)',
     careCountryHelp: 'Where you have pregnancy or baby check-ups. Saved on this device only; it does not change the emergency numbers.',
     careCountryNone: 'Prefer not to say',
-    nameLabel: 'What should we call you? (optional)',
+    nameLabel: "Your name, not the baby's (optional)",
     namePlaceholder: 'Your name or nickname',
     countryLabel: 'Country you are in',
     countryHelp: 'Only used to show the right emergency numbers. Saved on this device only.',
@@ -769,6 +812,8 @@ export const en: TranslationDictionary = {
     saveError: 'Unable to save to device storage.',
     clearError: 'Error deleting local records.',
     deleteError: 'Could not delete the entry.',
-    confirmPhaseReset: 'Restart setup? You will answer the first questions again. Your Journey entries stay saved.'
+    confirmPhaseReset: 'You will answer the first questions again. Your Journey entries stay saved.',
+    confirmPhaseResetBtn: 'Restart',
+    cancelBtn: 'Cancel'
   }
 };
