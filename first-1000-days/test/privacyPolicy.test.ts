@@ -113,8 +113,8 @@ test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () =>
     // Detalhes técnicos verificados no texto
     const textCorpus = doc.sections.map((s) => s.content.join(' ') + ' ' + (s.warningBox || '')).join(' ');
 
-    // Nome exato do banco IndexedDB no código
-    assert.match(textCorpus, /first_1000_days_db/, `[${lang}] Deve referenciar o nome exato first_1000_days_db`);
+    // Armazenamento local IndexedDB e localStorage
+    assert.match(textCorpus, /IndexedDB/i, `[${lang}] Deve referenciar IndexedDB`);
     assert.match(textCorpus, /localStorage/i, `[${lang}] Deve referenciar localStorage`);
     assert.match(textCorpus, /Cloudflare/i, `[${lang}] Deve referenciar Cloudflare Workers`);
     assert.match(textCorpus, /Gemini/i, `[${lang}] Deve referenciar Gemini`);
@@ -135,7 +135,8 @@ test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () =>
     assert.ok(!storageText.includes('p1000_demo_profile_v1'), `[${lang}] Seção 2 não deve expor chave interna p1000_demo_profile_v1`);
     assert.ok(!storageText.includes('first1000days_maternity_checklist'), `[${lang}] Seção 2 não deve expor chave interna first1000days_maternity_checklist`);
     assert.ok(!storageText.includes('first1000days_support_requests'), `[${lang}] Seção 2 não deve expor chave interna first1000days_support_requests`);
-    assert.match(storageText, /first_1000_days_db/, `[${lang}] Seção 2 preserva menção técnica ao banco IndexedDB`);
+    assert.ok(!storageText.includes('first_1000_days_db'), `[${lang}] Seção 2 não deve expor o identificador interno first_1000_days_db`);
+    assert.match(storageText, /IndexedDB/i, `[${lang}] Seção 2 referencia armazenamento local no IndexedDB`);
 
     // Limitações explícitas de filtros automáticos e processamento no Gemini
     const assistantSec = doc.sections.find((s) => s.id === 'assistente-gateway-ia');
@@ -195,7 +196,8 @@ test('3. Paridade Substantiva entre privacy.html e privacyPolicyData.ts (Fonte �
   // Verifica elementos essenciais gerados da fonte única
   assert.match(htmlContent, /CREATIVE DESIGN PETTERSEN LTDA/, 'HTML deve conter a razão social');
   assert.match(htmlContent, /24\.325\.181\/0001-94/, 'HTML deve conter o CNPJ');
-  assert.match(htmlContent, /first_1000_days_db/, 'HTML deve conter o nome exato do banco IndexedDB');
+  assert.ok(!htmlContent.includes('first_1000_days_db'), 'HTML não deve conter o identificador interno first_1000_days_db');
+  assert.match(htmlContent, /IndexedDB/i, 'HTML deve referenciar armazenamento no IndexedDB');
   assert.match(htmlContent, /data-lang="pt-BR"/, 'HTML deve conter versão PT-BR');
   assert.match(htmlContent, /data-lang="en"/, 'HTML deve conter versão EN');
   assert.match(htmlContent, /setLanguage/, 'HTML deve possuir alternador de idioma offline via JS puro');

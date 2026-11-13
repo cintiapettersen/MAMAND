@@ -53,6 +53,11 @@ export interface GatewayHealthStatus {
   quotaRemaining?: number;
 }
 
+// Salvaguarda Ética e Regulatória: Na etapa atual de pré-publicação, a transmissão para IA externa
+// está desabilitada para garantir que nenhuma pergunta contendo dados sensíveis de saúde seja transmitida
+// sem base jurídica definitiva confirmada e consentimento específico. Todo o processamento educativo
+// opera 100% localmente na sandbox do navegador (RAG local in-app com catálogo clínico verificado).
+const ENABLE_EXTERNAL_AI = false;
 const GATEWAY_URL = (import.meta as any).env?.VITE_GATEWAY_URL || 'http://localhost:8787/api/ask';
 
 export async function checkGatewayHealth(): Promise<GatewayHealthStatus> {
@@ -119,8 +124,8 @@ export async function consultEducationalAssistant(
     };
   }
 
-  // 3. Se o desenvolvedor escolheu explicitamente forçar simulação local no navegador
-  if (!forceLocalMock) {
+  // 3. Processamento via Gateway / IA Externa (condicionado à habilitação expressa e ausência de PII)
+  if (ENABLE_EXTERNAL_AI && !forceLocalMock && !piiDetected) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout
 
