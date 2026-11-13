@@ -19,8 +19,8 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   );
   assert.match(
     PRIVACY_POLICY_PT.controller.governanceNotice,
-    /canal direto e dedicado/i,
-    'Governança deve ressaltar o canal direto e dedicado de privacidade da controladora'
+    /privacidade@mamand\.app/i,
+    'Governança deve referenciar o canal direto privacidade@mamand.app'
   );
 
   // Verifica que Open Child Health Booklet Initiative NÃO é tratada como a razão social
@@ -37,17 +37,29 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.strictEqual(PRIVACY_POLICY_EN.controller.country, 'Brazil');
   assert.match(
     PRIVACY_POLICY_EN.controller.governanceNotice,
-    /direct and dedicated privacy service channel/i,
-    'Governança em inglês deve referenciar o canal direto e dedicado'
+    /privacidade@mamand\.app/i,
+    'Governança em inglês deve referenciar o canal direto privacidade@mamand.app'
   );
+
+  // Contatos oficiais confirmados e operacionais (InMotion Hosting / DNS Vercel)
+  assert.strictEqual(PRIVACY_POLICY_PT.controller.privacyEmail, 'privacidade@mamand.app');
+  assert.strictEqual(PRIVACY_POLICY_PT.controller.generalEmail, 'hello@mamand.app');
+  assert.strictEqual(PRIVACY_POLICY_EN.controller.privacyEmail, 'privacidade@mamand.app');
+  assert.strictEqual(PRIVACY_POLICY_EN.controller.generalEmail, 'hello@mamand.app');
 
   // Garante que não foram publicados campos provisórios entre colchetes nem e-mails fictícios
   const fullPtText = JSON.stringify(PRIVACY_POLICY_PT);
   const fullEnText = JSON.stringify(PRIVACY_POLICY_EN);
   assert.ok(!fullPtText.includes('[Endereço'), 'Não deve publicar campos provisórios de endereço');
   assert.ok(!fullPtText.includes('[Canal'), 'Não deve publicar campos provisórios de canal de contato');
-  assert.ok(!fullPtText.includes('@mamand.app') && !fullPtText.includes('@creativedesign.com'));
-  assert.ok(!fullEnText.includes('@mamand.app') && !fullEnText.includes('@creativedesign.com'));
+  assert.ok(!fullPtText.includes('exemplo@') && !fullPtText.includes('contato@ficticio'));
+  assert.ok(!fullEnText.includes('example@') && !fullEnText.includes('contact@fictitious'));
+
+  // Não apresenta o e-mail de privacidade como DPO formalmente nomeado
+  const sec1Pt = PRIVACY_POLICY_PT.sections.find((s) => s.id === 'identificacao')!.content.join(' ');
+  const sec1En = PRIVACY_POLICY_EN.sections.find((s) => s.id === 'identificacao')!.content.join(' ');
+  assert.match(sec1Pt, /não representando a nomeação de um Encarregado de Proteção de Dados\/DPO formal/i);
+  assert.match(sec1En, /does not constitute a formally appointed statutory DPO/i);
 
   // Não deve conter referência genérica a busca em cadastros societários públicos externos
   assert.ok(!fullPtText.includes('registros societários oficiais'), 'Não deve remeter a cadastros societários externos');
@@ -152,6 +164,10 @@ test('3. Paridade Substantiva entre privacy.html e privacyPolicyData.ts (Fonte �
   assert.match(htmlContent, /data-lang="pt-BR"/, 'HTML deve conter versão PT-BR');
   assert.match(htmlContent, /data-lang="en"/, 'HTML deve conter versão EN');
   assert.match(htmlContent, /setLanguage/, 'HTML deve possuir alternador de idioma offline via JS puro');
+
+  // Links mailto funcionais e clicáveis
+  assert.match(htmlContent, /href="mailto:privacidade@mamand\.app"/, 'HTML deve conter link mailto para o canal de privacidade');
+  assert.match(htmlContent, /href="mailto:hello@mamand\.app"/, 'HTML deve conter link mailto para o canal geral');
 
   // Não deve conter requisições externas para Google Fonts nem rastreadores
   assert.ok(!htmlContent.includes('fonts.googleapis.com'), 'Não deve carregar fontes externas');

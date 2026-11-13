@@ -20,6 +20,8 @@ export interface PrivacyPolicyDocument {
     corporateName: string;
     cnpj: string;
     country: string;
+    privacyEmail: string;
+    generalEmail: string;
     initiativeContextNotice: string;
     governanceNotice: string;
   };
@@ -40,8 +42,10 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
     corporateName: 'CREATIVE DESIGN PETTERSEN LTDA',
     cnpj: '24.325.181/0001-94',
     country: 'Brasil',
+    privacyEmail: 'privacidade@mamand.app',
+    generalEmail: 'hello@mamand.app',
     initiativeContextNotice: 'O MAMAND nasceu a partir de esforços de colaboração aberta inspirados na Open Child Health Booklet Initiative. A entidade jurídica e controladora formalmente responsável pelo produto e pelo tratamento de dados nos termos da legislação aplicável é a CREATIVE DESIGN PETTERSEN LTDA.',
-    governanceNotice: 'Como o MAMAND opera sob o modelo local-first sem criação de contas de usuário ou armazenamento central em nuvem, a gestão e a proteção dos dados pessoais são exercidas diretamente pela titular em seu próprio dispositivo. Para solicitações formais e comunicações sobre privacidade, a CREATIVE DESIGN PETTERSEN LTDA disponibiliza canal direto e dedicado de atendimento à privacidade, cujos dados oficiais de contato estão em homologação final para publicação definitiva.'
+    governanceNotice: 'Como o MAMAND opera sob o modelo local-first sem criação de contas de usuário ou armazenamento central em nuvem, a gestão e a proteção dos dados pessoais são exercidas diretamente pela titular em seu próprio dispositivo. Para solicitações sobre privacidade, proteção de dados e exercício de direitos, a CREATIVE DESIGN PETTERSEN LTDA disponibiliza o canal direto privacidade@mamand.app. Para dúvidas institucionais e contato geral, utilize hello@mamand.app.'
   },
   disclaimerNotice: 'Esta Política de Privacidade reflete com exatidão o código-fonte auditado e o funcionamento operacional atual do MAMAND. O aplicativo não declara possuir certificação governamental formal, selos de conformidade jurídica definitiva ou garantias de segurança absoluta, sendo seu modelo fundamentado no princípio do armazenamento local (local-first) e na minimização estrita de dados.',
   summary: {
@@ -83,7 +87,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         'O MAMAND é um aplicativo web progressivo (PWA) de apoio e acompanhamento parental nos primeiros 1.000 dias de vida (da gestação aos dois anos de idade).',
         'A controladora do tratamento de dados pessoais no âmbito do MAMAND é a sociedade empresária CREATIVE DESIGN PETTERSEN LTDA, inscrita no CNPJ sob o nº 24.325.181/0001-94, sediada no Brasil.',
         'Nota de contexto e governança: O desenvolvimento conceitual inicial do projeto esteve associado à Open Child Health Booklet Initiative como iniciativa aberta de saúde infantil. Esclarecemos que tal iniciativa não substitui e não constitui a razão social da controladora responsável, sendo a CREATIVE DESIGN PETTERSEN LTDA a entidade jurídica que assume os deveres e obrigações de conformidade.',
-        'Governança e canal direto de privacidade: Por operar sob a arquitetura "local-first", o aplicativo não mantém contas de usuário, login ou repositórios centrais de dados em nuvem. A gestão dos dados é realizada de forma autônoma pela própria usuária em seu dispositivo. Para solicitações formais relativas à privacidade e proteção de dados, a controladora CREATIVE DESIGN PETTERSEN LTDA conta com canal direto e exclusivo de atendimento, com dados oficiais de contato aguardando confirmação final para publicação definitiva nesta política.'
+        'Governança e canais oficiais de comunicação: Por operar sob a arquitetura "local-first", o aplicativo não mantém contas de usuário, login ou repositórios centrais de dados em nuvem. A gestão dos dados é realizada de forma autônoma pela própria usuária em seu dispositivo. Para solicitações sobre privacidade, proteção de dados pessoais e direitos dos titulares, o canal oficial direto de atendimento é privacidade@mamand.app (este endereço constitui o canal oficial de comunicação para assuntos de proteção de dados, não representando a nomeação de um Encarregado de Proteção de Dados/DPO formal). Para questões gerais, parcerias e contato institucional, o canal oficial é hello@mamand.app.'
       ]
     },
     {
@@ -179,7 +183,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         '• Eliminação dos dados (Art. 18, VI da LGPD; Art. 17 do GDPR): Pode ser executada de forma autônoma a qualquer instante pela funcionalidade "Apagar todos os meus dados deste aparelho".',
         '• Portabilidade (Art. 18, V da LGPD; Art. 20 do GDPR): Garantida através da função de exportação em JSON estruturado e resumo TXT.',
         '• Informação sobre compartilhamento: Descrita com total transparência nesta política (processamento temporário pelo Cloudflare e Google Gemini em consultas voluntárias).',
-        'Canal direto e funcional de privacidade: As funcionalidades do aplicativo conferem total autonomia para que o titular exerça a maior parte de seus direitos diretamente em seu aparelho. Para esclarecimentos adicionais, requisições formais de direitos ou dúvidas sobre o tratamento de dados pessoais, a CREATIVE DESIGN PETTERSEN LTDA disponibiliza um canal de privacidade direto e funcional, cujos dados oficiais de atendimento serão publicados nesta seção imediatamente após a homologação final pela controladora, sem necessidade de consultas intermediárias a cadastros externos.'
+        'Canal direto e funcional de privacidade: As funcionalidades do aplicativo conferem total autonomia para que o titular exerça a maior parte de seus direitos diretamente em seu próprio aparelho. Para esclarecimentos adicionais, requisições formais de direitos ou dúvidas sobre o tratamento de dados pessoais pela controladora, os titulares podem entrar em contato diretamente pelo e-mail privacidade@mamand.app. Mensagens institucionais gerais ou dúvidas sobre o projeto podem ser direcionadas a hello@mamand.app. Os canais são operados diretamente pela equipe responsável da CREATIVE DESIGN PETTERSEN LTDA.'
       ]
     },
     {
@@ -211,8 +215,10 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
     corporateName: 'CREATIVE DESIGN PETTERSEN LTDA',
     cnpj: '24.325.181/0001-94',
     country: 'Brazil',
+    privacyEmail: 'privacidade@mamand.app',
+    generalEmail: 'hello@mamand.app',
     initiativeContextNotice: 'MAMAND originated from open collaborative work inspired by the Open Child Health Booklet Initiative. The legal entity and data controller formally responsible for the product and data processing under applicable privacy laws is CREATIVE DESIGN PETTERSEN LTDA.',
-    governanceNotice: 'Because MAMAND operates on a local-first model without cloud user accounts or central databases, personal data governance is exercised directly by the user on their own device. For formal inquiries and privacy communications, CREATIVE DESIGN PETTERSEN LTDA provides a direct and dedicated privacy service channel, whose official contact details are undergoing final confirmation prior to definitive publication.'
+    governanceNotice: 'Because MAMAND operates on a local-first model without cloud user accounts or central databases, personal data governance is exercised directly by the user on their own device. For privacy inquiries, personal data protection, and user rights, CREATIVE DESIGN PETTERSEN LTDA provides the direct channel privacidade@mamand.app. For general inquiries and institutional communications, contact hello@mamand.app.'
   },
   disclaimerNotice: 'This Privacy Policy strictly reflects the audited source code and current operational reality of MAMAND. The application does not claim official government certification, definitive legal compliance seals, or absolute security guarantees. Its model is founded on local-first storage and strict data minimization.',
   summary: {
@@ -254,7 +260,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         'MAMAND is a Progressive Web App (PWA) designed to support and accompany parents throughout the first 1,000 days of life (from pregnancy up to two years of age).',
         'The legal data controller responsible for MAMAND under applicable personal data protection laws is CREATIVE DESIGN PETTERSEN LTDA, registered in Brazil under CNPJ nº 24.325.181/0001-94.',
         'Governance and lineage context: While initial conceptual development was linked to the Open Child Health Booklet Initiative as an open-source child health effort, that initiative does not serve as or replace the legal corporate name of the company. CREATIVE DESIGN PETTERSEN LTDA is the sole legal entity assuming compliance duties and responsibilities.',
-        'Governance and direct privacy channel: Operating under a "local-first" paradigm, the app maintains no user accounts, logins, or cloud database repositories. Data governance is handled directly and autonomously by the user on their own device. Formal inquiries regarding privacy and data protection are handled through a direct and dedicated communication channel provided by the controller CREATIVE DESIGN PETTERSEN LTDA, with official contact details awaiting final confirmation for definitive publication in this policy.'
+        'Governance and official communication channels: Operating under a "local-first" paradigm, the app maintains no user accounts, logins, or cloud database repositories. Data governance is handled directly and autonomously by the user on their own device. For requests regarding privacy, personal data protection, and user rights, the official direct communication channel is privacidade@mamand.app (this serves as the designated official privacy communication channel and does not constitute a formally appointed statutory DPO). For general inquiries, partnerships, and institutional matters, contact hello@mamand.app.'
       ]
     },
     {
@@ -350,7 +356,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         '• Erasure (Art. 18, VI LGPD; Art. 17 GDPR): Can be executed autonomously anytime via the "Erase all my data from this device" button.',
         '• Portability (Art. 18, V LGPD; Art. 20 GDPR): Provided via open JSON export and TXT summaries.',
         '• Information on data sharing: Fully and transparently detailed in this policy (ephemeral processing by Cloudflare and Google Gemini during voluntary queries).',
-        'Direct and functional privacy channel: The application features provide full autonomy for users to exercise most rights directly on their device. For additional clarifications, formal rights requests, or questions regarding personal data processing, CREATIVE DESIGN PETTERSEN LTDA provides a direct and functional privacy channel, whose official contact details will be published in this section upon final corporate approval, without requiring reliance on external registry databases.'
+        'Direct and functional privacy channel: The application features provide full autonomy for users to exercise most of their rights directly on their device (access, rectification, export portability, and local wipe). For additional clarifications, formal rights requests, or questions regarding personal data processing, data subjects can contact us directly at privacidade@mamand.app. General corporate correspondence and project questions can be addressed to hello@mamand.app. Both channels are operated directly by the responsible team at CREATIVE DESIGN PETTERSEN LTDA.'
       ]
     },
     {

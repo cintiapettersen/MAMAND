@@ -35,6 +35,25 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack, in
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [lang]);
 
+  const renderTextWithMailto = (text: string) => {
+    const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+    const parts = text.split(emailRegex);
+    return parts.map((part, i) => {
+      if (emailRegex.test(part)) {
+        return (
+          <a
+            key={i}
+            href={`mailto:${part}`}
+            style={{ color: 'var(--primary)', textDecoration: 'underline', fontWeight: 600 }}
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   const renderPillarIcon = (icon: SimplePrivacyPillar['icon']) => {
     switch (icon) {
       case 'device':
@@ -219,8 +238,26 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack, in
           <strong>CNPJ:</strong> {doc.controller.cnpj} • <strong>{lang === 'pt-BR' ? 'País:' : 'Country:'}</strong>{' '}
           {doc.controller.country}
         </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '6px 0 4px 0', lineHeight: 1.45 }}>
-          {doc.controller.governanceNotice}
+        <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
+          <strong>{lang === 'pt-BR' ? 'Canal de Privacidade (Titulares e Proteção de Dados):' : 'Privacy Channel (Data Protection & Rights):'}</strong>{' '}
+          <a
+            href={`mailto:${doc.controller.privacyEmail}`}
+            style={{ color: 'var(--primary)', textDecoration: 'underline', fontWeight: 600 }}
+          >
+            {doc.controller.privacyEmail}
+          </a>
+        </p>
+        <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
+          <strong>{lang === 'pt-BR' ? 'Contato Geral e Parcerias:' : 'General & Institutional Inquiries:'}</strong>{' '}
+          <a
+            href={`mailto:${doc.controller.generalEmail}`}
+            style={{ color: 'var(--primary)', textDecoration: 'underline', fontWeight: 600 }}
+          >
+            {doc.controller.generalEmail}
+          </a>
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '8px 0 4px 0', lineHeight: 1.45 }}>
+          {renderTextWithMailto(doc.controller.governanceNotice)}
         </p>
         <p
           style={{
@@ -396,7 +433,7 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack, in
                     margin: 0
                   }}
                 >
-                  {p}
+                  {renderTextWithMailto(p)}
                 </p>
               ))}
 

@@ -44,8 +44,10 @@ ${paragraphsHtml}${warningHtml}
         <h2 style="font-size: 1.05rem; margin-bottom: 8px;">${isPt ? 'Identificação do Controlador' : 'Data Controller Identification'}</h2>
         <p><strong>${isPt ? 'Razão Social Responsável:' : 'Legal Corporate Name:'}</strong> ${escapeHtml(doc.controller.corporateName)}</p>
         <p><strong>CNPJ:</strong> ${escapeHtml(doc.controller.cnpj)} • <strong>${isPt ? 'País:' : 'Country:'}</strong> ${escapeHtml(doc.controller.country)}</p>
-        <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 6px; line-height: 1.45;">
-          ${escapeHtml(doc.controller.governanceNotice)}
+        <p><strong>${isPt ? 'Canal de Privacidade (Titulares e Proteção de Dados):' : 'Privacy Channel (Data Protection & Rights):'}</strong> <a href="mailto:${escapeHtml(doc.controller.privacyEmail)}" style="color: var(--primary); text-decoration: underline; font-weight: 600;">${escapeHtml(doc.controller.privacyEmail)}</a></p>
+        <p><strong>${isPt ? 'Contato Geral e Parcerias:' : 'General & Institutional Inquiries:'}</strong> <a href="mailto:${escapeHtml(doc.controller.generalEmail)}" style="color: var(--primary); text-decoration: underline; font-weight: 600;">${escapeHtml(doc.controller.generalEmail)}</a></p>
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 8px; line-height: 1.45;">
+          ${escapeHtml(doc.controller.governanceNotice).replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '<a href="mailto:$1" style="color: var(--primary); text-decoration: underline; font-weight: 600;">$1</a>')}
         </p>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed var(--border-light); padding-top: 8px;">
           ${escapeHtml(doc.controller.initiativeContextNotice)}
@@ -87,6 +89,8 @@ function escapeHtml(str) {
 function formatParagraph(p) {
   // Converte marcadores em negrito comuns
   let out = escapeHtml(p);
+  // Torna e-mails clicáveis via mailto:
+  out = out.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '<a href="mailto:$1" style="color: var(--primary); text-decoration: underline; font-weight: 600;">$1</a>');
   // Negrito para letras de alíneas ou prefixos conhecidos
   out = out.replace(/^(•\s*[^:]+:)/, '<strong>$1</strong>');
   out = out.replace(/^([a-z]\)\s*[^:]+:)/, '<strong>$1</strong>');
@@ -96,10 +100,11 @@ function formatParagraph(p) {
   out = out.replace(/^(Limitações perante fornecedores[^:]+:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservação do shell offline:)/, '<strong>$1</strong>');
   out = out.replace(/^(Upon confirming erasure:)/, '<strong>$1</strong>');
-  out = out.replace(/^(Preservação de arquivos[^:]+:)/, '<strong>$1</strong>');
   out = out.replace(/^(Limitations regarding infrastructure providers:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservation of offline app shell:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservation of downloaded files:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Governança e canais oficiais de comunicação:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Governance and official communication channels:)/, '<strong>$1</strong>');
   out = out.replace(/^(Governança e canal direto de privacidade:)/, '<strong>$1</strong>');
   out = out.replace(/^(Governance and direct privacy channel:)/, '<strong>$1</strong>');
   out = out.replace(/^(Nota de contexto e governança:)/, '<strong>$1</strong>');
@@ -452,12 +457,14 @@ ${renderDocument(PRIVACY_POLICY_EN, 'en')}
     }
 
     (function init() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var langParam = urlParams.get('lang');
       var savedLang = null;
       try {
         savedLang = localStorage.getItem('first_1000_days_lang');
       } catch (e) {}
 
-      var defaultLang = (savedLang === 'en' || (!savedLang && navigator.language && navigator.language.startsWith('en'))) ? 'en' : 'pt-BR';
+      var defaultLang = (langParam === 'en' || (!langParam && (savedLang === 'en' || (!savedLang && navigator.language && navigator.language.startsWith('en'))))) ? 'en' : 'pt-BR';
       setLanguage(defaultLang);
     })();
   </script>
