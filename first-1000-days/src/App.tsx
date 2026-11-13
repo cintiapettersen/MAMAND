@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserProfile, ActiveTab, JourneyRecord } from './types';
 import { profileStorage } from './services/profileStorage';
 import { indexedDbService } from './services/indexedDbService';
+import { wipeAllMamandLocalData } from './services/localDataWipeService';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Header } from './components/Header';
 import { Navigation } from './components/Navigation';
@@ -28,6 +29,7 @@ const MainApp: React.FC = () => {
   const [isSupportNetworkOpen, setIsSupportNetworkOpen] = useState<boolean>(false);
   const [isSelfCareOpen, setIsSelfCareOpen] = useState<boolean>(false);
   const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
+  const [resetCounter, setResetCounter] = useState<number>(0);
 
   useEffect(() => {
     // 1. Carrega preferências demonstrativas do onboarding (localStorage)
@@ -90,6 +92,24 @@ const MainApp: React.FC = () => {
     }
   };
 
+  const handleWipeAllLocalData = async () => {
+    const result = await wipeAllMamandLocalData();
+    if (result.errors.length > 0) {
+      console.warn('Avisos ao apagar dados locais:', result.errors);
+    }
+    setProfile(null);
+    setRecords([]);
+    setStorageError(null);
+    setActiveTab('today');
+    setCareCategory('all');
+    setIsEditModalOpen(false);
+    setIsBirthRecordOpen(false);
+    setIsSupportNetworkOpen(false);
+    setIsSelfCareOpen(false);
+    setIsChecklistOpen(false);
+    setResetCounter((prev) => prev + 1);
+  };
+
   const [careCategory, setCareCategory] = useState<string>('all');
 
   // Cada página nova começa do topo
@@ -130,11 +150,12 @@ const MainApp: React.FC = () => {
             setProfile(updated);
           }}
           onReset={handleResetProfile}
+          onWipeAllData={handleWipeAllLocalData}
         />
       )}
 
       {!profile ? (
-        <Onboarding onComplete={handleCompleteOnboarding} />
+        <Onboarding key={resetCounter} onComplete={handleCompleteOnboarding} />
       ) : isBirthRecordOpen ? (
         <BirthRecordView
           profile={profile}

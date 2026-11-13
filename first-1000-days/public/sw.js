@@ -9,7 +9,7 @@
  *    - Perguntas pessoais, registros de saúde ou tokens não passam por cache HTTP.
  */
 
-const CACHE_VERSION = 'v1.1.0';
+const CACHE_VERSION = 'v1.2.0';
 const CACHE_NAME = `first-1000-days-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
@@ -17,7 +17,10 @@ const CORE_ASSETS = [
   '/index.html',
   '/manifest.webmanifest',
   '/icon-192.svg',
-  '/icon-512.svg'
+  '/icon-512.svg',
+  '/fonts/fraunces-latin.woff2',
+  '/fonts/nunito-latin.woff2',
+  '/fonts/plus-jakarta-sans-latin.woff2'
 ];
 
 self.addEventListener('install', (event) => {

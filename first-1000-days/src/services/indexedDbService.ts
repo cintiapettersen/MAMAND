@@ -48,11 +48,13 @@ class IndexedDbService {
     }
 
     return new Promise((resolve, reject) => {
+      let wasStoreCreated = false;
       const request = window.indexedDB.open(DB_NAME, DB_VERSION);
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains(STORE_NAME)) {
+          wasStoreCreated = true;
           const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
           store.createIndex('by_eventDate', 'eventDate', { unique: false });
           store.createIndex('by_subject', 'subject', { unique: false });
@@ -63,14 +65,17 @@ class IndexedDbService {
       request.onsuccess = async (event) => {
         this.db = (event.target as IDBOpenDBRequest).result;
 
-        // Se o banco acabou de ser criado e está vazio, insere registros demonstrativos iniciais
-        try {
-          const count = await this.countRecords(this.db);
-          if (count === 0) {
-            await this.seedInitialRecords(this.db);
+        // Só insere registros demonstrativos na criação inicial do banco;
+        // após exclusão explícita pelo usuário, não recria dados automáticos.
+        if (wasStoreCreated) {
+          try {
+            const count = await this.countRecords(this.db);
+            if (count === 0) {
+              await this.seedInitialRecords(this.db);
+            }
+          } catch (e) {
+            console.warn('Aviso ao checar registros iniciais do IndexedDB:', e);
           }
-        } catch (e) {
-          console.warn('Aviso ao checar registros iniciais do IndexedDB:', e);
         }
 
         resolve(this.db);

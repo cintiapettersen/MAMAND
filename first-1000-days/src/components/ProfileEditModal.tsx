@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, UserPhase, MainNeed } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
-import { Baby, Heart, X, Check, Sparkles, Trash2 } from 'lucide-react';
+import { Baby, Heart, X, Check, Sparkles, Trash2, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { calculateAgeInMonths, formatBabyAgeDetailed } from '../utils/dateUtils';
 import { NameField, CountryField } from './ProfileFields';
 
@@ -12,6 +12,7 @@ interface ProfileEditModalProps {
   onClose: () => void;
   onSave: (updated: UserProfile) => void;
   onReset: () => void;
+  onWipeAllData?: () => Promise<void> | void;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
@@ -19,7 +20,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   isOpen,
   onClose,
   onSave,
-  onReset
+  onReset,
+  onWipeAllData
 }) => {
   const { language, t } = useLanguage();
 
@@ -31,6 +33,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [dueDate, setDueDate] = useState<string>(profile.dueDate || '');
   const [displayName, setDisplayName] = useState<string>(profile.displayName || '');
   const [country, setCountry] = useState<string>(profile.country || '');
+  const [confirmWipeOpen, setConfirmWipeOpen] = useState<boolean>(false);
+  const [isWiping, setIsWiping] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -365,6 +369,118 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <span>{t.region.restartOnboarding}</span>
             </button>
           </div>
+
+          {/* Zona de Privacidade: Exclusão Completa dos Dados Locais */}
+          {onWipeAllData && (
+            <div
+              style={{
+                marginTop: '10px',
+                paddingTop: '14px',
+                borderTop: '1px solid var(--border-light)'
+              }}
+            >
+              {!confirmWipeOpen ? (
+                <div style={{ textAlign: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmWipeOpen(true)}
+                    style={{
+                      background: 'none',
+                      border: '1px solid rgba(178, 59, 59, 0.3)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '8px 12px',
+                      color: '#B23B3B',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <ShieldAlert size={14} />
+                    <span>
+                      {language === 'pt-BR'
+                        ? 'Apagar todos os meus dados deste aparelho'
+                        : 'Erase all my data from this device'}
+                    </span>
+                  </button>
+                </div>
+              ) : (
+                <div
+                  role="alertdialog"
+                  aria-labelledby="wipeConfirmTitle"
+                  style={{
+                    backgroundColor: '#FDF3F2',
+                    border: '1px solid rgba(178, 59, 59, 0.35)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '14px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#8F2424' }}>
+                    <AlertTriangle size={18} style={{ flexShrink: 0 }} />
+                    <strong id="wipeConfirmTitle" style={{ fontSize: '0.88rem' }}>
+                      {language === 'pt-BR'
+                        ? 'Confirmar exclusão irreversível?'
+                        : 'Confirm irreversible erasure?'}
+                    </strong>
+                  </div>
+
+                  <p style={{ margin: 0, fontSize: '0.78rem', lineHeight: 1.45, color: '#4A2C2A' }}>
+                    {language === 'pt-BR'
+                      ? 'Esta ação apagará permanentemente deste navegador: seu perfil, ficha de nascimento, diário da Jornada, rede de apoio, mala da maternidade e preferências locais.'
+                      : 'This action will permanently erase from this browser: your profile, birth record, Journey diary, support network, maternity checklist, and local preferences.'}
+                  </p>
+
+                  <p style={{ margin: 0, fontSize: '0.75rem', lineHeight: 1.4, color: '#6B4845' }}>
+                    {language === 'pt-BR'
+                      ? 'Importante: backups JSON ou resumos TXT que você já baixou anteriormente para o seu aparelho NÃO serão apagados. Os arquivos estáticos do aplicativo para funcionamento offline serão preservados.'
+                      : 'Important: JSON backups or TXT summaries previously downloaded to your device will NOT be deleted. Static app files required for offline use will be preserved.'}
+                  </p>
+
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                    <button
+                      type="button"
+                      disabled={isWiping}
+                      onClick={() => setConfirmWipeOpen(false)}
+                      className="btn btn-secondary"
+                      style={{ flex: 1, minHeight: '38px', fontSize: '0.8rem', justifyContent: 'center' }}
+                    >
+                      {language === 'pt-BR' ? 'Cancelar' : 'Cancel'}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isWiping}
+                      onClick={async () => {
+                        setIsWiping(true);
+                        try {
+                          await onWipeAllData();
+                        } finally {
+                          setIsWiping(false);
+                          setConfirmWipeOpen(false);
+                        }
+                      }}
+                      className="btn btn-primary"
+                      style={{
+                        flex: 1.4,
+                        minHeight: '38px',
+                        fontSize: '0.8rem',
+                        backgroundColor: '#B23B3B',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {isWiping
+                        ? (language === 'pt-BR' ? 'Apagando...' : 'Erasing...')
+                        : (language === 'pt-BR' ? 'Sim, apagar tudo' : 'Yes, erase everything')}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </form>
       </div>
     </div>
