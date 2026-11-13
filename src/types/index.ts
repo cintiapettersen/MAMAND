@@ -26,6 +26,7 @@ export interface BirthRecord {
   bloodType?: BloodType;
   allergies?: string;
   healthConditions?: string;
+  babyPhotoDataUrl?: string;
   updatedAt?: string;
 }
 
