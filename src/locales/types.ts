@@ -1,4 +1,4 @@
-import { MainNeed, RecordSubject, AppointmentKind } from '../types';
+import { MainNeed, RecordSubject, AppointmentKind } from '../types/index.ts';
 
 export interface MemorySuggestionItem {
   id: string;
@@ -290,11 +290,46 @@ export interface TranslationDictionary {
   };
   ask: {
     badge: string;
-    suspendedBadge: string;
-    suspendedTitle: string;
-    suspendedText: string;
-    suspendedCare: (emergency: string) => string;
-    suspendedEmergencyFallback: string;
+    suspendedBadge?: string;
+    suspendedTitle?: string;
+    suspendedText?: string;
+    suspendedCare?: (emergency: string) => string;
+    suspendedEmergencyFallback?: string;
+    title: string;
+    subtitle: string;
+    disclaimerTitle: string;
+    disclaimerText: string;
+    commonQuestionsTitle: string;
+    sampleQuestionsPregnancy: string[];
+    sampleQuestionsBaby: string[];
+    inputTitle: string;
+    inputPlaceholder: string;
+    sourcesNotice: string;
+    consultBtn: string;
+    consultingBtn: string;
+    statusNoticeTitle: string;
+    statusNoticeDesc: string;
+    alertComingSoon: string;
+    inputLimitHint: (cur: number, max: number) => string;
+    piiNotice: string;
+    emergencyAlertTitle: string;
+    emergencyPhoneLabel: string;
+    outOfCatalogTitle: string;
+    citationsTitle: string;
+    modeMockBadge: string;
+    modeLiveBadge: string;
+    mockNoticeText: string;
+    errorCardTitle: string;
+    newConsultationBtn: string;
+    verifiedGuidelineBadge: string;
+    pendingReviewBadge: string;
+    viewSourcesBtn: string;
+    hideSourcesBtn: string;
+    sourcesCount: (n: number) => string;
+    jurisdictionBR: string;
+    jurisdictionGlobal: string;
+    officialLinkText: string;
+    offlineNotice: string;
   };
   birthRecord: {
     homeCardTitle: string;
@@ -370,6 +405,10 @@ export interface TranslationDictionary {
     labelHospital: string;
     customizeTitle: string;
     customizeDesc: string;
+    addPhotoBtn: string;
+    changePhotoBtn: string;
+    removePhotoBtn: string;
+    photoHint: string;
     toggleTime: string;
     toggleWeight: string;
     toggleLength: string;
@@ -659,6 +698,21 @@ export interface TranslationDictionary {
     askGenericNotice: string;
     genericPhrase: string;
     restartOnboarding: string;
+  };
+  privacy: {
+    policyLink: string;
+    policyTitle: string;
+    summaryTitle: string;
+    summarySubtitle: string;
+    openFullPolicy: string;
+    backToApp: string;
+    onboardingNotice: string;
+    onboardingBadge: string;
+    profileLinkDesc: string;
+    journeyLinkText: string;
+    versionLabel: string;
+    lastUpdated: string;
+    pendingNotice: string;
   };
   common: {
     loading: string;

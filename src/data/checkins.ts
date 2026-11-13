@@ -1,4 +1,4 @@
-import { CheckInQuestion, SupportedLanguage } from '../types';
+import type { CheckInQuestion, SupportedLanguage } from '../types/index.ts';
 
 export const CHECKIN_QUESTIONS_PT: CheckInQuestion[] = [
   {

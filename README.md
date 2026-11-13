@@ -17,32 +17,29 @@
 
 | Situação | O que inclui |
 |---|---|
-| **Implementado** | Aplicativo web instalável (PWA) em português e inglês, sem login. Telas Hoje, Cuidados (biblioteca de temas com fonte), Jornada (diário da gestação e do bebê, com registro de consultas planejadas ou realizadas, sem interpretação do que foi dito), Exames e triagens (registro feito pela família, sem interpretação de resultados), Rede de apoio, Lista para a maternidade, Meu nascimento e contatos de emergência por país. Backup e restauração em JSON e resumo em texto para levar à consulta. Funciona sem internet. |
-| **Testado internamente** | Testes automatizados (`npm test`) de armazenamento, backup e restauração, modo offline, resumo exportado, estrutura internacional, contatos de emergência e conteúdo desta distribuição. Testes não são validação clínica. |
-| **Pendente de validação** | Revisão profissional de todos os conteúdos de saúde; revisão dos critérios de sinais de alerta; avaliação jurídica dos direitos de uso das fontes; política de privacidade; classificação regulatória. |
-| **Planejado** | Listas educativas de exames por país (só depois de revisão profissional e confirmação de direitos); assistente com IA para o público (só depois das revisões clínica e regulatória); piloto com serviços de atenção primária. |
+| **Implementado** | Aplicativo web instalável (PWA) em português e inglês, sem login, cadastro ou anúncios. Telas Hoje (cartas acolhedoras, check-in e faixa de emergência oficial por país), Cuidados (biblioteca de temas de saúde com fontes oficiais verificadas e orientações em revisão pré-clínica), Jornada (diário de rotina, sono, alimentação, marcos de desenvolvimento e registro/edição de consultas de saúde), Exames e triagens (rastreamento familiar por país sem interpretação de resultados), Pergunte (assistente local educativo com RAG in-app, sanitização de PII e emergência integrada), Ficha de nascimento, Rede de apoio, Lista da maternidade e Política de Privacidade integrada com exclusão irreversível de dados em 1 clique. Backup e restauração em JSON (schemaVersion 1.1) e resumo textual legível para consultas. Funciona 100% offline. |
+| **Testado internamente** | Suíte de testes automatizados (`npm test`) cobrindo migração de banco local (v1 → v2) e rollback, armazenamento local, backup e restauração (1.0 e 1.1), modo offline/PWA, salvaguardas de RAG, segurança clínica, governança de fontes, paridade de Política de Privacidade e ausência de rastreadores. Testes não são validação clínica. |
+| **Pendente de validação** | Revisão profissional formal de todos os conteúdos de saúde por equipe médica e multiprofissional habilitada; avaliação jurídica externa contínua de privacidade; classificação regulatória formal perante autoridades sanitárias. |
+| **Planejado** | Piloto com serviços de atenção primária à saúde; ativação de gateway de IA em nuvem após conclusão e aprovação das revisões regulatórias e clínicas. |
 
-### O que esta distribuição pública não contém
+### Salvaguardas Clínicas e de Distribuição Pública
 
-Para reduzir o risco de uso de componentes clínicos ainda não revisados, esta versão **não inclui**:
+Para resguardar as famílias e manter conformidade com padrões de saúde pública e Digital Public Goods (DPG):
 
-- o **assistente experimental** de perguntas livres (busca em evidências, respostas simuladas, integração opcional com IA, detector de sinais e catálogo de evidências). A aba Pergunte mostra só um aviso de suspensão e os contatos de emergência;
-- o **painel de critérios de sinais de alerta**. A tela Hoje mostra só os contatos de emergência do país informado, conferidos em fontes oficiais (`src/data/emergencyContacts.ts`);
-- os **textos completos e as ideias práticas de Cuidados**. A biblioteca mostra título, tema, situação da revisão e fonte de cada tema.
-
-**A separação é temporária.** Esses módulos continuam em desenvolvimento privado e podem voltar a ser abertos depois das revisões clínica e regulatória, em especial se fizerem parte de uma solução financiada com compromisso de código aberto.
-
-**Versões anteriores** deste repositório (até o commit `7d43d3f`, outubro de 2026) incluem uma versão antiga do assistente, com a aba ativa. Elas continuam no histórico, sob Apache 2.0, e **não devem ser usadas** para orientar gestantes ou famílias.
+- **Ausência de validação clínica formal:** O MAMAND é um protótipo educativo e de registro pessoal. **Nenhum conteúdo possui validação médica ou aprovação sanitária formal.** A indicação de fonte bibliográfica verificada (`verified` ou `source_based`) atesta apenas a conformidade documental com publicações oficiais identificáveis (Ministério da Saúde, OMS, UNICEF, AAP), **não substituindo a avaliação médica presencial**.
+- **Orientações práticas de Cuidados bloqueadas em produção:** O texto completo e as ideias práticas dos temas de saúde permanecem sob aviso de revisão pendente (`canShowCareInstructions`). Eles só são liberados caso haja registro formal e documentado de revisão profissional por profissional de saúde (`clinically_reviewed`).
+- **Assistente Local Educativo Desacoplado:** O módulo Pergunte opera 100% no navegador do dispositivo (`ENABLE_EXTERNAL_AI = false`), sem envio de perguntas ou dados pessoais a provedores externos de IA. Toda consulta passa por sanitização preventiva cliente de PII e detecção imediata de sinais de alerta com redirecionamento telefônico de emergência para os números oficiais locais (ex.: 192 SAMU no Brasil, 113 na Noruega, 15 na França, 999 no Reino Unido).
 
 ---
 
-## 2. Privacidade e armazenamento
+## 2. Privacidade e soberania dos dados
 
-- **Sem conta e sem servidor:** não há cadastro, e-mail, senha nem sincronização com nuvem.
-- **Dados só no aparelho:** registros no IndexedDB do navegador; perfil e listas no `localStorage`. **O app não tem criptografia própria**; a proteção é a do navegador e do aparelho.
-- **Apagar o navegador apaga os dados.** Faça backup em JSON antes de limpar os dados do navegador ou trocar de aparelho.
-- **Arquivos exportados são texto aberto.** Guarde-os em lugar de confiança. No resumo em texto, as anotações livres ficam fora, a menos que a família escolha incluí-las.
-- **Offline:** service worker e fontes locais; o app abre, grava, exporta e importa sem internet.
+- **Sem conta, sem login e sem servidores centrais:** O aplicativo não requer cadastro, e-mail, senha ou autenticação externa.
+- **Dados gravados exclusivamente no aparelho:** Registros da Jornada, consultas, exames e triagens são gravados no IndexedDB do navegador; perfil, ficha de nascimento e configurações residem no `localStorage`.
+- **Exclusão total e irreversível:** Função dedicada no perfil ("Apagar todos os meus dados deste aparelho") que limpa integralmente o IndexedDB e o localStorage com confirmação explícita.
+- **Política de Privacidade transparente:** Disponível in-app (`/privacy`) e em página HTML estática pré-compilada (`/privacy.html`), com dados da controladora responsável (CREATIVE DESIGN PETTERSEN LTDA), canais de atendimento operacionais e sem rastreadores comerciais (zero Google Analytics, Facebook Pixel ou cookies publicitários).
+- **Fontes 100% locais e offline:** Todas as fontes tipográficas (Fraunces, Nunito, Plus Jakarta Sans) são auto-hospedadas em WOFF2 e cacheadas pelo Service Worker, sem conexões a servidores externos (zero Google Fonts).
+- **Backups estruturados (schemaVersion 1.1):** Exportação aberta contendo registros da Jornada, Ficha de Nascimento e Exames/Triagens. Compatível com a restauração de backups legados 1.0.
 
 ---
 
@@ -51,16 +48,16 @@ Para reduzir o risco de uso de componentes clínicos ainda não revisados, esta 
 Requisitos: Node.js 20 ou superior e npm.
 
 ```bash
-git clone https://github.com/cintiapettersen/open-child-health-booklet.git
-cd open-child-health-booklet
+git clone https://github.com/cintiapettersen/MAMAND.git
+cd MAMAND
 npm install
 npm run dev        # desenvolvimento em http://localhost:3000
-npm test           # testes automatizados (sem rede)
-npm run build      # build de produção em dist/
+npm test           # testes automatizados locais (sem rede)
+npm run build      # compila política estática e build de produção em dist/
 npm run preview    # serve o build de produção localmente
 ```
 
-O app não precisa de servidor, variáveis de ambiente nem chaves de API.
+O app opera de forma autônoma e não requer chaves de API externas para execução local.
 
 ---
 
@@ -68,14 +65,18 @@ O app não precisa de servidor, variáveis de ambiente nem chaves de API.
 
 ```
 ├── src/          # Aplicativo React + TypeScript
-│   ├── config/   # Regra de exibição da biblioteca de Cuidados
-│   ├── data/     # Biblioteca de temas, contatos de emergência, países
-│   ├── domain/   # Regras de exames e triagens, países, resumo exportado
-│   ├── services/ # IndexedDB, backup e restauração, armazenamento local
-│   └── views/    # Hoje, Pergunte, Jornada, Cuidados, cadastro
-├── public/       # Manifesto PWA, service worker, ícones e licenças de terceiros
-├── test/         # Testes automatizados do aplicativo
-└── docs/arquitetura/  # Arquitetura internacional e de exames e triagens
+│   ├── config/   # Regras de disponibilidade de conteúdo e parâmetros clínicos
+│   ├── data/     # Catálogo de temas, evidências, contatos de emergência e privacidade
+│   ├── domain/   # Regras de exames e triagens, consultas, países e resumos
+│   ├── services/ # IndexedDB v2, assistente educativo, wipe local e armazenamento
+│   ├── styles/   # Folhas de estilo locais (sem fontes externas)
+│   └── views/    # Hoje, Pergunte, Jornada, Cuidados, Exames e Política de Privacidade
+├── public/       # Fontes WOFF2 locais, privacy.html, Service Worker e manifesto PWA
+├── research/     # Base clínica estruturada (mamand_biblioteca_v0_1.json)
+├── gateway/      # Módulo desacoplado de gateway RAG e integração com IA privada
+├── scripts/      # Script gerador de privacy.html e rotinas de validação
+├── test/         # Suíte de testes automatizados do aplicativo e salvaguardas
+└── docs/         # Documentação de governança, arquitetura e convenções
 ```
 
 Documentos: [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.md), [CONTENT.md](CONTENT.md), [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md).

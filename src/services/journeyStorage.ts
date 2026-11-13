@@ -1,4 +1,4 @@
-import { JourneyRecord } from '../types';
+import type { JourneyRecord } from '../types/index.ts';
 
 const STORAGE_KEY = 'p1000_journey_records_v1';
 
@@ -35,12 +35,12 @@ export const journeyStorage = {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) {
-        return INITIAL_RECORDS;
+        return [];
       }
       return JSON.parse(data) as JourneyRecord[];
     } catch (err) {
       console.warn('Erro ao carregar registros da jornada:', err);
-      return INITIAL_RECORDS;
+      return [];
     }
   },
 

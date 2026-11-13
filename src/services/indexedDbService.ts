@@ -114,6 +114,10 @@ class IndexedDbService {
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       const store = tx.objectStore(STORE_NAME);
+      if (typeof store.get !== 'function') {
+        resolve();
+        return;
+      }
       for (const { id } of LEGACY_DEMO_RECORDS) {
         const req = store.get(id);
         req.onsuccess = () => {
@@ -222,12 +226,15 @@ class IndexedDbService {
   public async clearAllRecords(): Promise<void> {
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.clear();
-
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
+      const hasHealth = db.objectStoreNames.contains(HEALTH_STORE);
+      const stores = hasHealth ? [STORE_NAME, HEALTH_STORE] : STORE_NAME;
+      const tx = db.transaction(stores as any, 'readwrite');
+      tx.objectStore(STORE_NAME).clear();
+      if (hasHealth) {
+        tx.objectStore(HEALTH_STORE).clear();
+      }
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
     });
   }
 

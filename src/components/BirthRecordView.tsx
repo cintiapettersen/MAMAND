@@ -3,6 +3,7 @@ import { UserProfile, BirthRecord, BirthCardSettings, BloodType, DeliveryType } 
 import { useLanguage } from '../context/LanguageContext';
 import { birthRecordStorage } from '../services/birthRecordStorage';
 import { PageHeader } from './PageHeader';
+import { validateBirthDate, birthDateBounds } from '../utils/dateUtils';
 import {
   Baby,
   ClipboardList,
@@ -16,7 +17,9 @@ import {
   Share2,
   Check,
   Sparkles,
-  Info
+  Info,
+  Camera,
+  RotateCcw
 } from 'lucide-react';
 
 interface BirthRecordViewProps {
@@ -52,6 +55,50 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
   });
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [babyPhotoUrl, setBabyPhotoUrl] = useState<string | null>(null);
+
+  // Carrega a foto localmente e recorta em quadrado central leve (sem envio a servidor)
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = typeof reader.result === 'string' ? reader.result : null;
+      if (!dataUrl) return;
+      const img = new Image();
+      img.onload = () => {
+        const size = 600;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          setBabyPhotoUrl(dataUrl);
+          return;
+        }
+        const side = Math.min(img.width, img.height);
+        const sx = (img.width - side) / 2;
+        const sy = (img.height - side) / 2;
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+        setBabyPhotoUrl(canvas.toDataURL('image/jpeg', 0.9));
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const birthLimits = birthDateBounds();
+  const birthError = record.birthDate ? validateBirthDate(record.birthDate) : null;
+  const de = t.onboarding?.dateErrors;
+  const birthErrorText = birthError === 'future'
+    ? (de?.birthFuture || (language === 'en' ? 'Date of birth cannot be in the future.' : 'A data de nascimento não pode ser no futuro.'))
+    : birthError === 'tooOld'
+    ? (de?.birthTooOld || (language === 'en' ? 'Child age exceeds 5 years.' : 'A idade informada ultrapassa 5 anos.'))
+    : birthError
+    ? (de?.birthInvalid || (language === 'en' ? 'Invalid date.' : 'Data inválida.'))
+    : null;
 
   // Manipulação de campos do formulário
   const handleChange = (field: keyof BirthRecord, value: any) => {
@@ -65,14 +112,15 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
   // Salvar ficha
   const handleSave = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    if (birthError) return;
     birthRecordStorage.saveBirthRecord(record, true);
     setSaveSuccess(true);
 
-    if (onProfileUpdated && (record.babyName || record.birthDate)) {
+    if (onProfileUpdated && (record.babyName || (record.birthDate && !birthError))) {
       onProfileUpdated({
         ...profile,
         babyName: record.babyName || profile.babyName,
-        birthDate: record.birthDate || profile.birthDate,
+        birthDate: (!birthError && record.birthDate) ? record.birthDate : profile.birthDate,
         updatedAt: new Date().toISOString()
       });
     }
@@ -191,78 +239,123 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
     ctx.fillStyle = '#7A6F68';
     ctx.fillText(t.birthRecord.cardSubtitle, width / 2, 245);
 
-    // Ilustração botânica artística central (Canvas paths)
+    // Ilustração central: foto circular do bebê (se enviada) ou ilustração botânica com berço
     const centerX = width / 2;
     const centerY = 410;
+    let photoRendered = false;
 
-    // Fundo suave da ilustração
-    ctx.fillStyle = '#F4ECE4';
-    ctx.beginPath();
-    ctx.ellipse(centerX, centerY, 280, 140, 0, 0, Math.PI * 2);
-    ctx.fill();
+    if (babyPhotoUrl) {
+      try {
+        const photoImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = babyPhotoUrl;
+        });
+        const radius = 128;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
 
-    // Raminhos botânicos laterais (verde sálvia e folhas suaves)
-    ctx.strokeStyle = '#5E8068';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
+        const side = Math.min(photoImg.width, photoImg.height);
+        const sx = (photoImg.width - side) / 2;
+        const sy = (photoImg.height - side) / 2;
+        ctx.drawImage(
+          photoImg,
+          sx,
+          sy,
+          side,
+          side,
+          centerX - radius,
+          centerY - radius,
+          radius * 2,
+          radius * 2
+        );
+        ctx.restore();
 
-    // Ramo esquerdo
-    ctx.beginPath();
-    ctx.moveTo(centerX - 120, centerY + 30);
-    ctx.quadraticCurveTo(centerX - 240, centerY - 20, centerX - 300, centerY - 80);
-    ctx.stroke();
-
-    // Folhinhas esquerdas
-    ctx.fillStyle = '#7E9F88';
-    for (let i = 0; i < 5; i++) {
-      const lx = centerX - 150 - i * 30;
-      const ly = centerY + 10 - i * 18;
-      ctx.beginPath();
-      ctx.ellipse(lx, ly, 16, 9, -0.6, 0, Math.PI * 2);
-      ctx.fill();
+        ctx.strokeStyle = '#EAD8C7';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        photoRendered = true;
+      } catch {
+        photoRendered = false;
+      }
     }
 
-    // Ramo direito
-    ctx.beginPath();
-    ctx.moveTo(centerX + 120, centerY + 30);
-    ctx.quadraticCurveTo(centerX + 240, centerY - 20, centerX + 300, centerY - 80);
-    ctx.stroke();
-
-    // Folhinhas direitas
-    for (let i = 0; i < 5; i++) {
-      const rx = centerX + 150 + i * 30;
-      const ry = centerY + 10 - i * 18;
+    if (!photoRendered) {
+      // Fundo suave da ilustração
+      ctx.fillStyle = '#F4ECE4';
       ctx.beginPath();
-      ctx.ellipse(rx, ry, 16, 9, 0.6, 0, Math.PI * 2);
+      ctx.ellipse(centerX, centerY, 280, 140, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Raminhos botânicos laterais (verde sálvia e folhas suaves)
+      ctx.strokeStyle = '#5E8068';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+
+      // Ramo esquerdo
+      ctx.beginPath();
+      ctx.moveTo(centerX - 120, centerY + 30);
+      ctx.quadraticCurveTo(centerX - 240, centerY - 20, centerX - 300, centerY - 80);
+      ctx.stroke();
+
+      // Folhinhas esquerdas
+      ctx.fillStyle = '#7E9F88';
+      for (let i = 0; i < 5; i++) {
+        const lx = centerX - 150 - i * 30;
+        const ly = centerY + 10 - i * 18;
+        ctx.beginPath();
+        ctx.ellipse(lx, ly, 16, 9, -0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Ramo direito
+      ctx.beginPath();
+      ctx.moveTo(centerX + 120, centerY + 30);
+      ctx.quadraticCurveTo(centerX + 240, centerY - 20, centerX + 300, centerY - 80);
+      ctx.stroke();
+
+      // Folhinhas direitas
+      for (let i = 0; i < 5; i++) {
+        const rx = centerX + 150 + i * 30;
+        const ry = centerY + 10 - i * 18;
+        ctx.beginPath();
+        ctx.ellipse(rx, ry, 16, 9, 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Berço acolhedor central estilizado
+      ctx.strokeStyle = '#9B5E46';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.roundRect(centerX - 90, centerY - 45, 180, 90, 16);
+      ctx.stroke();
+      ctx.fillStyle = '#FFFDF9';
+      ctx.fill();
+
+      // Cabeceira do berço
+      ctx.beginPath();
+      ctx.moveTo(centerX - 90, centerY - 65);
+      ctx.lineTo(centerX - 90, centerY + 45);
+      ctx.moveTo(centerX + 90, centerY - 65);
+      ctx.lineTo(centerX + 90, centerY + 45);
+      ctx.stroke();
+
+      // Coração coral de acolhimento
+      ctx.fillStyle = '#C76B50';
+      ctx.beginPath();
+      const hx = centerX;
+      const hy = centerY - 5;
+      ctx.moveTo(hx, hy);
+      ctx.bezierCurveTo(hx - 14, hy - 14, hx - 24, hy + 4, hx, hy + 24);
+      ctx.bezierCurveTo(hx + 24, hy + 4, hx + 14, hy - 14, hx, hy);
       ctx.fill();
     }
-
-    // Berço acolhedor central estilizado
-    ctx.strokeStyle = '#9B5E46';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.roundRect(centerX - 90, centerY - 45, 180, 90, 16);
-    ctx.stroke();
-    ctx.fillStyle = '#FFFDF9';
-    ctx.fill();
-
-    // Cabeceira do berço
-    ctx.beginPath();
-    ctx.moveTo(centerX - 90, centerY - 65);
-    ctx.lineTo(centerX - 90, centerY + 45);
-    ctx.moveTo(centerX + 90, centerY - 65);
-    ctx.lineTo(centerX + 90, centerY + 45);
-    ctx.stroke();
-
-    // Coração coral de acolhimento
-    ctx.fillStyle = '#C76B50';
-    ctx.beginPath();
-    const hx = centerX;
-    const hy = centerY - 5;
-    ctx.moveTo(hx, hy);
-    ctx.bezierCurveTo(hx - 14, hy - 14, hx - 24, hy + 4, hx, hy + 24);
-    ctx.bezierCurveTo(hx + 24, hy + 4, hx + 14, hy - 14, hx, hy);
-    ctx.fill();
 
     // Nome do bebê
     const babyNameText = record.babyName?.trim() || (language === 'en' ? 'Our Baby' : 'Nosso Bebê');
@@ -501,8 +594,18 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
                   type="date"
                   value={record.birthDate || ''}
                   onChange={(e) => handleChange('birthDate', e.target.value)}
+                  min={birthLimits.min}
+                  max={birthLimits.max}
+                  aria-invalid={!!birthErrorText}
+                  aria-describedby={birthErrorText ? 'birthDateError' : undefined}
                   className="birth-input"
                 />
+                {birthErrorText && (
+                  <span id="birthDateError" style={{ color: '#D9534F', fontSize: '0.8rem', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <AlertTriangle size={14} />
+                    {birthErrorText}
+                  </span>
+                )}
               </div>
 
               <div className="birth-field-group">
@@ -706,7 +809,7 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
 
           {/* Botão de Salvar */}
           <div className="birth-form-actions">
-            <button type="submit" className="birth-save-btn">
+            <button type="submit" disabled={!!birthError} className="birth-save-btn">
               <Check size={18} />
               <span>{t.birthRecord.saveBtn}</span>
             </button>
@@ -778,6 +881,36 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
                 <span>{t.birthRecord.toggleHospital}</span>
               </label>
             </div>
+
+            {/* Opção de foto circular do bebê */}
+            <div className="customize-photo-row">
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoSelect}
+                style={{ display: 'none' }}
+              />
+              <button
+                type="button"
+                onClick={() => photoInputRef.current?.click()}
+                className="btn btn-secondary customize-photo-btn"
+              >
+                <Camera size={15} />
+                <span>{babyPhotoUrl ? t.birthRecord.changePhotoBtn : t.birthRecord.addPhotoBtn}</span>
+              </button>
+              {babyPhotoUrl && (
+                <button
+                  type="button"
+                  onClick={() => setBabyPhotoUrl(null)}
+                  className="btn btn-secondary customize-photo-reset"
+                >
+                  <RotateCcw size={14} />
+                  <span>{t.birthRecord.removePhotoBtn}</span>
+                </button>
+              )}
+              <span className="customize-photo-hint">{t.birthRecord.photoHint}</span>
+            </div>
           </div>
 
           {/* O Cartão Visual Inspirado na Referência */}
@@ -789,47 +922,57 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
                 <p className="card-subtitle">{t.birthRecord.cardSubtitle}</p>
               </div>
 
-              {/* Vinheta Artística Aquarelada/Botânica */}
+              {/* Vinheta Artística: Foto circular do bebê (se enviada) ou ilustração botânica */}
               <div className="card-artwork-frame">
-                <div className="card-botanical-bg">
-                  <svg
-                    viewBox="0 0 280 140"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="card-botanical-svg"
-                    aria-hidden="true"
-                  >
-                    {/* Folhagens suaves e elementos aconchegantes */}
-                    <ellipse cx="140" cy="70" rx="130" ry="60" fill="#F4ECE4" />
-                    {/* Ramo verde sálvia esquerdo */}
-                    <path
-                      d="M80 85 C40 70 20 40 10 20"
-                      stroke="#5E8068"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
+                {babyPhotoUrl ? (
+                  <div className="card-baby-photo-circle">
+                    <img
+                      src={babyPhotoUrl}
+                      alt={record.babyName?.trim() || (language === 'en' ? 'Baby photo' : 'Foto do bebê')}
+                      className="card-baby-photo-img"
                     />
-                    <ellipse cx="45" cy="62" rx="10" ry="5.5" transform="rotate(-30 45 62)" fill="#7E9F88" />
-                    <ellipse cx="25" cy="40" rx="9" ry="5" transform="rotate(-40 25 40)" fill="#7E9F88" />
-                    {/* Ramo verde sálvia direito */}
-                    <path
-                      d="M200 85 C240 70 260 40 270 20"
-                      stroke="#5E8068"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                    <ellipse cx="235" cy="62" rx="10" ry="5.5" transform="rotate(30 235 62)" fill="#7E9F88" />
-                    <ellipse cx="255" cy="40" rx="9" ry="5" transform="rotate(40 255 40)" fill="#7E9F88" />
-                    {/* Berço em madeira delicada */}
-                    <rect x="95" y="45" width="90" height="48" rx="8" stroke="#9B5E46" strokeWidth="2.5" fill="#FFFDF9" />
-                    <line x1="95" y1="35" x2="95" y2="93" stroke="#9B5E46" strokeWidth="2.5" />
-                    <line x1="185" y1="35" x2="185" y2="93" stroke="#9B5E46" strokeWidth="2.5" />
-                    {/* Pequeno coração coral central */}
-                    <path
-                      d="M140 62 C135 55 127 61 140 73 C153 61 145 55 140 62 Z"
-                      fill="#C76B50"
-                    />
-                  </svg>
-                </div>
+                  </div>
+                ) : (
+                  <div className="card-botanical-bg">
+                    <svg
+                      viewBox="0 0 280 140"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="card-botanical-svg"
+                      aria-hidden="true"
+                    >
+                      {/* Folhagens suaves e elementos aconchegantes */}
+                      <ellipse cx="140" cy="70" rx="130" ry="60" fill="#F4ECE4" />
+                      {/* Ramo verde sálvia esquerdo */}
+                      <path
+                        d="M80 85 C40 70 20 40 10 20"
+                        stroke="#5E8068"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                      />
+                      <ellipse cx="45" cy="62" rx="10" ry="5.5" transform="rotate(-30 45 62)" fill="#7E9F88" />
+                      <ellipse cx="25" cy="40" rx="9" ry="5" transform="rotate(-40 25 40)" fill="#7E9F88" />
+                      {/* Ramo verde sálvia direito */}
+                      <path
+                        d="M200 85 C240 70 260 40 270 20"
+                        stroke="#5E8068"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                      />
+                      <ellipse cx="235" cy="62" rx="10" ry="5.5" transform="rotate(30 235 62)" fill="#7E9F88" />
+                      <ellipse cx="255" cy="40" rx="9" ry="5" transform="rotate(40 255 40)" fill="#7E9F88" />
+                      {/* Berço em madeira delicada */}
+                      <rect x="95" y="45" width="90" height="48" rx="8" stroke="#9B5E46" strokeWidth="2.5" fill="#FFFDF9" />
+                      <line x1="95" y1="35" x2="95" y2="93" stroke="#9B5E46" strokeWidth="2.5" />
+                      <line x1="185" y1="35" x2="185" y2="93" stroke="#9B5E46" strokeWidth="2.5" />
+                      {/* Pequeno coração coral central */}
+                      <path
+                        d="M140 62 C135 55 127 61 140 73 C153 61 145 55 140 62 Z"
+                        fill="#C76B50"
+                      />
+                    </svg>
+                  </div>
+                )}
               </div>
 
               {/* Nome e Data */}

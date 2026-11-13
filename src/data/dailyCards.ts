@@ -1,4 +1,4 @@
-import { SupportedLanguage } from '../types';
+import type { SupportedLanguage } from '../types/index.ts';
 
 // Cartas de acolhimento da tela Hoje. Sem orientação clínica, sem tom de aviso oficial,
 // sem culpa e sem supor o gênero do bebê nem que quem usa é a mãe.

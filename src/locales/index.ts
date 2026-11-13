@@ -1,7 +1,7 @@
-import { SupportedLanguage, UserProfile } from '../types';
-import { TranslationDictionary } from './types';
-import { ptBR } from './pt-BR';
-import { en } from './en';
+import { SupportedLanguage, UserProfile } from '../types/index.ts';
+import { TranslationDictionary } from './types.ts';
+import { ptBR } from './pt-BR.ts';
+import { en } from './en.ts';
 
 export const translations: Record<SupportedLanguage, TranslationDictionary> = {
   'pt-BR': ptBR,

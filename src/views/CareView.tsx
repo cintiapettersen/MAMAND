@@ -31,6 +31,12 @@ interface CareViewProps {
   initialCategory?: string;
 }
 
+const normalizeCategory = (category?: string): string => {
+  if (!category || category === 'all') return 'all';
+  if (category === 'wellbeing') return 'mom';
+  return category;
+};
+
 const matchesCategory = (item: ContentItem, category: string) => {
   if (category === 'all') return true;
   if (category === 'mom' || category === 'wellbeing') {
@@ -49,17 +55,20 @@ export const CareView: React.FC<CareViewProps> = ({
   initialCategory
 }) => {
   const { language, t } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => normalizeCategory(initialCategory));
   const [activityNote, setActivityNote] = useState<string>('');
   const [activeModalId, setActiveModalId] = useState<string | null>(null);
 
   // Controle de artigos expandidos individualmente
   const [expandedArticles, setExpandedArticles] = useState<Record<string, boolean>>({});
 
-  React.useEffect(() => {
-    if (initialCategory) {
-      setSelectedCategory(initialCategory);
+  useEffect(() => {
+    const nextCat = normalizeCategory(initialCategory);
+    setSelectedCategory(nextCat);
+    if (trackRef.current) {
+      trackRef.current.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior });
     }
+    setCurrentIndex(0);
   }, [initialCategory]);
 
   const toggleExpand = (artId: string) => {
@@ -125,9 +134,18 @@ export const CareView: React.FC<CareViewProps> = ({
 
   // Ao trocar de filtro, volta para o primeiro cartão
   useEffect(() => {
-    trackRef.current?.scrollTo({ left: 0 });
+    if (trackRef.current) {
+      trackRef.current.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior });
+    }
     setCurrentIndex(0);
   }, [selectedCategory]);
+
+  // Se a categoria selecionada não for 'all' e não contiver nenhum artigo visível, reverte para 'all'
+  useEffect(() => {
+    if (selectedCategory !== 'all' && filteredArticles.length === 0 && phaseArticles.length > 0) {
+      setSelectedCategory('all');
+    }
+  }, [selectedCategory, filteredArticles.length, phaseArticles.length]);
 
   // Distância entre o início de um cartão e o próximo (largura + espaço)
   const getSlideStep = () => {

@@ -1,4 +1,4 @@
-import { SupportedLanguage } from '../types';
+import type { SupportedLanguage } from '../types/index.ts';
 
 // Números de emergência por país. Sem país informado, o app não mostra número nenhum:
 // só orienta a ligar para o serviço de emergência local (nunca supõe o Brasil).
