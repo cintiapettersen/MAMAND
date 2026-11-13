@@ -1,0 +1,32 @@
+{
+  "name": "mamand",
+  "private": true,
+  "version": "0.5.0",
+  "type": "module",
+  "description": "MAMAND — app local-first de apoio aos primeiros 1.000 dias (PWA)",
+  "scripts": {
+    "dev": "vite",
+    "build:privacy": "node scripts/buildPrivacyHtml.js",
+    "build": "node scripts/buildPrivacyHtml.js && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "test": "node --test test/backupRestore.test.ts test/birthRecord.test.ts test/clinicalKnowledgeSecurity.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/ragMilestonesCoverage.test.ts test/privacyLocalWipe.test.ts test/privacyPolicy.test.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "CREATIVE DESIGN PETTERSEN LTDA",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}
