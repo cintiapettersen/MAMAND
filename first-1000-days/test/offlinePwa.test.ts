@@ -43,18 +43,45 @@ test('2. Validação da estratégia do Service Worker e isolamento de privacidad
   assert.match(swContent, /caches\.delete\(key\)/, 'Deve limpar versões anteriores do cache no activate');
 });
 
-test('3. Eliminação de dependência bloqueadora de rede para fontes em index.html', () => {
+test('3. Ausência de requisições externas ao Google Fonts e fontes auto-hospedadas em public/fonts', () => {
   const htmlContent = fs.readFileSync(path.resolve('index.html'), 'utf-8');
+  const cssContent = fs.readFileSync(path.resolve('src/styles/index.css'), 'utf-8');
 
-  // Verifica que a folha de estilo externa não bloqueia renderização
+  // Nenhuma referência ao Google Fonts no HTML ou CSS
   assert.ok(
-    htmlContent.includes('media="print"') && htmlContent.includes("this.media='all'"),
-    'Fonte externa do Google deve ser não-bloqueadora com media="print" e onload switch'
+    !htmlContent.includes('fonts.googleapis.com') && !htmlContent.includes('fonts.gstatic.com'),
+    'index.html não deve conter requisições externas ao Google Fonts'
+  );
+  assert.ok(
+    !cssContent.includes('fonts.googleapis.com') && !cssContent.includes('fonts.gstatic.com'),
+    'src/styles/index.css não deve conter requisições externas ao Google Fonts'
   );
   assert.ok(
     htmlContent.includes('<link rel="manifest" href="/manifest.webmanifest" />'),
     'index.html deve referenciar o manifesto PWA'
   );
+
+  // Verifica existência física das fontes auto-hospedadas e da licença OFL
+  const requiredFontFiles = [
+    'fraunces-latin.woff2',
+    'fraunces-latin-ext.woff2',
+    'nunito-latin.woff2',
+    'nunito-latin-ext.woff2',
+    'plus-jakarta-sans-latin.woff2',
+    'plus-jakarta-sans-latin-ext.woff2',
+    'LICENSES.txt'
+  ];
+  for (const fontFile of requiredFontFiles) {
+    assert.ok(
+      fs.existsSync(path.resolve('public/fonts', fontFile)),
+      `Arquivo de fonte local public/fonts/${fontFile} deve existir`
+    );
+  }
+
+  // Verifica @font-face apontando para /fonts/
+  assert.match(cssContent, /url\('\/fonts\/fraunces-latin\.woff2'\)/, 'CSS deve carregar Fraunces localmente');
+  assert.match(cssContent, /url\('\/fonts\/nunito-latin\.woff2'\)/, 'CSS deve carregar Nunito localmente');
+  assert.match(cssContent, /url\('\/fonts\/plus-jakarta-sans-latin\.woff2'\)/, 'CSS deve carregar Plus Jakarta Sans localmente');
 });
 
 test('4. Validação de independência offline do IndexedDB e fallback local do assistente', async () => {

@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "test": "node --test test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/ragMilestonesCoverage.test.ts"
+    "test": "node --test test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/ragMilestonesCoverage.test.ts test/privacyLocalWipe.test.ts"
   },
   "engines": {
     "node": ">=20"
