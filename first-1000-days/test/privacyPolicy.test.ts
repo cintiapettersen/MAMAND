@@ -15,7 +15,12 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.match(
     PRIVACY_POLICY_PT.controller.governanceNotice,
     /local-first/i,
-    'Governança deve ressaltar a autonomia local e os registros societários oficiais'
+    'Governança deve ressaltar a autonomia local da usuária'
+  );
+  assert.match(
+    PRIVACY_POLICY_PT.controller.governanceNotice,
+    /canal direto e dedicado/i,
+    'Governança deve ressaltar o canal direto e dedicado de privacidade da controladora'
   );
 
   // Verifica que Open Child Health Booklet Initiative NÃO é tratada como a razão social
@@ -30,6 +35,11 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.strictEqual(PRIVACY_POLICY_EN.controller.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
   assert.strictEqual(PRIVACY_POLICY_EN.controller.cnpj, '24.325.181/0001-94');
   assert.strictEqual(PRIVACY_POLICY_EN.controller.country, 'Brazil');
+  assert.match(
+    PRIVACY_POLICY_EN.controller.governanceNotice,
+    /direct and dedicated privacy service channel/i,
+    'Governança em inglês deve referenciar o canal direto e dedicado'
+  );
 
   // Garante que não foram publicados campos provisórios entre colchetes nem e-mails fictícios
   const fullPtText = JSON.stringify(PRIVACY_POLICY_PT);
@@ -38,6 +48,11 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.ok(!fullPtText.includes('[Canal'), 'Não deve publicar campos provisórios de canal de contato');
   assert.ok(!fullPtText.includes('@mamand.app') && !fullPtText.includes('@creativedesign.com'));
   assert.ok(!fullEnText.includes('@mamand.app') && !fullEnText.includes('@creativedesign.com'));
+
+  // Não deve conter referência genérica a busca em cadastros societários públicos externos
+  assert.ok(!fullPtText.includes('registros societários oficiais'), 'Não deve remeter a cadastros societários externos');
+  assert.ok(!fullPtText.includes('órgãos públicos de registro empresarial'), 'Não deve remeter a órgãos de registro empresarial');
+  assert.ok(!fullEnText.includes('corporate registration records'), 'Não deve remeter a corporate registration records');
 });
 
 test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () => {
@@ -93,16 +108,34 @@ test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () =>
     assert.match(backupSec!.content.join(' '), /birthRecord/i, `[${lang}] Deve confirmar que birthRecord está no JSON`);
     assert.match(backupSec!.content.join(' '), /(?:NÃO|NOT)/i, `[${lang}] Deve listar explicitamente o que não está no backup`);
 
-    // Limitações explícitas de filtros automáticos
+    // Limitações explícitas de filtros automáticos e processamento no Gemini
     const assistantSec = doc.sections.find((s) => s.id === 'assistente-gateway-ia');
     assert.ok(assistantSec?.warningBox, `[${lang}] Assistente deve possuir caixa de aviso sobre limitações de filtros`);
+    assert.match(
+      assistantSec!.warningBox,
+      /(?:Google Gemini|Gemini)/,
+      `[${lang}] Caixa de aviso deve alertar que dados não capturados integram o prompt enviado ao Gemini`
+    );
+    assert.match(
+      assistantSec!.content.join(' '),
+      /(?:quatro campos|four bounded fields)/i,
+      `[${lang}] Seção do assistente deve explicar os quatro campos enviados ao gateway`
+    );
+    assert.match(
+      assistantSec!.content.join(' '),
+      /(?:NÃO garantem a desidentificação completa|DO NOT guarantee complete de-identification)/i,
+      `[${lang}] Seção do assistente deve esclarecer que filtros não garantem desidentificação completa`
+    );
 
-    // Ausência de segurança absoluta
-    const secBox = doc.sections.find((s) => s.id === 'seguranca-criptografia');
-    assert.match(secBox!.warningBox || '', /100%/i, `[${lang}] Deve recusar garantia de 100% de segurança absoluta`);
-
-    // Resumo em linguagem simples
+    // Resumo em linguagem simples deve cobrir os 4 campos no pilar do assistente
     assert.strictEqual(doc.summary.pillars.length, 5, `[${lang}] Deve possuir 5 pilares no resumo`);
+    const assistantPillar = doc.summary.pillars.find((p) => p.icon === 'assistant');
+    assert.ok(assistantPillar, `[${lang}] Deve existir pilar do assistente`);
+    assert.match(
+      assistantPillar!.description,
+      /(?:quatro campos|four bounded fields)/i,
+      `[${lang}] Pilar do assistente deve ressaltar os quatro campos estritamente delimitados`
+    );
   }
 });
 

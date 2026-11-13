@@ -100,6 +100,22 @@ function formatParagraph(p) {
   out = out.replace(/^(Limitations regarding infrastructure providers:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservation of offline app shell:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservation of downloaded files:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Governança e canal direto de privacidade:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Governance and direct privacy channel:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Nota de contexto e governança:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Governance and lineage context:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Canal direto e funcional de privacidade:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Direct and functional privacy channel:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Minimização estrita dos quatro campos transmitidos ao Gateway:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Strict data minimization across the four fields transmitted to the Gateway:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Filtros automáticos de privacidade \(PII Scrubber\) e limitações inerentes:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Automated privacy filter \(PII Scrubber\) and inherent limitations:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Processamento pelo Google Gemini quando ativado:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Google Gemini processing when active:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Exercício direto e autônomo de direitos:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Direct and autonomous exercise of rights:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Recomendações de segurança:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Security recommendations:)/, '<strong>$1</strong>');
   return out;
 }
 
