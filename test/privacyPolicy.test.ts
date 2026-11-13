@@ -268,3 +268,40 @@ test('5. Ausência de Analytics, Rastreamento Comercial e Coleta de Leads', () =
   assert.strictEqual(allDeps['posthog-js'], undefined);
   assert.strictEqual(allDeps['@amplitude/analytics-browser'], undefined);
 });
+
+test('6. Consistência entre a Política de Privacidade e o Formato Real do Backup (schemaVersion 1.1)', () => {
+  // 1. Validação em PT-BR
+  const sec7Pt = PRIVACY_POLICY_PT.sections.find((s) => s.id === 'exportacao-restauracao')!;
+  const ptContent = sec7Pt.content.join(' ');
+  assert.match(ptContent, /schemaVersion 1\.1/, 'PT-BR deve referenciar schemaVersion 1.1 na exportação');
+  assert.match(ptContent, /healthChecks|Exames e Triagens/i, 'PT-BR deve mencionar exames e triagens no backup');
+  assert.match(ptContent, /schemaVersion 1\.0/, 'PT-BR deve citar compatibilidade com restauração de arquivos 1.0');
+
+  const sec3Pt = PRIVACY_POLICY_PT.sections.find((s) => s.id === 'categorias-dados')!;
+  const ptCatContent = sec3Pt.content.join(' ');
+  assert.match(ptCatContent, /Exames, triagens e consultas de saúde/i, 'PT-BR deve incluir categoria de exames e triagens');
+
+  // 2. Validação em EN
+  const sec7En = PRIVACY_POLICY_EN.sections.find((s) => s.id === 'exportacao-restauracao')!;
+  const enContent = sec7En.content.join(' ');
+  assert.match(enContent, /schemaVersion 1\.1/, 'EN deve referenciar schemaVersion 1.1 na exportação');
+  assert.match(enContent, /healthChecks|Health Checks/i, 'EN deve mencionar health checks no backup');
+  assert.match(enContent, /schemaVersion 1\.0/, 'EN deve citar compatibilidade com restauração de arquivos 1.0');
+
+  const sec3En = PRIVACY_POLICY_EN.sections.find((s) => s.id === 'categorias-dados')!;
+  const enCatContent = sec3En.content.join(' ');
+  assert.match(enCatContent, /Health checks, screenings, and medical appointments/i, 'EN deve incluir categoria de health checks');
+
+  // 3. Validação no HTML estático gerado
+  const htmlPath = path.resolve('public/privacy.html');
+  const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+  assert.match(htmlContent, /schemaVersion 1\.1/, 'privacy.html deve conter schemaVersion 1.1');
+  assert.match(htmlContent, /healthChecks/i, 'privacy.html deve citar healthChecks');
+
+  // 4. Validação cruzada com a implementação do exportador no código-fonte
+  const idbSrc = fs.readFileSync(path.resolve('src/services/indexedDbService.ts'), 'utf-8');
+  assert.match(idbSrc, /schemaVersion:\s*'1\.1'/, 'indexedDbService deve exportar schemaVersion 1.1');
+  assert.match(idbSrc, /healthChecks/, 'indexedDbService deve incluir healthChecks na carga JSON');
+  assert.match(idbSrc, /records/, 'indexedDbService deve incluir records na carga JSON');
+  assert.match(idbSrc, /birthRecord/, 'indexedDbService deve incluir birthRecord na carga JSON');
+});

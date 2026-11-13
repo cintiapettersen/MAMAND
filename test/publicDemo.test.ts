@@ -55,6 +55,7 @@ test('Cuidados: instruções só com revisão profissional registrada (produçã
   assert.strictEqual(resolveCareFullTextEnabled({ DEV: true }), true);
   assert.strictEqual(canShowCareInstructions({ validationStatus: 'pending_review' }, false), false);
   assert.strictEqual(canShowCareInstructions({ validationStatus: 'source_based' }, false), false);
+  assert.strictEqual(canShowCareInstructions({ validationStatus: 'verified' as any }, false), false, '"verified" indica fonte bibliográfica verificada, não revisão clínica; instruções bloqueadas');
   assert.strictEqual(canShowCareInstructions({ validationStatus: 'clinically_reviewed' }, false), false, 'sem registro de revisão');
   assert.strictEqual(
     canShowCareInstructions({ validationStatus: 'clinically_reviewed', clinicalReview: {} as any }, false),
@@ -118,5 +119,27 @@ test('Cuidados: cabeçalho de produção fala em biblioteca em revisão, sem "or
   assert.strictEqual(ptBR.care.titleUnderReview, 'Biblioteca de temas');
   for (const s of [ptBR.care.stageSubtitleUnderReview('X'), en.care.stageSubtitleUnderReview('X')]) {
     assert.ok(!/prátic|practic|evidence|evidência/i.test(s), s);
+  }
+});
+
+test('Governança Clínica: Ausência de falsas declarações de validação médica na interface', () => {
+  const files = [
+    ...['src/locales/pt-BR.ts', 'src/locales/en.ts'],
+    ...fs.readdirSync('src/views').map((f) => `src/views/${f}`),
+    ...fs.readdirSync('src/components').map((f) => `src/components/${f}`)
+  ];
+  const forbidden = /\bclinicamente\s+validad|clinically\s+validated|validad[ao]\s+por\s+(?:m[eé]dic|profission)/i;
+  for (const f of files) {
+    const text = fs.readFileSync(f, 'utf-8');
+    assert.ok(!forbidden.test(text), `${f} contém afirmação indevida de validação médica: "${text.match(forbidden)?.[0]}"`);
+  }
+});
+
+test('Governança Clínica: Conteúdos suspensos permanecem excluídos e protegidos', async () => {
+  const { getContentCatalog } = await import('../src/data/contents.ts');
+  for (const lang of ['pt-BR', 'en'] as const) {
+    const catalog = getContentCatalog(lang, { includeDevPending: false });
+    // Nenhum item suspenso deve estar no catálogo público
+    assert.ok(!catalog.some((c) => c.suspendedReason), `Catálogo público ${lang} não deve exibir itens suspensos`);
   }
 });

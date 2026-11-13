@@ -70,7 +70,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       {
         icon: 'control',
         title: 'Controle total nas suas mãos',
-        description: 'Você pode exportar seus registros em arquivo JSON (incluindo Jornada e Ficha de Nascimento) ou resumo para impressão a qualquer momento, ou apagar todos os dados locais deste aparelho com um único toque.'
+        description: 'Você pode exportar seus registros em arquivo JSON (incluindo Jornada, Ficha de Nascimento e Exames/Triagens de saúde) ou resumo para impressão a qualquer momento, ou apagar todos os dados locais deste aparelho com um único toque.'
       },
       {
         icon: 'no-ads',
@@ -95,7 +95,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       title: '2. Arquitetura Local-First e Armazenamento no Dispositivo',
       content: [
         'O MAMAND foi concebido sob o modelo "local-first" (prioridade local). Isso significa que as informações que você insere ao longo da rotina com seu bebê são gravadas diretamente no próprio navegador web do seu celular ou computador, e não em servidores centrais operados por nós.',
-        'Linha do tempo e memórias da Jornada: O aplicativo utiliza o mecanismo de armazenamento local do navegador (IndexedDB) para guardar com segurança as anotações diárias, registros de amamentação, sono, trocas de fraldas e marcos do desenvolvimento da Jornada.',
+        'Linha do tempo, consultas e exames de saúde: O aplicativo utiliza o mecanismo de armazenamento local do navegador (IndexedDB) para guardar com segurança as anotações diárias da Jornada, consultas de saúde agendadas ou realizadas, registros de amamentação, sono, trocas de fraldas, marcos do desenvolvimento e o acompanhamento de exames e triagens neonatais.',
         'Preferências e módulos de apoio familiar: O armazenamento local do navegador (localStorage) guarda de maneira reservada as informações de apoio do dia a dia: dados do perfil de acompanhamento, informações da ficha de nascimento do bebê, contatos de confiança da sua rede de apoio, lista da mala da maternidade, temporizador de descanso materno, cartões diários lidos e preferência de idioma.'
       ]
     },
@@ -108,7 +108,8 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         'b) Dados sobre o bebê e ciclo gestacional: Nome ou apelido do bebê (opcional), ciclo atual (gestação ou puerpério/primeira infância), semanas de gestação ou data de nascimento/data prevista do parto (DPP) para cálculo de dias de vida e calibragem de marcos do desenvolvimento.',
         'c) Dados de saúde e ficha de nascimento do bebê: Peso ao nascer (em gramas), comprimento ao nascer (em centímetros), perímetro cefálico (em centímetros), horário do nascimento, nome da maternidade ou hospital, cidade e país de nascimento, tipo de parto (vaginal, cesárea, assistido), tipo sanguíneo, alergias declaradas e condições de saúde observadas.',
         'd) Registros diários da Jornada e memórias familiares: Anotações livres sobre a rotina, registros de aleitamento/alimentação, sono, trocas de fraldas, marcos motores e cognitivos, observação de sintomas leves e fotografias de memórias familiares salvas localmente.',
-        'e) Rede de apoio e organização familiar: Nomes de contatos de confiança, vínculos de parentesco e telefones cadastrados pela própria usuária para facilitação de pedidos de ajuda via SMS/WhatsApp a partir de seu próprio aparelho, além da lista de itens da mala de maternidade.'
+        'e) Rede de apoio e organização familiar: Nomes de contatos de confiança, vínculos de parentesco e telefones cadastrados pela própria usuária para facilitação de pedidos de ajuda via SMS/WhatsApp a partir de seu próprio aparelho, além da lista de itens da mala de maternidade.',
+        'f) Exames, triagens e consultas de saúde: Registros de consultas de pré-natal e puericultura (datas, especialidade/profissional, local, orientações e anotações de cuidado), bem como o histórico de exames laboratoriais, ultrassonografias e triagens neonatais recomendadas por país (ex.: teste do pezinho, triagem auditiva, visual, cardíaca), contendo datas de realização, resultados observados e próximos passos.'
       ]
     },
     {
@@ -146,10 +147,10 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       title: '7. Exportação, Restauração e Escopo dos Backups',
       content: [
         'O MAMAND oferece ferramentas de soberania dos dados para que você possa retirar suas informações do aplicativo quando desejar:',
-        'a) Exportação em formato aberto JSON: Gera um arquivo estruturado padronizado (schemaVersion 1.0) contendo os registros históricos da Jornada (records) E a Ficha de Nascimento do bebê (birthRecord, quando preenchida pela usuária).',
+        'a) Exportação em formato aberto JSON: Gera um arquivo estruturado padronizado (schemaVersion 1.1) contendo os registros históricos da Jornada (records), a Ficha de Nascimento do bebê (birthRecord, quando preenchida pela usuária) E os Exames e Triagens de saúde acompanhados (healthChecks).',
         'b) Resumo para leitura TXT: Gera um relatório textual simples e legível de suas anotações para impressão ou envio a profissionais de saúde.',
-        'c) Restauração de backup JSON: Permite importar um arquivo previamente exportado, oferecendo os modos de mesclagem (adiciona registros novos preservando os atuais) ou substituição completa (apaga os registros locais e carrega os do arquivo). Ao restaurar, a Ficha de Nascimento presente no backup também é restabelecida.',
-        'IMPORTANTE — Dados que NÃO estão incluídos no backup JSON atual: O arquivo de backup JSON schema 1.0 contempla a linha do tempo da Jornada e a Ficha de Nascimento, mas NÃO inclui as preferências gerais de perfil da mãe (nome de exibição, país, foco inicial), os contatos da rede de apoio, os itens marcados na mala de maternidade, o temporizador de descanso ou o histórico de leitura de conteúdos educativos, que permanecem exclusivamente no armazenamento local do navegador.'
+        'c) Restauração de backup JSON: Permite importar um arquivo previamente exportado (suportando tanto o formato atual schemaVersion 1.1 quanto arquivos anteriores no formato schemaVersion 1.0), oferecendo os modos de mesclagem (adiciona registros novos preservando os atuais) ou substituição completa (apaga os registros locais e carrega os do arquivo). Ao restaurar, a Ficha de Nascimento e os Exames/Triagens presentes no backup também são restabelecidos.',
+        'IMPORTANTE — Escopo do backup JSON atual: O arquivo de backup JSON schema 1.1 contempla a linha do tempo da Jornada, consultas de saúde, a Ficha de Nascimento e os Exames/Triagens de saúde, mas NÃO inclui as preferências gerais de perfil da mãe (nome de exibição, país, foco inicial), os contatos da rede de apoio, os itens marcados na mala de maternidade, o temporizador de descanso ou o histórico de leitura de conteúdos educativos, que permanecem exclusivamente no armazenamento local do navegador.'
       ]
     },
     {
@@ -245,7 +246,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       {
         icon: 'control',
         title: 'Full control in your hands',
-        description: 'You can export your records as an open JSON file (including Journey entries and Birth Record) or readable text summary at any time, or erase all local data from this device with a single click.'
+        description: 'You can export your records as an open JSON file (including Journey entries, Birth Record, and Health Checks/Screenings) or readable text summary at any time, or erase all local data from this device with a single click.'
       },
       {
         icon: 'no-ads',
@@ -270,7 +271,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       title: '2. Local-First Architecture & Device Storage',
       content: [
         'MAMAND is built on a "local-first" architecture. This means that the information you record during your daily routine with your baby is saved directly inside your phone or computer web browser, rather than in central cloud servers managed by us.',
-        'Journey timeline and family memories: The application uses the browser local storage mechanism (IndexedDB) to securely persist chronological journal entries, feeding logs, sleep patterns, diaper changes, and developmental milestones.',
+        'Journey timeline, health appointments, and screenings: The application uses the browser local storage mechanism (IndexedDB) to securely persist chronological journal entries, prenatal and well-child visit logs, feeding logs, sleep patterns, diaper changes, developmental milestones, and lab/newborn screening records.',
         'Family settings and support tools: Your browser local storage (localStorage) securely retains day-to-day organizational data: caregiver profile preferences, baby birth record details, trusted support network contacts, hospital bag checklist items, maternal rest timer states, read educational cards, and language selection.'
       ]
     },
@@ -283,7 +284,8 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         'b) Baby and gestational cycle: Optional baby\'s name, current phase (pregnancy or baby), gestational age in weeks or birth date / estimated due date (EDD) to compute exact age in days and align developmental guidance.',
         'c) Health and baby birth record: Birth weight (in grams), birth length (in centimeters), head circumference (in centimeters), birth time, hospital or maternity clinic name, city and country of birth, delivery type (vaginal, cesarean, assisted), blood type, declared allergies, and observed health conditions.',
         'd) Daily Journey diary and family memories: Open text notes, feeding/nursing logs, sleep tracking, diaper changes, motor and cognitive milestones, mild symptoms observed, and locally stored family photo memories.',
-        'e) Support network and hospital bag: Names, relationships, and phone numbers of trusted contacts entered locally by you to facilitate sending SMS or WhatsApp messages from your own device, and packed hospital bag checklist items.'
+        'e) Support network and hospital bag: Names, relationships, and phone numbers of trusted contacts entered locally by you to facilitate sending SMS or WhatsApp messages from your own device, and packed hospital bag checklist items.',
+        'f) Health checks, screenings, and medical appointments: Records of prenatal and pediatric visits (dates, healthcare providers/locations, care notes), as well as clinical tests, ultrasounds, and newborn screenings recommended by country (e.g., heel prick, hearing, eye, cardiac screening), including completion dates, observed findings, and next steps.'
       ]
     },
     {
@@ -321,10 +323,10 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       title: '7. Export, Restore & Scope of Backups',
       content: [
         'MAMAND provides data portability tools so you can export your data at any time:',
-        'a) Structured JSON Export: Produces an open, machine-readable JSON file (schemaVersion 1.0) containing your Journey history (records) AND the baby\'s Birth Record (birthRecord, when filled by the user).',
+        'a) Structured JSON Export: Produces an open, machine-readable JSON file (schemaVersion 1.1) containing your Journey history (records), the baby\'s Birth Record (birthRecord, when filled by the user), AND tracked Health Checks & Screenings (healthChecks).',
         'b) Readable TXT Summary: Generates a clear, human-readable text document suitable for printing or sharing with your pediatrician or family.',
-        'c) Backup Restoration: Allows re-importing a valid JSON backup, supporting either Merge mode (adds new records while keeping existing ones) or Replace mode (replaces current local Journey records with the backup). When restoring, the Birth Record present in the backup file is also reinstated.',
-        'IMPORTANT — Data NOT included in the current JSON backup: The JSON schema 1.0 backup file preserves Journey timeline entries and the baby\'s Birth Record, but DOES NOT include general caregiver profile preferences (display name, country, primary focus), support network contacts, hospital bag checklist items, rest timer, or viewed educational articles, which remain stored strictly in your local browser storage.'
+        'c) Backup Restoration: Allows re-importing a valid JSON backup (supporting both current schemaVersion 1.1 and legacy schemaVersion 1.0 files), offering either Merge mode (adds new records while keeping existing ones) or Replace mode (replaces current local records with the backup). When restoring, the Birth Record and Health Checks present in the backup file are also reinstated.',
+        'IMPORTANT — Scope of the current JSON backup: The JSON schema 1.1 backup file preserves Journey timeline entries, health appointments, the baby\'s Birth Record, and Health Checks/Screenings, but DOES NOT include general caregiver profile preferences (display name, country, primary focus), support network contacts, hospital bag checklist items, rest timer, or viewed educational articles, which remain stored strictly in your local browser storage.'
       ]
     },
     {
