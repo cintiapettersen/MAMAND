@@ -96,8 +96,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       country: country || undefined,
       careCountry: careCountry || undefined,
       babyName: babyName.trim() || undefined,
-      birthDate: phase === 'baby' && birthDate ? birthDate : undefined,
-      dueDate: phase === 'pregnancy' && dueDate ? dueDate : undefined,
+      birthDate: phase === 'baby' && birthDate && !validateBirthDate(birthDate) ? birthDate : undefined,
+      dueDate: phase === 'pregnancy' && dueDate && !validateDueDate(dueDate) ? dueDate : undefined,
       updatedAt: new Date().toISOString()
     };
     updated.stageLabel = getLocalizedStageLabel(updated, language);

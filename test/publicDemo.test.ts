@@ -110,13 +110,14 @@ test('Emergência: Noruega 113 (médica) e 116 117 (legevakt); Brasil SAMU 192 e
   assert.ok(!/healthLineSuffix/.test(today), 'o rótulo da linha de saúde já diz para que serve');
 });
 
-test('Cuidados: cabeçalho de produção fala em biblioteca em revisão, sem "orientações práticas" nem "baseadas em evidências"', async () => {
+test('Cuidados: cabeçalho de produção fala em Guia de cuidados em revisão, sem "orientações práticas" nem "baseadas em evidências"', async () => {
   const view = fs.readFileSync('src/views/CareView.tsx', 'utf8');
   assert.match(view, /CARE_FULL_TEXT_ENABLED \? t\.care\.title : t\.care\.titleUnderReview/);
   assert.ok(!/Evidence-based|Orientações práticas para/.test(view));
   const { ptBR } = await import('../src/locales/pt-BR.ts');
   const { en } = await import('../src/locales/en.ts');
-  assert.strictEqual(ptBR.care.titleUnderReview, 'Biblioteca de temas');
+  assert.strictEqual(ptBR.care.titleUnderReview, 'Guia de cuidados');
+  assert.strictEqual(en.care.titleUnderReview, 'Care Guide');
   for (const s of [ptBR.care.stageSubtitleUnderReview('X'), en.care.stageSubtitleUnderReview('X')]) {
     assert.ok(!/prátic|practic|evidence|evidência/i.test(s), s);
   }

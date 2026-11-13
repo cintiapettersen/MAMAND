@@ -3,6 +3,7 @@ import { UserProfile, BirthRecord, BirthCardSettings, BloodType, DeliveryType } 
 import { useLanguage } from '../context/LanguageContext';
 import { birthRecordStorage } from '../services/birthRecordStorage';
 import { PageHeader } from './PageHeader';
+import { validateBirthDate, birthDateBounds } from '../utils/dateUtils';
 import {
   Baby,
   ClipboardList,
@@ -53,6 +54,17 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
 
   const cardRef = useRef<HTMLDivElement>(null);
 
+  const birthLimits = birthDateBounds();
+  const birthError = record.birthDate ? validateBirthDate(record.birthDate) : null;
+  const de = t.onboarding?.dateErrors;
+  const birthErrorText = birthError === 'future'
+    ? (de?.birthFuture || (language === 'en' ? 'Date of birth cannot be in the future.' : 'A data de nascimento não pode ser no futuro.'))
+    : birthError === 'tooOld'
+    ? (de?.birthTooOld || (language === 'en' ? 'Child age exceeds 5 years.' : 'A idade informada ultrapassa 5 anos.'))
+    : birthError
+    ? (de?.birthInvalid || (language === 'en' ? 'Invalid date.' : 'Data inválida.'))
+    : null;
+
   // Manipulação de campos do formulário
   const handleChange = (field: keyof BirthRecord, value: any) => {
     setRecord((prev) => ({
@@ -65,14 +77,15 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
   // Salvar ficha
   const handleSave = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    if (birthError) return;
     birthRecordStorage.saveBirthRecord(record, true);
     setSaveSuccess(true);
 
-    if (onProfileUpdated && (record.babyName || record.birthDate)) {
+    if (onProfileUpdated && (record.babyName || (record.birthDate && !birthError))) {
       onProfileUpdated({
         ...profile,
         babyName: record.babyName || profile.babyName,
-        birthDate: record.birthDate || profile.birthDate,
+        birthDate: (!birthError && record.birthDate) ? record.birthDate : profile.birthDate,
         updatedAt: new Date().toISOString()
       });
     }
@@ -501,8 +514,18 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
                   type="date"
                   value={record.birthDate || ''}
                   onChange={(e) => handleChange('birthDate', e.target.value)}
+                  min={birthLimits.min}
+                  max={birthLimits.max}
+                  aria-invalid={!!birthErrorText}
+                  aria-describedby={birthErrorText ? 'birthDateError' : undefined}
                   className="birth-input"
                 />
+                {birthErrorText && (
+                  <span id="birthDateError" style={{ color: '#D9534F', fontSize: '0.8rem', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <AlertTriangle size={14} />
+                    {birthErrorText}
+                  </span>
+                )}
               </div>
 
               <div className="birth-field-group">
@@ -706,7 +729,7 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
 
           {/* Botão de Salvar */}
           <div className="birth-form-actions">
-            <button type="submit" className="birth-save-btn">
+            <button type="submit" disabled={!!birthError} className="birth-save-btn">
               <Check size={18} />
               <span>{t.birthRecord.saveBtn}</span>
             </button>

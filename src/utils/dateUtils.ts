@@ -1,17 +1,30 @@
 import type { SupportedLanguage } from '../types/index.ts';
 
+const pad2 = (n: number) => String(n).padStart(2, '0');
+const toIso = (d: Date) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+
+const isRealIsoDate = (v: string) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+};
+
 /**
  * Calcula a quantidade exata de dias de vida desde o nascimento até a data de referência.
+ * Retorna -1 para datas futuras ou formatos inválidos (nunca converte data futura em zero).
  */
 export const calculateDaysOfLife = (birthDateStr: string, refDate = new Date()): number => {
   try {
+    if (!birthDateStr || !isRealIsoDate(birthDateStr)) return -1;
     const [y, m, d] = birthDateStr.split('-').map(Number);
     const birth = new Date(y, m - 1, d);
     const ref = new Date(refDate.getFullYear(), refDate.getMonth(), refDate.getDate());
     const diffMs = ref.getTime() - birth.getTime();
-    return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    if (diffMs < 0) return -1; // Nascimento no futuro: idade negativa inválida
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
   } catch {
-    return 0;
+    return -1;
   }
 };
 
@@ -19,16 +32,20 @@ export const calculateDaysOfLife = (birthDateStr: string, refDate = new Date()):
  * Calcula a idade em meses completos para calibração do motor de recomendações (ruleEngine).
  */
 export const calculateAgeInMonths = (birthDateStr: string, refDate = new Date()): number => {
-  // Idade não negativa e com limite máximo razoável de 24 meses (catálogo dos 1.000 dias)
-  return Math.min(24, completedMonths(birthDateStr, refDate));
+  const months = completedMonths(birthDateStr, refDate);
+  if (months < 0) return 0;
+  // Limite máximo razoável de 24 meses (catálogo dos 1.000 dias)
+  return Math.min(24, months);
 };
 
 // Meses completos sem o limite de 24, só para exibir a idade
 const completedMonths = (birthDateStr: string, refDate: Date): number => {
   try {
+    if (!birthDateStr || !isRealIsoDate(birthDateStr)) return -1;
     const [y, m, d] = birthDateStr.split('-').map(Number);
     const birth = new Date(y, m - 1, d);
     const ref = new Date(refDate.getFullYear(), refDate.getMonth(), refDate.getDate());
+    if (ref.getTime() < birth.getTime()) return -1;
 
     let months = (ref.getFullYear() - birth.getFullYear()) * 12 + (ref.getMonth() - birth.getMonth());
     if (ref.getDate() < birth.getDate()) {
@@ -36,20 +53,30 @@ const completedMonths = (birthDateStr: string, refDate: Date): number => {
     }
     return Math.max(0, months);
   } catch {
-    return 0;
+    return -1;
   }
 };
 
 /**
  * Retorna uma formatação amigável e acolhedora dos dias e meses de vida do bebê.
+ * NUNCA converte data futura em "Nasceu hoje": retorna vazio se for futura ou inválida.
  */
 export const formatBabyAgeDetailed = (
   birthDateStr: string,
   lang: SupportedLanguage = 'pt-BR',
   refDate = new Date()
 ): string => {
+  // Rejeição imediata de datas inválidas ou futuras
+  if (!birthDateStr || validateBirthDate(birthDateStr, refDate)) {
+    return '';
+  }
+
   const days = calculateDaysOfLife(birthDateStr, refDate);
   const months = completedMonths(birthDateStr, refDate);
+  if (days < 0 || months < 0) {
+    return '';
+  }
+
   const isEn = lang === 'en';
 
   if (days === 0) {
@@ -82,16 +109,7 @@ const BIRTH_MAX_YEARS = 5;
 const DUE_MAX_DAYS_AHEAD = 300;
 const DUE_MAX_DAYS_PAST = 42;
 
-const pad2 = (n: number) => String(n).padStart(2, '0');
-const toIso = (d: Date) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-
-const isRealIsoDate = (v: string) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
-  const [y, m, d] = v.split('-').map(Number);
-  const dt = new Date(y, m - 1, d);
-  return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
-};
 
 export const birthDateBounds = (today = new Date()) => ({
   min: toIso(new Date(today.getFullYear() - BIRTH_MAX_YEARS, today.getMonth(), today.getDate())),

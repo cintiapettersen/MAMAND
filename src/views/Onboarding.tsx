@@ -72,7 +72,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
   };
 
   const handleFinish = (need: MainNeed) => {
+    if (hasDateError) return;
     setMainNeed(need);
+    const validBirthDate = phase === 'baby' && birthDate && !validateBirthDate(birthDate) ? birthDate : undefined;
+    const validDueDate = phase === 'pregnancy' && dueDate && !validateDueDate(dueDate) ? dueDate : undefined;
     const tempProfile: UserProfile = {
       phase,
       stageValue,
@@ -83,8 +86,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
       country: country || undefined,
       careCountry: careCountry || undefined,
       babyName: babyName.trim() || undefined,
-      birthDate: phase === 'baby' && birthDate ? birthDate : undefined,
-      dueDate: phase === 'pregnancy' && dueDate ? dueDate : undefined,
+      birthDate: validBirthDate,
+      dueDate: validDueDate,
       createdAt: initialProfile?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };

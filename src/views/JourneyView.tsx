@@ -532,25 +532,14 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         title={t.journey.title}
         subtitle={t.journey.subtitle}
         action={
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="journey-header-actions">
             {onOpenPrivacy && (
               <button
                 type="button"
                 onClick={onOpenPrivacy}
-                className="btn btn-secondary"
+                className="btn btn-secondary journey-header-btn"
                 title={t.privacy.policyLink}
                 aria-label={t.privacy.policyLink}
-                style={{
-                  width: 'auto',
-                  padding: '8px 10px',
-                  minHeight: '38px',
-                  fontSize: '0.82rem',
-                  borderRadius: 'var(--radius-sm)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  flexShrink: 0
-                }}
               >
                 <Shield size={15} color="var(--sage)" />
                 <span>{t.privacy.journeyLinkText}</span>
@@ -558,20 +547,9 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
             )}
             <button
               onClick={() => setIsExportMenuOpen(true)}
-              className="btn btn-secondary"
+              className="btn btn-secondary journey-header-btn"
               title={t.journey.exportMenuBtn}
               aria-label={t.journey.exportMenuBtn}
-              style={{
-                width: 'auto',
-                padding: '8px 12px',
-                minHeight: '38px',
-                fontSize: '0.82rem',
-                borderRadius: 'var(--radius-sm)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                flexShrink: 0
-              }}
             >
               <Download size={15} />
               <span>{language === 'en' ? 'Backup' : 'Exportar'}</span>

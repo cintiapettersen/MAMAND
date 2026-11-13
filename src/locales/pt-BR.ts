@@ -147,7 +147,7 @@ export const ptBR: TranslationDictionary = {
   care: {
     badge: 'Biblioteca de Cuidados',
     title: 'Orientações Práticas',
-    subtitle: 'Biblioteca de temas para o momento de vocês. Os textos estão em revisão profissional e não substituem a equipe de saúde.',
+    subtitle: 'Guia de cuidados para o momento de vocês. Os textos estão em revisão profissional e não substituem a equipe de saúde.',
     catAll: 'Tudo',
     catMom: 'Mãe & Bem-estar',
     catDevelopment: 'Bebê & Estímulos',
@@ -169,9 +169,9 @@ export const ptBR: TranslationDictionary = {
     carouselPrev: 'Orientação anterior',
     carouselNext: 'Próxima orientação',
     reviewPendingTitle: 'Em revisão por profissionais de saúde',
-    titleUnderReview: 'Biblioteca de temas',
+    titleUnderReview: 'Guia de cuidados',
     stageSubtitle: (stage: string) => `Orientações educativas para ${stage}. Ao praticar, registre um momento na sua Jornada.`,
-    stageSubtitleUnderReview: (stage: string) => `Temas para ${stage}. Os textos estão em revisão por profissionais de saúde e não substituem a equipe que acompanha vocês.`,
+    stageSubtitleUnderReview: (stage: string) => `Guia de cuidados para ${stage}. Os textos estão em revisão por profissionais de saúde e não substituem a equipe que acompanha vocês.`,
     reviewPendingText: 'O texto completo aparece depois da revisão profissional. Enquanto isso, converse com a equipe que acompanha vocês e consulte a fonte indicada abaixo.'
   },
   journey: {

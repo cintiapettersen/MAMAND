@@ -4,7 +4,7 @@ import { Pencil } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
 import { getLocalizedStageLabel } from '../locales';
-import { formatBabyAgeDetailed, formatDueDate, isDueDatePast } from '../utils/dateUtils';
+import { formatBabyAgeDetailed, formatDueDate, isDueDatePast, validateBirthDate } from '../utils/dateUtils';
 
 interface HeaderProps {
   profile: UserProfile | null;
@@ -19,8 +19,9 @@ export const Header: React.FC<HeaderProps> = ({ profile, onResetProfile, onEditP
     if (!profile) return null;
 
     if (profile.phase === 'baby') {
-      const ageText = profile.birthDate
-        ? formatBabyAgeDetailed(profile.birthDate, language)
+      const hasValidBirthDate = !!(profile.birthDate && !validateBirthDate(profile.birthDate));
+      const ageText = hasValidBirthDate
+        ? formatBabyAgeDetailed(profile.birthDate!, language)
         : getLocalizedStageLabel(profile, language, true);
 
       if (profile.babyName) {

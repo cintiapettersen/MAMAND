@@ -304,7 +304,7 @@ export const TodayView: React.FC<TodayViewProps> = ({
               {/* Card 1: Meu bem-estar */}
               <button
                 type="button"
-                onClick={() => onNavigate('care', 'wellbeing')}
+                onClick={() => onNavigate('care', 'mom')}
                 className="home-hub-card card-sage"
               >
                 <div className="hub-card-icon-wrap icon-sage">
@@ -366,7 +366,7 @@ export const TodayView: React.FC<TodayViewProps> = ({
               {/* Card 1: Sua recuperação */}
               <button
                 type="button"
-                onClick={() => onNavigate('care', 'wellbeing')}
+                onClick={() => onNavigate('care', 'mom')}
                 className="home-hub-card card-coral"
               >
                 <div className="hub-card-icon-wrap icon-coral">
@@ -388,7 +388,7 @@ export const TodayView: React.FC<TodayViewProps> = ({
               {/* Card 3: Cuidados do bebê */}
               <button
                 type="button"
-                onClick={() => onNavigate('care', 'development')}
+                onClick={() => onNavigate('care', 'baby')}
                 className="home-hub-card card-sage"
               >
                 <div className="hub-card-icon-wrap icon-sage">

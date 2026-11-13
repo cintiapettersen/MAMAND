@@ -147,7 +147,7 @@ export const en: TranslationDictionary = {
   care: {
     badge: 'Care Library',
     title: 'Practical Guidance',
-    subtitle: 'A library of topics for your current stage. The texts are being reviewed by professionals and do not replace your care team.',
+    subtitle: 'Care guide for your current stage. The texts are being reviewed by professionals and do not replace your care team.',
     catAll: 'All',
     catMom: 'Mother & Wellbeing',
     catDevelopment: 'Baby & Development',
@@ -169,9 +169,9 @@ export const en: TranslationDictionary = {
     carouselPrev: 'Previous guidance',
     carouselNext: 'Next guidance',
     reviewPendingTitle: 'Being reviewed by health professionals',
-    titleUnderReview: 'Topic library',
+    titleUnderReview: 'Care Guide',
     stageSubtitle: (stage: string) => `Educational guidance for ${stage}. When practiced, you can log it to your Journey.`,
-    stageSubtitleUnderReview: (stage: string) => `Topics for ${stage}. The texts are being reviewed by health professionals and do not replace your care team.`,
+    stageSubtitleUnderReview: (stage: string) => `Care guide for ${stage}. The texts are being reviewed by health professionals and do not replace your care team.`,
     reviewPendingText: 'The full text will appear after professional review. Meanwhile, talk to your care team and see the source listed below.'
   },
   journey: {
