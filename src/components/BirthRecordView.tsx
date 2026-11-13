@@ -56,9 +56,20 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
 
   const cardRef = useRef<HTMLDivElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
-  const [babyPhotoUrl, setBabyPhotoUrl] = useState<string | null>(null);
+  const babyPhotoUrl = record.babyPhotoDataUrl || null;
 
-  // Carrega a foto localmente e recorta em quadrado central leve (sem envio a servidor)
+  const persistPhoto = (photoUrl: string | undefined) => {
+    setRecord((prev) => {
+      const next: BirthRecord = {
+        ...prev,
+        babyPhotoDataUrl: photoUrl
+      };
+      birthRecordStorage.saveBirthRecord(next, false);
+      return next;
+    });
+  };
+
+  // Carrega a foto localmente, recorta em quadrado central leve e salva no aparelho (sem envio a servidor)
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -74,14 +85,14 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
         canvas.height = size;
         const ctx = canvas.getContext('2d');
         if (!ctx) {
-          setBabyPhotoUrl(dataUrl);
+          persistPhoto(dataUrl);
           return;
         }
         const side = Math.min(img.width, img.height);
         const sx = (img.width - side) / 2;
         const sy = (img.height - side) / 2;
         ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
-        setBabyPhotoUrl(canvas.toDataURL('image/jpeg', 0.9));
+        persistPhoto(canvas.toDataURL('image/jpeg', 0.85));
       };
       img.src = dataUrl;
     };
@@ -902,7 +913,7 @@ export const BirthRecordView: React.FC<BirthRecordViewProps> = ({
               {babyPhotoUrl && (
                 <button
                   type="button"
-                  onClick={() => setBabyPhotoUrl(null)}
+                  onClick={() => persistPhoto(undefined)}
                   className="btn btn-secondary customize-photo-reset"
                 >
                   <RotateCcw size={14} />

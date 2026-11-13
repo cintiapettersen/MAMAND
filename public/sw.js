@@ -9,7 +9,7 @@
  *    - Perguntas pessoais, registros de saúde ou tokens não passam por cache HTTP.
  */
 
-const CACHE_VERSION = 'v1.4.2';
+const CACHE_VERSION = 'v1.4.3';
 const CACHE_NAME = `first-1000-days-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
