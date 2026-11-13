@@ -37,3 +37,4 @@ resumo_puericultura_*.txt
 .cache
 .wrangler
 *.test.cjs
+.env*
