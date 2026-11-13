@@ -405,6 +405,10 @@ export interface TranslationDictionary {
     labelHospital: string;
     customizeTitle: string;
     customizeDesc: string;
+    addPhotoBtn: string;
+    changePhotoBtn: string;
+    removePhotoBtn: string;
+    photoHint: string;
     toggleTime: string;
     toggleWeight: string;
     toggleLength: string;
