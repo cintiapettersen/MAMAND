@@ -7,6 +7,11 @@ import { generateMockAnswer } from '../src/services/mockEngine.ts';
 import { getContentCatalog } from '../src/data/contents.ts';
 import { ruleEngine } from '../src/services/ruleEngine.ts';
 import { checkEmergencySafety } from '../src/services/safetyService.ts';
+import {
+  consultEducationalAssistant,
+  checkGatewayHealth,
+  ENABLE_EXTERNAL_AI
+} from '../src/services/askService.ts';
 import type { UserProfile } from '../src/types/index.ts';
 
 /**
@@ -111,4 +116,81 @@ test('7. Integridade do Detector de Emergência: Preservação total sem altera�
   // Pergunta geral não emergencial
   const normal = checkEmergencySafety('Qual a posição recomendada para o sono?', 'pt-BR');
   assert.strictEqual(normal.isEmergency, false);
+});
+
+test('8. Bloqueio Estrito de Conexões Externas no Assistente: Zero Envio de Perguntas e Ausência de Respostas Clínicas Inventadas', async () => {
+  // 1. Confirma que a flag de IA externa está estritamente desabilitada
+  assert.strictEqual(ENABLE_EXTERNAL_AI, false, 'ENABLE_EXTERNAL_AI DEVE ser false nesta fase');
+
+  // 2. Intercepta globalThis.fetch para garantir ausência absoluta de chamadas externas de rede
+  const originalFetch = globalThis.fetch;
+  let fetchCallCount = 0;
+  const attemptedUrls: string[] = [];
+
+  globalThis.fetch = (async (input: any) => {
+    fetchCallCount++;
+    const url = typeof input === 'string' ? input : input?.url || String(input);
+    attemptedUrls.push(url);
+    throw new Error(`VIOLAÇÃO DE ISOLAMENTO: Tentativa indevida de requisição de rede para ${url}`);
+  }) as any;
+
+  try {
+    const dummyProfile: UserProfile = {
+      phase: 'baby',
+      stageValue: 2,
+      stageLabel: '2 meses',
+      mainNeed: 'all',
+      country: 'BR',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Caso A: Pergunta clínica legítima dentro do catálogo
+    const withinCatalogResult = await consultEducationalAssistant(
+      'Qual a posição recomendada para o sono do bebê?',
+      dummyProfile,
+      'pt-BR'
+    );
+    assert.strictEqual(fetchCallCount, 0, 'Consulta legítima não deve disparar fetch externo');
+    assert.strictEqual(withinCatalogResult.mode, 'mock', 'Modo deve ser estritamente mock local');
+    assert.strictEqual(withinCatalogResult.status, 'success', 'Status deve ser success para pergunta válida do catálogo');
+    assert.ok(withinCatalogResult.citations.length > 0, 'Deve conter citações clínicas verificadas');
+    for (const c of withinCatalogResult.citations) {
+      assert.strictEqual(c.validationStatus, 'verified', 'Todas as citações retornadas devem ser verified');
+    }
+
+    // Caso B: Pergunta fora do catálogo clínico (NÃO deve alucinar nem inventar condutas)
+    const outOfCatalogResult = await consultEducationalAssistant(
+      'Como dosar paracetamol e prescrever antibiótico caseiro para pneumonia?',
+      dummyProfile,
+      'pt-BR'
+    );
+    assert.strictEqual(fetchCallCount, 0, 'Consulta fora do catálogo não deve disparar fetch externo');
+    assert.strictEqual(outOfCatalogResult.mode, 'mock', 'Modo deve ser mock');
+    assert.strictEqual(outOfCatalogResult.status, 'out_of_catalog', 'Status deve ser out_of_catalog');
+    assert.strictEqual(outOfCatalogResult.citations.length, 0, 'Não deve inventar citações');
+    assert.match(
+      outOfCatalogResult.answer,
+      /(?:Ainda não temos uma orientação específica|sem extrapolar|consulte)/i,
+      'Resposta deve acolher com recusa segura sem inventar conduta médica'
+    );
+
+    // Caso C: Alerta de emergência clínica (detector prioritário local com número SAMU do Brasil)
+    const emergencyResult = await consultEducationalAssistant(
+      'Bebê recém-nascido com febre de 39 graus e dificuldade de respirar',
+      dummyProfile,
+      'pt-BR'
+    );
+    assert.strictEqual(fetchCallCount, 0, 'Emergência deve ser tratada localmente sem fetch');
+    assert.strictEqual(emergencyResult.isEmergency, true, 'isEmergency deve ser true');
+    assert.strictEqual(emergencyResult.status, 'emergency', 'Status deve ser emergency');
+    assert.match(emergencyResult.answer, /(?:SAMU|192|médica urgente|emergência)/i);
+
+    // Caso D: Verificação de saúde do Gateway com IA desabilitada
+    const health = await checkGatewayHealth();
+    assert.strictEqual(fetchCallCount, 0, 'checkGatewayHealth não deve fazer requisição quando ENABLE_EXTERNAL_AI for false');
+    assert.strictEqual(health.online, false, 'Gateway deve reportar offline sem rede');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

@@ -183,7 +183,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         '• Correção de dados incompletos ou inexatos (Art. 18, III da LGPD; Art. 16 do GDPR): A usuária pode alterar seu nome, país, datas e registros da jornada diretamente no aplicativo a qualquer momento.',
         '• Eliminação dos dados (Art. 18, VI da LGPD; Art. 17 do GDPR): Pode ser executada de forma autônoma a qualquer instante pela funcionalidade "Apagar todos os meus dados deste aparelho".',
         '• Portabilidade (Art. 18, V da LGPD; Art. 20 do GDPR): Garantida através da função de exportação em JSON estruturado e resumo TXT.',
-        '• Informação sobre compartilhamento: Descrita com total transparência nesta política (processamento temporário pelo Cloudflare e Google Gemini em consultas voluntárias).',
+        '• Informação sobre compartilhamento: Descrita com total transparência nesta política (eventual processamento transitório pelo Cloudflare e Google Gemini caso o assistente online venha a ser ativado em consultas voluntárias).',
         'Canal direto e funcional de privacidade: As funcionalidades do aplicativo conferem total autonomia para que o titular exerça a maior parte de seus direitos diretamente em seu próprio aparelho. Para esclarecimentos adicionais, requisições formais de direitos ou dúvidas sobre o tratamento de dados pessoais pela controladora, os titulares podem entrar em contato diretamente pelo e-mail privacidade@mamand.app. Mensagens institucionais gerais ou dúvidas sobre o projeto podem ser direcionadas a hello@mamand.app. Os canais são operados diretamente pela equipe responsável da CREATIVE DESIGN PETTERSEN LTDA.'
       ]
     },
@@ -358,7 +358,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         '• Rectification (Art. 18, III LGPD; Art. 16 GDPR): You can edit names, country, dates, and journal entries directly in the app at any time.',
         '• Erasure (Art. 18, VI LGPD; Art. 17 GDPR): Can be executed autonomously anytime via the "Erase all my data from this device" button.',
         '• Portability (Art. 18, V LGPD; Art. 20 GDPR): Provided via open JSON export and TXT summaries.',
-        '• Information on data sharing: Fully and transparently detailed in this policy (ephemeral processing by Cloudflare and Google Gemini during voluntary queries).',
+        '• Information on data sharing: Fully and transparently detailed in this policy (eventual ephemeral processing by Cloudflare and Google Gemini if online assistant mode is enabled during voluntary queries).',
         'Direct and functional privacy channel: The application features provide full autonomy for users to exercise most of their rights directly on their device (access, rectification, export portability, and local wipe). For additional clarifications, formal rights requests, or questions regarding personal data processing, data subjects can contact us directly at privacidade@mamand.app. General corporate correspondence and project questions can be addressed to hello@mamand.app. Both channels are operated directly by the responsible team at CREATIVE DESIGN PETTERSEN LTDA.'
       ]
     },

@@ -1,9 +1,9 @@
-import { UserProfile, SupportedLanguage } from '../types';
-import { sanitizeUserInput } from '../../gateway/src/services/piiScrubber';
-import { checkEmergencySafety } from '../../gateway/src/services/safetyService';
-import { getEmergencyContact, langKey } from '../data/emergencyContacts';
-import { retrieveRelevantEvidence } from '../../gateway/src/services/ragService';
-import { generateMockAnswer } from '../../gateway/src/services/mockEngine';
+import type { UserProfile, SupportedLanguage } from '../types/index.ts';
+import { sanitizeUserInput } from '../../gateway/src/services/piiScrubber.ts';
+import { checkEmergencySafety } from '../../gateway/src/services/safetyService.ts';
+import { getEmergencyContact, langKey } from '../data/emergencyContacts.ts';
+import { retrieveRelevantEvidence } from '../../gateway/src/services/ragService.ts';
+import { generateMockAnswer } from '../../gateway/src/services/mockEngine.ts';
 
 export interface AskCitation {
   id: string;
@@ -57,10 +57,13 @@ export interface GatewayHealthStatus {
 // está desabilitada para garantir que nenhuma pergunta contendo dados sensíveis de saúde seja transmitida
 // sem base jurídica definitiva confirmada e consentimento específico. Todo o processamento educativo
 // opera 100% localmente na sandbox do navegador (RAG local in-app com catálogo clínico verificado).
-const ENABLE_EXTERNAL_AI = false;
+export const ENABLE_EXTERNAL_AI = false;
 const GATEWAY_URL = (import.meta as any).env?.VITE_GATEWAY_URL || 'http://localhost:8787/api/ask';
 
 export async function checkGatewayHealth(): Promise<GatewayHealthStatus> {
+  if (!ENABLE_EXTERNAL_AI) {
+    return { online: false };
+  }
   try {
     const healthUrl = GATEWAY_URL.replace(/\/api\/ask$/, '/health');
     const controller = new AbortController();
