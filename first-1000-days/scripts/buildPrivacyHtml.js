@@ -103,6 +103,16 @@ function formatParagraph(p) {
   out = out.replace(/^(Limitations regarding infrastructure providers:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservation of offline app shell:)/, '<strong>$1</strong>');
   out = out.replace(/^(Preservation of downloaded files:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Origem e titularidade independente:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Independent origin and ownership:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Linha do tempo e memórias da Jornada:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Journey timeline and family memories:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Preferências e módulos de apoio familiar:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Family settings and support tools:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Mapeamento de bases legais e transferência internacional \(submetido a revisão jurídica\):)/, '<strong>$1</strong>');
+  out = out.replace(/^(Legal basis mapping and international data transfers \(submitted for legal review\):)/, '<strong>$1</strong>');
+  out = out.replace(/^(Transparência de enquadramento legal e ausência de definitividade:)/, '<strong>$1</strong>');
+  out = out.replace(/^(Transparency in legal grounds and absence of definitive certification:)/, '<strong>$1</strong>');
   out = out.replace(/^(Governança e canais oficiais de comunicação:)/, '<strong>$1</strong>');
   out = out.replace(/^(Governance and official communication channels:)/, '<strong>$1</strong>');
   out = out.replace(/^(Governança e canal direto de privacidade:)/, '<strong>$1</strong>');

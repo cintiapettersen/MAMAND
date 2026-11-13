@@ -23,13 +23,24 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
     'Governança deve referenciar o canal direto privacidade@mamand.app'
   );
 
-  // Verifica que Open Child Health Booklet Initiative NÃO é tratada como a razão social
-  assert.notStrictEqual(PRIVACY_POLICY_PT.controller.corporateName, 'Open Child Health Booklet Initiative');
+  // Verifica que MAMAND é identificado como iniciativa independente da CREATIVE DESIGN PETTERSEN LTDA
   assert.match(
     PRIVACY_POLICY_PT.controller.initiativeContextNotice,
-    /Open Child Health Booklet Initiative/,
-    'Deve esclarecer a relação de linhagem com a iniciativa aberta'
+    /iniciativa independente/i,
+    'Deve esclarecer que MAMAND é iniciativa independente'
   );
+  assert.match(
+    PRIVACY_POLICY_EN.controller.initiativeContextNotice,
+    /independent initiative/i,
+    'Deve esclarecer em inglês como independent initiative'
+  );
+
+  const fullPtText = JSON.stringify(PRIVACY_POLICY_PT);
+  const fullEnText = JSON.stringify(PRIVACY_POLICY_EN);
+
+  // Garante que não restaram referências à Open Child Health Booklet Initiative
+  assert.ok(!fullPtText.includes('Open Child Health Booklet'), 'Não deve conter referência à Open Child Health Booklet Initiative');
+  assert.ok(!fullEnText.includes('Open Child Health Booklet'), 'Não deve conter referência à Open Child Health Booklet Initiative');
 
   // Verifica dados em EN
   assert.strictEqual(PRIVACY_POLICY_EN.controller.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
@@ -48,8 +59,6 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.strictEqual(PRIVACY_POLICY_EN.controller.generalEmail, 'hello@mamand.app');
 
   // Garante que não foram publicados campos provisórios entre colchetes nem e-mails fictícios
-  const fullPtText = JSON.stringify(PRIVACY_POLICY_PT);
-  const fullEnText = JSON.stringify(PRIVACY_POLICY_EN);
   assert.ok(!fullPtText.includes('[Endereço'), 'Não deve publicar campos provisórios de endereço');
   assert.ok(!fullPtText.includes('[Canal'), 'Não deve publicar campos provisórios de canal de contato');
   assert.ok(!fullPtText.includes('exemplo@') && !fullPtText.includes('contato@ficticio'));
@@ -120,6 +129,14 @@ test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () =>
     assert.match(backupSec!.content.join(' '), /birthRecord/i, `[${lang}] Deve confirmar que birthRecord está no JSON`);
     assert.match(backupSec!.content.join(' '), /(?:NÃO|NOT)/i, `[${lang}] Deve listar explicitamente o que não está no backup`);
 
+    // Simplificação da Seção 2 para famílias: remoção de nomes internos de chaves
+    const storageSec = doc.sections.find((s) => s.id === 'armazenamento-local');
+    const storageText = storageSec!.content.join(' ');
+    assert.ok(!storageText.includes('p1000_demo_profile_v1'), `[${lang}] Seção 2 não deve expor chave interna p1000_demo_profile_v1`);
+    assert.ok(!storageText.includes('first1000days_maternity_checklist'), `[${lang}] Seção 2 não deve expor chave interna first1000days_maternity_checklist`);
+    assert.ok(!storageText.includes('first1000days_support_requests'), `[${lang}] Seção 2 não deve expor chave interna first1000days_support_requests`);
+    assert.match(storageText, /first_1000_days_db/, `[${lang}] Seção 2 preserva menção técnica ao banco IndexedDB`);
+
     // Limitações explícitas de filtros automáticos e processamento no Gemini
     const assistantSec = doc.sections.find((s) => s.id === 'assistente-gateway-ia');
     assert.ok(assistantSec?.warningBox, `[${lang}] Assistente deve possuir caixa de aviso sobre limitações de filtros`);
@@ -137,6 +154,24 @@ test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () =>
       assistantSec!.content.join(' '),
       /(?:NÃO garantem a desidentificação completa|DO NOT guarantee complete de-identification)/i,
       `[${lang}] Seção do assistente deve esclarecer que filtros não garantem desidentificação completa`
+    );
+    assert.match(
+      assistantSec!.content.join(' '),
+      /(?:revisão jurídica|legal review)/i,
+      `[${lang}] Seção do assistente deve mapear bases legais para revisão jurídica`
+    );
+    assert.match(
+      assistantSec!.content.join(' '),
+      /(?:transferência internacional|international data transfers)/i,
+      `[${lang}] Seção do assistente deve mapear transferência internacional de dados`
+    );
+
+    // Seção 11 não promete imunidade jurídica definitiva
+    const consentSec = doc.sections.find((s) => s.id === 'transparencia-consentimento');
+    assert.match(
+      consentSec!.content.join(' '),
+      /(?:sem emitir atestados de segurança absoluta|without providing absolute security claims)/i,
+      `[${lang}] Seção 11 não deve declarar conformidade definitiva ou imunidade`
     );
 
     // Resumo em linguagem simples deve cobrir os 4 campos no pilar do assistente
