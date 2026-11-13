@@ -194,7 +194,8 @@ export function retrieveRelevantEvidence(
   query: string,
   phase?: UserPhase,
   lang: SupportedLang = 'pt-BR',
-  topK: number = CONFIG.TOP_K_CHUNKS
+  topK: number = CONFIG.TOP_K_CHUNKS,
+  options?: { includePendingReview?: boolean }
 ): RetrievalResult[] {
   const normalizedQuery = normalizeText(query);
   const queryTokens = tokenize(query);
@@ -288,6 +289,15 @@ export function retrieveRelevantEvidence(
   const scoredResults: RetrievalResult[] = [];
 
   for (const chunk of EVIDENCE_CATALOG) {
+    // SALVAGUARDA DE SEGURANÇA CLÍNICA (Fail-Safe):
+    // Bloqueia categoricamente itens com status pending_review, ausente, inválido ou sem liberação
+    // Exceto se explicitamente solicitado em ambiente interno/auditoria
+    if (!options?.includePendingReview) {
+      if (chunk.validationStatus !== 'verified' || chunk.publicationAllowed === false) {
+        continue;
+      }
+    }
+
     let phaseMultiplier = 1.0;
     if (phase && chunk.phase !== 'all') {
       if (chunk.phase !== phase) {

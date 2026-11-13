@@ -314,7 +314,7 @@ export const CareView: React.FC<CareViewProps> = ({
                   {art.validationStatus === 'pending_review' && (
                     <span style={{ fontSize: '0.72rem', color: '#99631E', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                       <AlertCircle size={12} color="#99631E" />
-                      <span>{language === 'en' ? 'Under Review' : 'Em Revisão'}</span>
+                      <span>{language === 'en' ? 'Under Review (Internal Dev)' : 'Em Revisão (Ambiente Dev)'}</span>
                     </span>
                   )}
                 </div>

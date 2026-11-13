@@ -10,7 +10,8 @@ export interface MockAnswerResult {
 export function generateMockAnswer(
   _question: string,
   results: RetrievalResult[],
-  lang: SupportedLang = 'pt-BR'
+  lang: SupportedLang = 'pt-BR',
+  options?: { includePendingReview?: boolean }
 ): MockAnswerResult {
   const isPt = lang === 'pt-BR';
 
@@ -18,7 +19,14 @@ export function generateMockAnswer(
     ? 'Aviso Educativo: Esta resposta foi gerada localmente em modo de demonstração com base nas diretrizes oficiais cadastradas. Ela não substitui consulta médica presencial ou acompanhamento pediátrico.'
     : 'Educational Notice: This response was generated locally in demonstration mode based on official guidelines. It does not replace in-person medical evaluation or pediatric care.';
 
-  if (results.length === 0) {
+  // Filtro Fail-Safe estrito na entrada de mock: rejeita chunks não verificados (a menos que em auditoria interna)
+  const safeResults = options?.includePendingReview
+    ? results
+    : results.filter(
+        r => r.chunk.validationStatus === 'verified' && r.chunk.publicationAllowed !== false
+      );
+
+  if (safeResults.length === 0) {
     const outOfCatalogMsg = isPt
       ? 'Ainda não temos uma orientação específica sobre esse assunto em nossas referências educativas.\n\nPara tirar dúvidas sobre a saúde, desenvolvimento ou bem-estar do seu bebê ou da sua família, recomendamos conversar com o pediatra ou com a equipe de saúde de sua confiança.'
       : 'We do not have specific educational guidance on this topic in our verified references yet.\n\nFor questions about your baby\'s health, development, or family wellbeing, we recommend speaking with your pediatrician or trusted healthcare provider.';
@@ -32,14 +40,14 @@ export function generateMockAnswer(
   }
 
   // Trecho principal com maior pontuação de relevância
-  const topResult = results[0];
+  const topResult = safeResults[0];
   const topChunk = topResult.chunk;
 
   // Filtrar trecho secundário: SOMENTE incluir se for do mesmo tema e tiver pontuação alta
   // Isso impede misturar sono materno com sono do bebê, por exemplo
   let secondaryChunk = null;
-  if (results.length > 1) {
-    const candidate = results[1];
+  if (safeResults.length > 1) {
+    const candidate = safeResults[1];
     if (candidate.chunk.topic === topChunk.topic && candidate.score >= topResult.score * 0.75) {
       secondaryChunk = candidate.chunk;
     }

@@ -1,6 +1,6 @@
-import { ContentItem, UserProfile, CheckInMood, SupportedLanguage } from '../types';
-import { getContentCatalog } from '../data/contents';
-import { getCheckinQuestions } from '../data/checkins';
+import type { ContentItem, UserProfile, CheckInMood, SupportedLanguage } from '../types/index.ts';
+import { getContentCatalog } from '../data/contents.ts';
+import { getCheckinQuestions } from '../data/checkins.ts';
 
 const VIEWED_STORAGE_KEY = 'p1000_viewed_content_ids_v1';
 
@@ -62,10 +62,26 @@ export const ruleEngine = {
       return true;
     });
 
+    // Fallback seguro Fail-Safe: se não houver candidatos, busca o primeiro item verificado seguro
+    const safeFallback: ContentItem = catalog.find(c => c.validationStatus === 'verified') || {
+      id: 'fallback-safe-care',
+      title: lang === 'en' ? 'Everyday Care and Wellbeing' : 'Cuidado e Bem-estar no Dia a Dia',
+      category: 'wellbeing',
+      categoryLabel: lang === 'en' ? 'Maternal Wellbeing' : 'Bem-estar Materno',
+      audience: 'both',
+      phase: 'both',
+      theme: lang === 'en' ? 'Support and Rest' : 'Apoio e Descanso',
+      educationalText: lang === 'en'
+        ? 'Resting and maintaining hydration are essential support foundations in every stage.'
+        : 'O repouso consciente e a hidratação são pilares essenciais de acolhimento em todas as fases.',
+      source: 'MAMAND Educational Guidelines',
+      validationStatus: 'verified'
+    };
+
     // Função auxiliar com ponderação por frescor (não vistos recentemente têm prioridade)
     const pickBest = (candidates: ContentItem[]): ContentItem => {
       if (candidates.length === 0) {
-        return catalog[0];
+        return safeFallback;
       }
       // Prioriza itens não vistos recentemente
       const unviewed = candidates.filter((c) => !viewedIds.includes(c.id));

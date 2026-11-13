@@ -89,6 +89,8 @@ export interface EvidenceChunk {
   sectionOrPage: string;
   url: string;
   validationStatus: 'verified' | 'pending_review' | 'demonstrative';
+  clinicalApprovalStatus?: 'pending_review' | 'clinically_approved' | 'rejected';
+  publicationAllowed?: boolean;
   countryJurisdiction: CountryJurisdiction;
 }
 

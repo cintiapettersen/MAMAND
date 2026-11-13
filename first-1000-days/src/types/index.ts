@@ -96,6 +96,9 @@ export interface ContentItem {
   // Não indica revisão clínica: só libera o selo "Baseado em fontes oficiais".
   hasVerifiableSource?: boolean;
   validationStatus: 'verified' | 'demonstrative' | 'pending_review';
+  // Separação formal de governança clínica (Etapa 1)
+  clinicalApprovalStatus?: 'pending_review' | 'clinically_approved' | 'rejected';
+  isSensitiveClinical?: boolean; // Conteúdos com conduta clínica sensível (banho, cordão, medicamentos)
 }
 
 // Tipos para Perguntas Rápidas de Check-in na Home

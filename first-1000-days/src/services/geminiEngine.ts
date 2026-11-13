@@ -46,7 +46,12 @@ export async function callGeminiFlashLite(
 ): Promise<GeminiEngineResponse> {
   const isPt = lang === 'pt-BR';
 
-  if (retrievedResults.length === 0) {
+  // Salvaguarda Fail-Safe: rejeita chunks pendentes ou inválidos antes de injetar no prompt
+  const safeResults = retrievedResults.filter(
+    r => r.chunk.validationStatus === 'verified' && r.chunk.publicationAllowed !== false
+  );
+
+  if (safeResults.length === 0) {
     return {
       answer: isPt
         ? 'Ainda não temos uma orientação específica sobre esse assunto em nossas referências educativas.\n\nPara tirar dúvidas sobre a saúde, desenvolvimento ou bem-estar do seu bebê ou da sua família, recomendamos conversar com o pediatra ou com a equipe de saúde de sua confiança.'
@@ -56,7 +61,7 @@ export async function callGeminiFlashLite(
     };
   }
 
-  const citations: Citation[] = retrievedResults.map(r => ({
+  const citations: Citation[] = safeResults.map(r => ({
     id: r.chunk.id,
     sourceName: r.chunk.sourceName,
     document: r.chunk.document,
@@ -68,7 +73,7 @@ export async function callGeminiFlashLite(
   }));
 
   // Context formatting
-  const contextText = retrievedResults.map((r, i) => {
+  const contextText = safeResults.map((r, i) => {
     const c = r.chunk;
     const summary = isPt ? c.summary_pt : c.summary_en;
     const title = isPt ? c.title_pt : c.title_en;

@@ -1,4 +1,4 @@
-import { ContentItem, SupportedLanguage } from '../types';
+import type { ContentItem, SupportedLanguage } from '../types/index.ts';
 
 export const CONTENTS_CATALOG_PT: ContentItem[] = [
   // --- MÃE & BEM-ESTAR ---
@@ -1006,8 +1006,36 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
   }
 ];
 
-export const getContentCatalog = (lang: SupportedLanguage = 'pt-BR'): ContentItem[] => {
-  return lang === 'en' ? CONTENTS_CATALOG_EN : CONTENTS_CATALOG_PT;
+// Filtro seguro para consumo público da interface
+export interface CatalogFilterOptions {
+  includeDevPending?: boolean;
+}
+
+export const getContentCatalog = (
+  lang: SupportedLanguage = 'pt-BR',
+  options?: CatalogFilterOptions
+): ContentItem[] => {
+  const fullCatalog = lang === 'en' ? CONTENTS_CATALOG_EN : CONTENTS_CATALOG_PT;
+
+  // Em modo de desenvolvimento (ou teste com flag explícita), permite visualizar o catálogo completo com etiquetas de revisão
+  const isDevEnvironment = typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV;
+  if (options?.includeDevPending ?? isDevEnvironment) {
+    return fullCatalog;
+  }
+
+  // Em produção / consumo público: bloqueia categoricamente conteúdos clínicos pendentes
+  // e itens sem aprovação clínica formal
+  return fullCatalog.filter((item) => {
+    // 1. Rejeição de status não verificado
+    if (item.validationStatus !== 'verified') return false;
+    // 2. Se for explicitamente rejeitado clinicamente, nunca publicar
+    if (item.clinicalApprovalStatus === 'rejected') return false;
+    // 3. Conteúdos marcados como conduta clínica sensível requerem aprovação explícita
+    if (item.isSensitiveClinical && item.clinicalApprovalStatus !== 'clinically_approved') {
+      return false;
+    }
+    return true;
+  });
 };
 
 // Export padrão retrocompatível

@@ -5,85 +5,88 @@ import { checkEmergencySafety } from '../gateway/src/services/safetyService.ts';
 import { generateMockAnswer } from '../gateway/src/services/mockEngine.ts';
 import { EVIDENCE_CATALOG } from '../gateway/src/data/evidenceCatalog.ts';
 
+// Testes de cobertura executados com acesso explícito aos rascunhos de pesquisa em ambiente interno
+const auditOptions = { includePendingReview: true };
+
 test('RAG Cobertura & Salvaguardas: Grupo A - Perguntas dentro do escopo com resposta clínica fundamentada', () => {
   // 1. Marcha / Bebê começar a andar (PT)
   const q1 = 'Qual a idade média que o bebê começa a andar?';
-  const r1 = retrieveRelevantEvidence(q1, 'baby', 'pt-BR');
+  const r1 = retrieveRelevantEvidence(q1, 'baby', 'pt-BR', undefined, auditOptions);
   assert.ok(r1.length > 0, 'Deve encontrar evidência');
   assert.strictEqual(r1[0].chunk.id, 'ev-milestones-gross-motor-17');
-  const a1 = generateMockAnswer(q1, r1, 'pt-BR');
+  const a1 = generateMockAnswer(q1, r1, 'pt-BR', auditOptions);
   assert.strictEqual(a1.status, 'success');
   assert.match(a1.answer, /12 meses/i);
   assert.match(a1.answer, /9 e 18 meses|9 a 18 meses/i);
 
   // 2. Walking / Baby start walking (EN)
   const q2 = 'How old are babies when they usually start walking?';
-  const r2 = retrieveRelevantEvidence(q2, 'baby', 'en');
+  const r2 = retrieveRelevantEvidence(q2, 'baby', 'en', undefined, auditOptions);
   assert.ok(r2.length > 0);
   assert.strictEqual(r2[0].chunk.id, 'ev-milestones-gross-motor-17');
-  const a2 = generateMockAnswer(q2, r2, 'en');
+  const a2 = generateMockAnswer(q2, r2, 'en', auditOptions);
   assert.strictEqual(a2.status, 'success');
   assert.match(a2.answer, /12 months/i);
   assert.match(a2.answer, /9 to 18 months/i);
 
   // 3. Sentar sem apoio (marco motor específico)
   const q3 = 'Com quantos meses o bebê senta sem apoio?';
-  const r3 = retrieveRelevantEvidence(q3, 'baby', 'pt-BR');
+  const r3 = retrieveRelevantEvidence(q3, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r3[0].chunk.id, 'ev-milestones-gross-motor-17');
-  const a3 = generateMockAnswer(q3, r3, 'pt-BR');
+  const a3 = generateMockAnswer(q3, r3, 'pt-BR', auditOptions);
   assert.match(a3.answer, /sentar sem apoio/i);
 
   // 4. Variação fisiológica normal: 14 meses e ainda não anda
   const q4 = 'Meu bebê de 14 meses ainda não anda, isso é normal?';
-  const r4 = retrieveRelevantEvidence(q4, 'baby', 'pt-BR');
+  const r4 = retrieveRelevantEvidence(q4, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r4[0].chunk.id, 'ev-milestones-gross-motor-17');
-  const a4 = generateMockAnswer(q4, r4, 'pt-BR');
+  const a4 = generateMockAnswer(q4, r4, 'pt-BR', auditOptions);
   assert.match(a4.answer, /normal/i);
   assert.match(a4.answer, /14 meses/i);
 
   // 5. Primeiras palavras / fala (PT)
   const q5 = 'Quando o bebê começa a falar as primeiras palavras?';
-  const r5 = retrieveRelevantEvidence(q5, 'baby', 'pt-BR');
+  const r5 = retrieveRelevantEvidence(q5, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r5[0].chunk.id, 'ev-milestones-language-18');
-  const a5 = generateMockAnswer(q5, r5, 'pt-BR');
+  const a5 = generateMockAnswer(q5, r5, 'pt-BR', auditOptions);
   assert.match(a5.answer, /12 meses|10 e 14 meses|primeiras palavras/i);
 
   // 6. First words / talking (EN)
   const q6 = 'At what age do babies say their first words?';
-  const r6 = retrieveRelevantEvidence(q6, 'baby', 'en');
+  const r6 = retrieveRelevantEvidence(q6, 'baby', 'en', undefined, auditOptions);
   assert.strictEqual(r6[0].chunk.id, 'ev-milestones-language-18');
-  const a6 = generateMockAnswer(q6, r6, 'en');
+  const a6 = generateMockAnswer(q6, r6, 'en', auditOptions);
   assert.match(a6.answer, /first.*words|10 to 14 months|12 months/i);
 
   // 7. Tummy time (PT)
   const q7 = 'Como estimular o bebê de bruços com segurança (tummy time)?';
-  const r7 = retrieveRelevantEvidence(q7, 'baby', 'pt-BR');
+  const r7 = retrieveRelevantEvidence(q7, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r7[0].chunk.id, 'ev-tummy-time-16');
 
   // 8. Tummy time (EN)
   const q8 = 'How do I safely do tummy time?';
-  const r8 = retrieveRelevantEvidence(q8, 'baby', 'en');
+  const r8 = retrieveRelevantEvidence(q8, 'baby', 'en', undefined, auditOptions);
   assert.strictEqual(r8[0].chunk.id, 'ev-tummy-time-16');
 
   // 9. Oferta de água antes dos 6 meses
   const q9 = 'Posso dar água para o bebê de 3 meses que mama no peito?';
-  const r9 = retrieveRelevantEvidence(q9, 'baby', 'pt-BR');
+  const r9 = retrieveRelevantEvidence(q9, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r9[0].chunk.id, 'ev-water-hydration-infant-19');
-  const a9 = generateMockAnswer(q9, r9, 'pt-BR');
+  const a9 = generateMockAnswer(q9, r9, 'pt-BR', auditOptions);
   assert.match(a9.answer, /n[ãa]o devem receber [aá]gua|6 meses/i);
 
   // 10. Introdução alimentar complementar (6 meses)
   const q10 = 'Quando começar a introdução de alimentos sólidos?';
-  const r10 = retrieveRelevantEvidence(q10, 'baby', 'pt-BR');
+  const r10 = retrieveRelevantEvidence(q10, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r10[0].chunk.id, 'ev-complementary-feeding-10');
-  const a10 = generateMockAnswer(q10, r10, 'pt-BR');
+  const a10 = generateMockAnswer(q10, r10, 'pt-BR', auditOptions);
   assert.match(a10.answer, /6 meses/i);
 
-  // 11. Diferença entre reflexo de gag e engasgo real
+  // 11. Diferença entre reflexo de gag e engasgo real (com flag de auditoria)
   const q11 = 'Qual a diferença entre ânsia de engasgo (reflexo de gag) e engasgo real?';
-  const r11 = retrieveRelevantEvidence(q11, 'baby', 'pt-BR');
+  const r11 = retrieveRelevantEvidence(q11, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r11[0].chunk.id, 'ev-choking-vs-gag-reflex-20');
-  const a11 = generateMockAnswer(q11, r11, 'pt-BR');
+  const a11 = generateMockAnswer(q11, r11, 'pt-BR', auditOptions);
   assert.match(a11.answer, /gag/i);
   assert.match(a11.answer, /silencioso|emerg[eê]ncia/i);
 
@@ -97,25 +100,25 @@ test('RAG Cobertura & Salvaguardas: Grupo A - Perguntas dentro do escopo com res
   const r13 = retrieveRelevantEvidence(q13, 'baby', 'pt-BR');
   assert.strictEqual(r13[0].chunk.id, 'ev-infant-colic-14');
 
-  // 14. Segurança da cadeirinha virada para trás
+  // 14. Segurança da cadeirinha virada para trás (com flag de auditoria)
   const q14 = 'Até que idade a cadeirinha do carro deve ficar virada para trás?';
-  const r14 = retrieveRelevantEvidence(q14, 'baby', 'pt-BR');
+  const r14 = retrieveRelevantEvidence(q14, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r14[0].chunk.id, 'ev-car-seat-safety-rear-facing-22');
-  const a14 = generateMockAnswer(q14, r14, 'pt-BR');
+  const a14 = generateMockAnswer(q14, r14, 'pt-BR', auditOptions);
   assert.match(a14.answer, /1 ano|2 anos/i);
 
-  // 15. Cólicas uterinas da amamentação (afterpains)
+  // 15. Cólicas uterinas da amamentação (com flag de auditoria)
   const q15 = 'É normal sentir cólicas no útero enquanto estou amamentando?';
-  const r15 = retrieveRelevantEvidence(q15, 'baby', 'pt-BR');
+  const r15 = retrieveRelevantEvidence(q15, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r15[0].chunk.id, 'ev-postpartum-uterine-cramping-lochia-23');
-  const a15 = generateMockAnswer(q15, r15, 'pt-BR');
+  const a15 = generateMockAnswer(q15, r15, 'pt-BR', auditOptions);
   assert.match(a15.answer, /ocitocina|involu[çc][ãa]o|normal/i);
 
-  // 16. Tristeza pós-parto (baby blues) vs depressão pós-parto
+  // 16. Tristeza pós-parto (baby blues) vs depressão pós-parto (com flag de auditoria)
   const q16 = 'Como diferenciar tristeza pós-parto (baby blues) de depressão pós-parto?';
-  const r16 = retrieveRelevantEvidence(q16, 'baby', 'pt-BR');
+  const r16 = retrieveRelevantEvidence(q16, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r16[0].chunk.id, 'ev-postpartum-mental-health-blues-ppd-24');
-  const a16 = generateMockAnswer(q16, r16, 'pt-BR');
+  const a16 = generateMockAnswer(q16, r16, 'pt-BR', auditOptions);
   assert.match(a16.answer, /baby blues/i);
   assert.match(a16.answer, /depress[ãa]o p[oó]s-parto/i);
 });
@@ -150,9 +153,9 @@ test('RAG Cobertura & Salvaguardas: Grupo C - Perguntas ambíguas ou polissêmic
   const r23 = retrieveRelevantEvidence(q23, 'baby', 'pt-BR');
   assert.strictEqual(r23[0].chunk.id, 'ev-infant-sleep-duration-13');
 
-  // 24. Quando introduzir água e chás (regra 6 meses)
+  // 24. Quando introduzir água e chás (regra 6 meses) com flag de auditoria
   const q24 = 'Quando introduzir água e chás?';
-  const r24 = retrieveRelevantEvidence(q24, 'baby', 'pt-BR');
+  const r24 = retrieveRelevantEvidence(q24, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r24[0].chunk.id, 'ev-water-hydration-infant-19');
 
   // 25. Bebê que chora muito à noite
@@ -160,9 +163,9 @@ test('RAG Cobertura & Salvaguardas: Grupo C - Perguntas ambíguas ou polissêmic
   const r25 = retrieveRelevantEvidence(q25, 'baby', 'pt-BR');
   assert.strictEqual(r25[0].chunk.id, 'ev-infant-crying-15');
 
-  // 26. Como cuidar da cicatriz (pós-parto / cesárea)
+  // 26. Como cuidar da cicatriz (pós-parto / cesárea) com flag de auditoria
   const q26 = 'Como cuidar da cicatriz?';
-  const r26 = retrieveRelevantEvidence(q26, 'baby', 'pt-BR');
+  const r26 = retrieveRelevantEvidence(q26, 'baby', 'pt-BR', undefined, auditOptions);
   assert.strictEqual(r26[0].chunk.id, 'ev-postpartum-incision-care-25');
 });
 
