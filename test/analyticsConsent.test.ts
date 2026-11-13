@@ -12,6 +12,10 @@ import {
   setAnalyticsConsent,
   shouldEnableVercelAnalytics
 } from '../src/services/analyticsConsent.ts';
+import {
+  MAMAND_LOCAL_STORAGE_KEYS,
+  wipeAllMamandLocalData
+} from '../src/services/localDataWipeService.ts';
 
 function createMockWindow(hostname = 'mamand.app', online = true) {
   const store = new Map<string, string>();
@@ -116,6 +120,61 @@ test('3. Revogar interrompe novos envios e limpa script em runtime', () => {
   } finally {
     cleanupMockWindow();
   }
+});
+
+test('3b. Ciclo completo: aceitar, revogar, aceitar novamente, revogar e recarregar sem envios', () => {
+  const { store } = createMockWindow('mamand.app', true);
+  try {
+    const beforeSend = createAnalyticsBeforeSend(getAnalyticsConsent, () => 'mamand.app', () => true);
+
+    // 1. Aceitar
+    setAnalyticsConsent('granted');
+    assert.strictEqual(shouldEnableVercelAnalytics(getAnalyticsConsent(), { hostname: 'mamand.app', online: true }), true);
+    assert.ok(beforeSend({ type: 'pageview', url: 'https://mamand.app/' }) !== null);
+
+    // 2. Revogar -> deve bloquear imediatamente
+    setAnalyticsConsent('denied');
+    assert.strictEqual(shouldEnableVercelAnalytics(getAnalyticsConsent(), { hostname: 'mamand.app', online: true }), false);
+    assert.strictEqual(beforeSend({ type: 'pageview', url: 'https://mamand.app/' }), null);
+
+    // 3. Aceitar novamente -> volta a permitir
+    setAnalyticsConsent('granted');
+    assert.strictEqual(shouldEnableVercelAnalytics(getAnalyticsConsent(), { hostname: 'mamand.app', online: true }), true);
+    assert.ok(beforeSend({ type: 'pageview', url: 'https://mamand.app/' }) !== null);
+
+    // 4. Revogar novamente e simular recarregamento (lendo do localStorage persistido)
+    setAnalyticsConsent('denied');
+    const reloadedState = getAnalyticsConsent();
+    assert.strictEqual(reloadedState, 'denied');
+    assert.strictEqual(store.get(ANALYTICS_CONSENT_STORAGE_KEY), 'denied');
+    assert.strictEqual(shouldEnableVercelAnalytics(reloadedState, { hostname: 'mamand.app', online: true }), false);
+    assert.strictEqual(beforeSend({ type: 'pageview', url: 'https://mamand.app/' }), null);
+  } finally {
+    cleanupMockWindow();
+  }
+});
+
+test('3c. Lista central de dados locais inclui mamand_analytics_consent_v1 e preserva outras apps', async () => {
+  assert.ok(
+    (MAMAND_LOCAL_STORAGE_KEYS as readonly string[]).includes(ANALYTICS_CONSENT_STORAGE_KEY),
+    'MAMAND_LOCAL_STORAGE_KEYS deve incluir mamand_analytics_consent_v1'
+  );
+
+  const store = new Map<string, string>([
+    [ANALYTICS_CONSENT_STORAGE_KEY, 'granted'],
+    ['other_app_key', 'preserve-me']
+  ]);
+  const mockStorage = {
+    getItem: (k: string) => store.get(k) ?? null,
+    removeItem: (k: string) => {
+      store.delete(k);
+    }
+  };
+
+  const result = await wipeAllMamandLocalData(mockStorage, async () => {});
+  assert.ok(result.removedKeys.includes(ANALYTICS_CONSENT_STORAGE_KEY));
+  assert.strictEqual(store.has(ANALYTICS_CONSENT_STORAGE_KEY), false);
+  assert.strictEqual(store.get('other_app_key'), 'preserve-me');
 });
 
 test('4. Não ocorre coleta involuntária no Preview, localhost ou offline', () => {
