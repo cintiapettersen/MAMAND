@@ -219,11 +219,8 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack, in
           <strong>CNPJ:</strong> {doc.controller.cnpj} • <strong>{lang === 'pt-BR' ? 'País:' : 'Country:'}</strong>{' '}
           {doc.controller.country}
         </p>
-        <p style={{ fontSize: '0.82rem', color: '#9A6B2F', margin: '4px 0', lineHeight: 1.4 }}>
-          {doc.controller.addressPendingNotice}
-        </p>
-        <p style={{ fontSize: '0.82rem', color: '#9A6B2F', margin: '4px 0', lineHeight: 1.4 }}>
-          {doc.controller.dpoPendingNotice}
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '6px 0 4px 0', lineHeight: 1.45 }}>
+          {doc.controller.governanceNotice}
         </p>
         <p
           style={{

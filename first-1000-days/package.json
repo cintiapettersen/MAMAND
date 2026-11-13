@@ -6,10 +6,11 @@
   "description": "MAMAND — app local-first de apoio aos primeiros 1.000 dias (PWA)",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build:privacy": "node scripts/buildPrivacyHtml.js",
+    "build": "node scripts/buildPrivacyHtml.js && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "test": "node --test test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/ragMilestonesCoverage.test.ts test/privacyLocalWipe.test.ts test/privacyPolicy.test.ts"
+    "test": "node --test test/backupRestore.test.ts test/birthRecord.test.ts test/clinicalKnowledgeSecurity.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/ragMilestonesCoverage.test.ts test/privacyLocalWipe.test.ts test/privacyPolicy.test.ts"
   },
   "engines": {
     "node": ">=20"

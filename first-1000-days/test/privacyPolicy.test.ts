@@ -7,20 +7,15 @@ import {
   PRIVACY_POLICY_EN
 } from '../src/data/privacyPolicyData.ts';
 
-test('1. Identificação Institucional do Controlador e Ausência de Contatos Fictícios', () => {
+test('1. Identificação Institucional do Controlador e Ausência de Contatos Fictícios ou Provisórios', () => {
   // Verifica dados em PT-BR
   assert.strictEqual(PRIVACY_POLICY_PT.controller.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
   assert.strictEqual(PRIVACY_POLICY_PT.controller.cnpj, '24.325.181/0001-94');
   assert.strictEqual(PRIVACY_POLICY_PT.controller.country, 'Brasil');
   assert.match(
-    PRIVACY_POLICY_PT.controller.addressPendingNotice,
-    /homologação interna/,
-    'Endereço deve constar expressamente como pendência interna'
-  );
-  assert.match(
-    PRIVACY_POLICY_PT.controller.dpoPendingNotice,
-    /homologação interna/,
-    'Contato de privacidade/DPO deve constar expressamente como pendência interna'
+    PRIVACY_POLICY_PT.controller.governanceNotice,
+    /local-first/i,
+    'Governança deve ressaltar a autonomia local e os registros societários oficiais'
   );
 
   // Verifica que Open Child Health Booklet Initiative NÃO é tratada como a razão social
@@ -35,17 +30,17 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.strictEqual(PRIVACY_POLICY_EN.controller.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
   assert.strictEqual(PRIVACY_POLICY_EN.controller.cnpj, '24.325.181/0001-94');
   assert.strictEqual(PRIVACY_POLICY_EN.controller.country, 'Brazil');
-  assert.match(PRIVACY_POLICY_EN.controller.addressPendingNotice, /pending internal confirmation/);
-  assert.match(PRIVACY_POLICY_EN.controller.dpoPendingNotice, /pending internal confirmation/);
 
-  // Garante que não foram inventados emails fictícios (ex: contato@, dpo@, privacidade@)
+  // Garante que não foram publicados campos provisórios entre colchetes nem e-mails fictícios
   const fullPtText = JSON.stringify(PRIVACY_POLICY_PT);
   const fullEnText = JSON.stringify(PRIVACY_POLICY_EN);
+  assert.ok(!fullPtText.includes('[Endereço'), 'Não deve publicar campos provisórios de endereço');
+  assert.ok(!fullPtText.includes('[Canal'), 'Não deve publicar campos provisórios de canal de contato');
   assert.ok(!fullPtText.includes('@mamand.app') && !fullPtText.includes('@creativedesign.com'));
   assert.ok(!fullEnText.includes('@mamand.app') && !fullEnText.includes('@creativedesign.com'));
 });
 
-test('2. Cobertura Técnica Obrigatória das Seções da Política (PT-BR e EN)', () => {
+test('2. Cobertura Técnica Obrigatória e Fatos do Código (PT-BR e EN)', () => {
   const docs = [
     { lang: 'PT-BR', doc: PRIVACY_POLICY_PT },
     { lang: 'EN', doc: PRIVACY_POLICY_EN }
@@ -82,20 +77,25 @@ test('2. Cobertura Técnica Obrigatória das Seções da Política (PT-BR e EN)'
     // Detalhes técnicos verificados no texto
     const textCorpus = doc.sections.map((s) => s.content.join(' ') + ' ' + (s.warningBox || '')).join(' ');
 
-    assert.match(textCorpus, /IndexedDB/i, `[${lang}] Deve referenciar IndexedDB`);
+    // Nome exato do banco IndexedDB no código
+    assert.match(textCorpus, /first_1000_days_db/, `[${lang}] Deve referenciar o nome exato first_1000_days_db`);
     assert.match(textCorpus, /localStorage/i, `[${lang}] Deve referenciar localStorage`);
     assert.match(textCorpus, /Cloudflare/i, `[${lang}] Deve referenciar Cloudflare Workers`);
     assert.match(textCorpus, /Gemini/i, `[${lang}] Deve referenciar Gemini`);
     assert.match(textCorpus, /LGPD/i, `[${lang}] Deve referenciar LGPD`);
     assert.match(textCorpus, /GDPR/i, `[${lang}] Deve referenciar GDPR`);
 
+    // NÃO deve declarar campos inexistentes como Apgar
+    assert.ok(!textCorpus.toLowerCase().includes('apgar'), `[${lang}] Ficha de nascimento não deve citar campos Apgar`);
+
+    // Backup JSON inclui registros e ficha de nascimento, e exclui configurações de perfil
+    const backupSec = doc.sections.find((s) => s.id === 'exportacao-restauracao');
+    assert.match(backupSec!.content.join(' '), /birthRecord/i, `[${lang}] Deve confirmar que birthRecord está no JSON`);
+    assert.match(backupSec!.content.join(' '), /(?:NÃO|NOT)/i, `[${lang}] Deve listar explicitamente o que não está no backup`);
+
     // Limitações explícitas de filtros automáticos
     const assistantSec = doc.sections.find((s) => s.id === 'assistente-gateway-ia');
     assert.ok(assistantSec?.warningBox, `[${lang}] Assistente deve possuir caixa de aviso sobre limitações de filtros`);
-
-    // Omissões do backup JSON
-    const backupSec = doc.sections.find((s) => s.id === 'exportacao-restauracao');
-    assert.match(backupSec!.content.join(' '), /(?:NÃO|NOT)/i, `[${lang}] Deve listar explicitamente o que não está no backup`);
 
     // Ausência de segurança absoluta
     const secBox = doc.sections.find((s) => s.id === 'seguranca-criptografia');
@@ -106,15 +106,16 @@ test('2. Cobertura Técnica Obrigatória das Seções da Política (PT-BR e EN)'
   }
 });
 
-test('3. Página Estática de Privacidade (public/privacy.html) e Service Worker', () => {
+test('3. Paridade Substantiva entre privacy.html e privacyPolicyData.ts (Fonte Única)', () => {
   const htmlPath = path.resolve('public/privacy.html');
   assert.ok(fs.existsSync(htmlPath), 'public/privacy.html deve existir');
 
   const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
 
-  // Verifica elementos essenciais
+  // Verifica elementos essenciais gerados da fonte única
   assert.match(htmlContent, /CREATIVE DESIGN PETTERSEN LTDA/, 'HTML deve conter a razão social');
   assert.match(htmlContent, /24\.325\.181\/0001-94/, 'HTML deve conter o CNPJ');
+  assert.match(htmlContent, /first_1000_days_db/, 'HTML deve conter o nome exato do banco IndexedDB');
   assert.match(htmlContent, /data-lang="pt-BR"/, 'HTML deve conter versão PT-BR');
   assert.match(htmlContent, /data-lang="en"/, 'HTML deve conter versão EN');
   assert.match(htmlContent, /setLanguage/, 'HTML deve possuir alternador de idioma offline via JS puro');
