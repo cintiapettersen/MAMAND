@@ -21,13 +21,22 @@ import {
   SimplePrivacyPillar
 } from '../data/privacyPolicyData';
 import type { SupportedLang } from '../serverTypes.ts';
+import { AnalyticsPreferenceControl } from '../components/AnalyticsPreferenceControl';
+import type { AnalyticsConsentState } from '../services/analyticsConsent';
 
 interface PrivacyPolicyViewProps {
   onBack: () => void;
   initialLang?: SupportedLang;
+  analyticsConsent?: AnalyticsConsentState;
+  onChangeAnalyticsConsent?: (decision: 'granted' | 'denied') => void;
 }
 
-export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack, initialLang = 'pt-BR' }) => {
+export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({
+  onBack,
+  initialLang = 'pt-BR',
+  analyticsConsent,
+  onChangeAnalyticsConsent
+}) => {
   const [lang, setLang] = useState<SupportedLang>(initialLang);
   const doc: PrivacyPolicyDocument = lang === 'pt-BR' ? PRIVACY_POLICY_PT : PRIVACY_POLICY_EN;
 
@@ -461,6 +470,17 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack, in
           </section>
         ))}
       </div>
+
+      {/* Preferência de estatísticas de alcance (quando disponível no app) */}
+      {analyticsConsent && onChangeAnalyticsConsent && (
+        <div style={{ marginTop: '24px' }}>
+          <AnalyticsPreferenceControl
+            language={lang}
+            consent={analyticsConsent}
+            onChange={onChangeAnalyticsConsent}
+          />
+        </div>
+      )}
 
       {/* Rodapé da Política */}
       <div

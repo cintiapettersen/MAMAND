@@ -15,7 +15,8 @@ export const MAMAND_LOCAL_STORAGE_KEYS = [
   'first1000days_daily_card',           // Estado de visualização do card diário
   'p1000_viewed_content_ids_v1',        // Conteúdos educativos visualizados
   'p1000_journey_records_v1',           // Armazenamento legado de jornada
-  'first_1000_days_lang'                // Preferência de idioma
+  'first_1000_days_lang',               // Preferência de idioma
+  'mamand_analytics_consent_v1'         // Preferência de consentimento de estatísticas
 ] as const;
 
 export interface WipeLocalDataResult {
