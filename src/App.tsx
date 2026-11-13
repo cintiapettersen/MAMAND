@@ -19,6 +19,14 @@ import { MaternityChecklistView } from './components/MaternityChecklistView';
 import { HealthChecksView } from './components/HealthChecksView';
 import { PrivacyPolicyView } from './views/PrivacyPolicyView';
 import { SplashScreen } from './components/SplashScreen';
+import { AnalyticsConsentBanner } from './components/AnalyticsConsentBanner';
+import { VercelAnalyticsGate } from './components/VercelAnalyticsGate';
+import {
+  AnalyticsConsentState,
+  clearAnalyticsConsent,
+  getAnalyticsConsent,
+  setAnalyticsConsent
+} from './services/analyticsConsent';
 
 const MainApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -37,6 +45,14 @@ const MainApp: React.FC = () => {
   const [isHealthChecksOpen, setIsHealthChecksOpen] = useState<boolean>(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState<boolean>(false);
   const [resetCounter, setResetCounter] = useState<number>(0);
+  const [analyticsConsent, setAnalyticsConsentState] = useState<AnalyticsConsentState>(() =>
+    getAnalyticsConsent()
+  );
+
+  const handleAnalyticsConsentChange = (decision: 'granted' | 'denied') => {
+    const saved = setAnalyticsConsent(decision);
+    setAnalyticsConsentState(saved);
+  };
 
   const isPrivacyUrl = () => {
     if (typeof window === 'undefined') return false;
@@ -94,6 +110,8 @@ const MainApp: React.FC = () => {
 
   const handleWipeAllLocalData = async () => {
     await wipeAllMamandLocalData();
+    clearAnalyticsConsent();
+    setAnalyticsConsentState('pending');
     profileStorage.clearProfile();
     setProfile(null);
     setRecords([]);
@@ -213,14 +231,23 @@ const MainApp: React.FC = () => {
 
   if (isPrivacyOpen) {
     return (
-      <div className="app-container">
-        <PrivacyPolicyView onBack={handleClosePrivacy} initialLang={language} />
-      </div>
+      <>
+        <VercelAnalyticsGate consent={analyticsConsent} />
+        <div className="app-container">
+          <PrivacyPolicyView
+            onBack={handleClosePrivacy}
+            initialLang={language}
+            analyticsConsent={analyticsConsent}
+            onChangeAnalyticsConsent={handleAnalyticsConsentChange}
+          />
+        </div>
+      </>
     );
   }
 
   return (
     <div className="app-container">
+      <VercelAnalyticsGate consent={analyticsConsent} />
       <Header
         profile={profile}
         onResetProfile={handleResetProfile}
@@ -239,6 +266,8 @@ const MainApp: React.FC = () => {
           onReset={handleResetProfile}
           onWipeAllData={handleWipeAllLocalData}
           onOpenPrivacy={handleOpenPrivacy}
+          analyticsConsent={analyticsConsent}
+          onChangeAnalyticsConsent={handleAnalyticsConsentChange}
         />
       )}
 
@@ -354,6 +383,14 @@ const MainApp: React.FC = () => {
             }}
           />
         </>
+      )}
+
+      {analyticsConsent === 'pending' && (
+        <AnalyticsConsentBanner
+          onAccept={() => handleAnalyticsConsentChange('granted')}
+          onDecline={() => handleAnalyticsConsentChange('denied')}
+          onOpenPrivacy={handleOpenPrivacy}
+        />
       )}
     </div>
   );

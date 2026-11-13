@@ -74,8 +74,8 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       },
       {
         icon: 'no-ads',
-        title: 'Sem anúncios e sem venda de dados',
-        description: 'Não comercializamos dados pessoais, não criamos perfis para publicidade e não utilizamos ferramentas de rastreamento comportamental de terceiros.'
+        title: 'Sem anúncios, sem venda de dados e métricas opcionais',
+        description: 'Não comercializamos dados pessoais, não criamos perfis para publicidade e não utilizamos rastreadores de marketing. Estatísticas agregadas de alcance (Vercel Web Analytics) permanecem desativadas por padrão e só funcionam se você aceitar explicitamente.'
       }
     ]
   },
@@ -139,7 +139,8 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         'Para manter o aplicativo acessível e protegido contra ameaças digitais, serviços de infraestrutura de tecnologia são empregados:',
         'a) Cloudflare Workers (Gateway Edge): Processa as requisições de consulta do assistente. Em conformidade com as operações normais de redes, o Cloudflare recebe metadados transitórios de conexão (endereço IP, porta de conexão, cabeçalhos HTTP e navegador). Para proteção contra sobrecarga e abuso (rate limiting), o sistema calcula um hash criptográfico efêmero (SHA-256) combinando o IP com a data do dia e um sal rotativo diário, descartando o endereço IP original da lógica do aplicativo.',
         'b) Plataforma de Hospedagem Estática (CDN): Distribui os arquivos HTML, scripts JavaScript, fontes e folhas de estilo do aplicativo, registrando logs padrão de servidores web estritamente necessários para a entrega de arquivos e proteção de infraestrutura.',
-        'c) Google Gemini API: Processa as consultas de linguagem natural quando o assistente online está ativado, em conformidade com as políticas comerciais de API do provedor (onde requisições de API não são utilizadas para treinar modelos fundacionais públicos da Google).'
+        'c) Google Gemini API: Processa as consultas de linguagem natural quando o assistente online está ativado, em conformidade com as políticas comerciais de API do provedor (onde requisições de API não são utilizadas para treinar modelos fundacionais públicos da Google).',
+        'd) Estatísticas agregadas de alcance (Vercel Web Analytics — somente após consentimento): Quando você aceita expressamente no aviso inicial ou nas preferências, o aplicativo carrega o Vercel Web Analytics exclusivamente para medir visualizações agregadas de páginas, visitantes estimados (calculados via hash criptográfico efêmero de 24 horas) e origem geral do tráfego (referrer e país aproximado). O serviço não utiliza cookies de rastreamento, não grava identificadores persistentes no aparelho e não lê nem recebe nenhum dado do perfil, da Jornada, da Ficha de Nascimento, de consultas, exames ou perguntas ao assistente — todos os registros familiares permanecem integralmente no seu próprio dispositivo.'
       ]
     },
     {
@@ -195,6 +196,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         'O MAMAND rejeita o uso de caixas genéricas e forçadas de "Li e aceito todos os termos" como artifício para justificar qualquer tratamento de dados.',
         'A utilização das funções de registro local (Jornada, ficha de nascimento, checklist) apoia-se na execução direta da funcionalidade pessoal solicitada pela usuária (local-first), na qual os dados permanecem sob o exclusivo controle da própria titular em seu aparelho. A CREATIVE DESIGN PETTERSEN LTDA esclarece que a natureza local do aplicativo não é invocada como dispensa automática de obrigações corporativas da controladora perante a LGPD ou o GDPR.',
         'O envio de perguntas ao assistente educativo constitui solicitação voluntária do usuário. Avisos contextuais de privacidade são exibidos para assegurar a ciência informada da usuária, não se considerando o simples clique de envio como consentimento explícito e destacado automaticamente válido.',
+        'Consentimento para estatísticas de alcance (LGPD, GDPR e Noruega/EEE): A medição via Vercel Web Analytics inicia desativada por padrão. A ausência de cookies não dispensa automaticamente o consentimento prévio, especialmente sob a Diretiva ePrivacy, o GDPR e a legislação norueguesa (ekomloven § 3-15), que exigem escolha ativa e bloqueio prévio de scripts de medição não estritamente necessários no dispositivo. Você pode aceitar ou recusar com o mesmo destaque no aviso inicial e alterar ou revogar sua escolha a qualquer momento em "Editar Perfil" ou nesta Política de Privacidade; ao recusar ou revogar, o script não é carregado e novos envios são interrompidos imediatamente.',
         'Revisão contínua de enquadramento legal e ausência de definitividade: A CREATIVE DESIGN PETTERSEN LTDA submete todo o enquadramento de privacidade à auditoria e validação jurídica independente. A menção a cenários regulatórios destina-se estritamente à transparência e governança interna pré-publicação, sem emitir declarações de conformidade jurídica definitiva, sem emitir atestados de segurança absoluta e sem presumir imunidade legal.'
       ]
     },
@@ -250,8 +252,8 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       },
       {
         icon: 'no-ads',
-        title: 'No advertising, no tracking, no data selling',
-        description: 'We do not sell personal data, build advertising profiles, or run third-party behavioral analytics or marketing trackers.'
+        title: 'No advertising, no data selling, and optional metrics',
+        description: 'We do not sell personal data, build advertising profiles, or run marketing trackers. Aggregate reach statistics (Vercel Web Analytics) remain disabled by default and only run if you explicitly opt in.'
       }
     ]
   },
@@ -315,7 +317,8 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         'To keep the application accessible, resilient, and protected against abuse, technology infrastructure services are utilized:',
         'a) Cloudflare Workers (Edge Gateway): Processes assistant question requests. As part of standard internet edge routing and DDoS mitigation, Cloudflare receives transient connection metadata (IP address, port, HTTP headers, User-Agent). For rate limiting, the gateway computes an ephemeral daily SHA-256 hash combining the IP with the date and a rotating salt, discarding raw IP addresses from application logic.',
         'b) Static Hosting Platform (CDN): Delivers static HTML, JavaScript bundles, self-hosted fonts, and stylesheets, maintaining standard web server access logs strictly for content delivery and infrastructure protection.',
-        'c) Google Gemini API: Processes natural language queries when online AI is enabled, under commercial enterprise API terms (which stipulate that customer API queries are not used to train Google\'s foundational models).'
+        'c) Google Gemini API: Processes natural language queries when online AI is enabled, under commercial enterprise API terms (which stipulate that customer API queries are not used to train Google\'s foundational models).',
+        'd) Aggregate reach statistics (Vercel Web Analytics — opt-in only): Only after you explicitly accept in the initial notice or preferences, the app loads Vercel Web Analytics strictly to measure aggregate page views, estimated visitors (computed via an ephemeral 24-hour cryptographic hash), and general traffic sources (referrer and approximate country). It uses no tracking cookies, stores no persistent tracking IDs on your device, and never accesses or transmits profile details, Journey entries, Birth Record data, Health Checks, or assistant questions — all family records remain exclusively on your own device.'
       ]
     },
     {
@@ -371,6 +374,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         'MAMAND rejects blanket, coercive "I agree to all terms" checkboxes as a pretext for broad data processing.',
         'Local family logging features (Journey, birth record, checklist) rely on the direct execution of the personal service requested by the user under a local-first paradigm, where data remains under the user\'s exclusive control. CREATIVE DESIGN PETTERSEN LTDA clarifies that this local architecture is not invoked as an automatic exemption from corporate controller obligations under privacy law.',
         'Asking questions to the educational assistant constitutes a voluntary user request. Contextual privacy notices are displayed to ensure informed user awareness, without treating a simple submit click as automatically valid explicit consent.',
+        'Consent for reach statistics (LGPD, GDPR, and Norway/EEA): Measurement via Vercel Web Analytics is disabled by default. The absence of cookies does not automatically waive prior consent, particularly under the ePrivacy Directive, GDPR, and Norwegian law (ekomloven § 3-15), which require active choice and prior blocking of non-essential measurement scripts on the user\'s device. You may accept or decline with equal prominence in the initial notice and change or withdraw your preference at any time in "Edit Profile" or within this Privacy Policy; upon declining or withdrawing, the script is not loaded and any further transmissions stop immediately.',
         'Ongoing legal review and absence of definitive certification: CREATIVE DESIGN PETTERSEN LTDA submits this entire privacy framework to independent legal review. Discussion of regulatory scenarios serves internal governance and transparency, without asserting definitive legal compliance, without providing absolute security claims, and without assuming statutory immunity.'
       ]
     },

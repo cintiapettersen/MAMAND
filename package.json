@@ -10,7 +10,7 @@
     "build": "node scripts/buildPrivacyHtml.js && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "test": "node --test --test-timeout=60000 test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/privacyLocalWipe.test.ts test/privacyPolicy.test.ts test/clinicalKnowledgeSecurity.test.ts test/ragMilestonesCoverage.test.ts test/stageLabel.test.ts test/internationalStructure.test.ts test/healthChecksStorage.test.ts test/journeySummary.test.ts test/publicDemo.test.ts test/uxRevision.test.ts test/recordDate.test.ts test/healthAppointment.test.ts test/indexedDbMigrationRollback.test.ts test/futureBirthValidation.test.ts test/careGuideFilters.test.ts"
+    "test": "node --test --test-timeout=60000 test/backupRestore.test.ts test/birthRecord.test.ts test/e2eVerification.test.ts test/offlinePwa.test.ts test/privacyLocalWipe.test.ts test/privacyPolicy.test.ts test/analyticsConsent.test.ts test/clinicalKnowledgeSecurity.test.ts test/ragMilestonesCoverage.test.ts test/stageLabel.test.ts test/internationalStructure.test.ts test/healthChecksStorage.test.ts test/journeySummary.test.ts test/publicDemo.test.ts test/uxRevision.test.ts test/recordDate.test.ts test/healthAppointment.test.ts test/indexedDbMigrationRollback.test.ts test/futureBirthValidation.test.ts test/careGuideFilters.test.ts"
   },
   "engines": {
     "node": ">=20"
@@ -21,6 +21,7 @@
     "@fontsource-variable/fraunces": "5.3.0",
     "@fontsource/nunito": "5.3.0",
     "@fontsource/plus-jakarta-sans": "5.3.0",
+    "@vercel/analytics": "^2.0.1",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

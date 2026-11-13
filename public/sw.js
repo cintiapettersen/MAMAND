@@ -58,8 +58,11 @@ self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // 1. EXCLUSÃO ESTRITA: Dados de API / Gateway / Métodos não-GET NUNCA são cacheados
-  const isApiRequest = url.pathname.startsWith('/api') || url.port === '8787';
+  // 1. EXCLUSÃO ESTRITA: Dados de API / Gateway / Analytics / Métodos não-GET NUNCA são cacheados
+  const isApiRequest =
+    url.pathname.startsWith('/api') ||
+    url.pathname.startsWith('/_vercel') ||
+    url.port === '8787';
   const isMutation = request.method !== 'GET';
 
   if (isApiRequest || isMutation) {

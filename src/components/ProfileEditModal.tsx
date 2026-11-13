@@ -13,6 +13,8 @@ import {
   isDueDatePast
 } from '../utils/dateUtils';
 import { NameField, CountryField, CareCountryField } from './ProfileFields';
+import { AnalyticsPreferenceControl } from './AnalyticsPreferenceControl';
+import type { AnalyticsConsentState } from '../services/analyticsConsent';
 
 interface ProfileEditModalProps {
   profile: UserProfile;
@@ -22,6 +24,8 @@ interface ProfileEditModalProps {
   onReset: () => void;
   onWipeAllData?: () => Promise<void> | void;
   onOpenPrivacy?: () => void;
+  analyticsConsent?: AnalyticsConsentState;
+  onChangeAnalyticsConsent?: (decision: 'granted' | 'denied') => void;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
@@ -31,7 +35,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   onSave,
   onReset,
   onWipeAllData,
-  onOpenPrivacy
+  onOpenPrivacy,
+  analyticsConsent,
+  onChangeAnalyticsConsent
 }) => {
   const { language, t } = useLanguage();
 
@@ -412,6 +418,17 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <span>{t.region.restartOnboarding}</span>
             </button>
           </div>
+
+          {/* Preferência de estatísticas de alcance (Analytics) */}
+          {analyticsConsent && onChangeAnalyticsConsent && (
+            <div style={{ marginTop: '8px' }}>
+              <AnalyticsPreferenceControl
+                language={language}
+                consent={analyticsConsent}
+                onChange={onChangeAnalyticsConsent}
+              />
+            </div>
+          )}
 
           {/* Link para Política de Privacidade */}
           {onOpenPrivacy && (
