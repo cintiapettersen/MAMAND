@@ -633,6 +633,21 @@ export const ptBR: TranslationDictionary = {
     genericPhrase: 'o número de emergência local',
     restartOnboarding: 'Recomeçar a introdução'
   },
+  privacy: {
+    policyLink: 'Política de Privacidade',
+    policyTitle: 'Política de Privacidade e Proteção de Dados',
+    summaryTitle: 'Seus dados ficam no seu aparelho',
+    summarySubtitle: 'Armazenamento local, sem cadastro e sem venda de dados.',
+    openFullPolicy: 'Ver Política de Privacidade completa',
+    backToApp: 'Voltar ao aplicativo',
+    onboardingNotice: 'Seus dados de rotina e saúde ficam gravados apenas neste aparelho. Não criamos contas nem enviamos seus registros para a nuvem.',
+    onboardingBadge: 'Privacidade local garantida',
+    profileLinkDesc: 'Consulte como seus dados locais são protegidos, a ausência de banco central e as salvaguardas de IA.',
+    journeyLinkText: 'Privacidade e dados locais',
+    versionLabel: 'Versão',
+    lastUpdated: 'Última atualização',
+    pendingNotice: 'Campos institucionais em processo de homologação interna.'
+  },
   common: {
     loading: 'Carregando dados locais...',
     dbErrorTitle: 'Armazenamento Local Restrito',

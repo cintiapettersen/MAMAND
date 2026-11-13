@@ -508,6 +508,21 @@ export interface TranslationDictionary {
     genericPhrase: string;
     restartOnboarding: string;
   };
+  privacy: {
+    policyLink: string;
+    policyTitle: string;
+    summaryTitle: string;
+    summarySubtitle: string;
+    openFullPolicy: string;
+    backToApp: string;
+    onboardingNotice: string;
+    onboardingBadge: string;
+    profileLinkDesc: string;
+    journeyLinkText: string;
+    versionLabel: string;
+    lastUpdated: string;
+    pendingNotice: string;
+  };
   common: {
     loading: string;
     dbErrorTitle: string;

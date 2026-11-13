@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#FAF7F2" />
+  <meta name="description" content="Política de Privacidade e Proteção de Dados do MAMAND — Princípio Local-First e Minimização Estrita." />
+  <title>Política de Privacidade — MAMAND</title>
+  <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
+  <link rel="apple-touch-icon" href="/icon-192.svg" />
+  <style>
+    @font-face {
+      font-family: 'Fraunces';
+      font-style: normal;
+      font-weight: 500 700;
+      font-display: swap;
+      src: url('/fonts/fraunces-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Plus Jakarta Sans';
+      font-style: normal;
+      font-weight: 400 800;
+      font-display: swap;
+      src: url('/fonts/plus-jakarta-sans-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    :root {
+      --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-title: 'Fraunces', Georgia, serif;
+      --bg-app: #FAF7F2;
+      --bg-card: #FFFFFF;
+      --bg-card-muted: #F3EEE7;
+      --primary: #C76B50;
+      --primary-light: #FBF0EB;
+      --primary-hover: #B55B40;
+      --sage: #6B8E7C;
+      --sage-light: #EEF4F0;
+      --text-main: #2C2825;
+      --text-muted: #736C65;
+      --border-light: #EBE4DA;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-app);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 20px 16px 60px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.86rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-card-muted);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .lang-switcher {
+      display: inline-flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 2px;
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .header-box {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .meta {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card-controller {
+      border-left: 4px solid var(--primary);
+    }
+
+    .pillar-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .pillar-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .pillar-title {
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .pillar-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .warning-box {
+      background-color: #FEF3C7;
+      border-left: 4px solid #D97706;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.83rem;
+      color: #92400E;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    .disclaimer-card {
+      background-color: #FAF5EF;
+      border: 1px solid #E4D7C5;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #5C4A3A;
+      margin-bottom: 24px;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .toc a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.83rem;
+      padding: 3px 0;
+    }
+
+    .toc a:hover {
+      text-decoration: underline;
+    }
+
+    section h2 {
+      font-family: var(--font-title);
+      font-size: 1.22rem;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    section p {
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-light);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    [data-lang="en"] {
+      display: none;
+    }
+
+    @media print {
+      .nav-bar, .lang-switcher, .toc-card, footer .btn {
+        display: none !important;
+      }
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        padding: 0;
+      }
+      .card {
+        border: none !important;
+        padding: 10px 0 !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-bar">
+      <a href="/" class="btn btn-secondary">
+        ← <span data-lang="pt-BR">Voltar ao MAMAND</span><span data-lang="en">Back to MAMAND</span>
+      </a>
+
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <div class="lang-switcher">
+          <button type="button" class="lang-btn active" id="btn-pt" onclick="setLanguage('pt-BR')">PT-BR</button>
+          <button type="button" class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="window.print()" style="padding: 6px 12px; font-size: 0.78rem;">
+          <span data-lang="pt-BR">Imprimir</span><span data-lang="en">Print</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CABEÇALHO PT-BR -->
+    <div data-lang="pt-BR">
+      <div class="header-box">
+        <span class="badge">MAMAND • Transparência e Privacidade</span>
+        <h1>Política de Privacidade</h1>
+        <p class="meta">Versão 1.0.0 • Última atualização: 13 de novembro de 2026</p>
+      </div>
+
+      <!-- Identificação Institucional -->
+      <div class="card card-controller">
+        <h2 style="font-size: 1.05rem; margin-bottom: 8px;">Identificação do Controlador</h2>
+        <p><strong>Razão Social Responsável:</strong> CREATIVE DESIGN PETTERSEN LTDA</p>
+        <p><strong>CNPJ:</strong> 24.325.181/0001-94 • <strong>País:</strong> Brasil</p>
+        <p style="color: #9A6B2F; font-size: 0.83rem; margin-top: 4px;">[Endereço institucional em fase de homologação interna]</p>
+        <p style="color: #9A6B2F; font-size: 0.83rem;">[Canal oficial de privacidade e Encarregado de Dados em fase de homologação interna]</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed var(--border-light); paddingTop: 8px;">
+          O MAMAND nasceu a partir de esforços de colaboração aberta inspirados na Open Child Health Booklet Initiative. Contudo, a entidade controladora e pessoa jurídica formalmente responsável pelo produto e pelo tratamento de dados nos termos da legislação aplicável é a CREATIVE DESIGN PETTERSEN LTDA.
+        </p>
+      </div>
+
+      <!-- Resumo de Privacidade em Linguagem Simples -->
+      <div class="card" style="background: var(--bg-card-muted);">
+        <h2 style="border: none; margin-bottom: 2px;">Resumo de Privacidade em Linguagem Simples</h2>
+        <p style="color: var(--text-muted); font-size: 0.86rem;">Nosso compromisso transparente com você, seu bebê e sua família:</p>
+
+        <div class="pillar-grid">
+          <div class="pillar-item">
+            <div class="pillar-title">1. Seus dados ficam no seu aparelho</div>
+            <div class="pillar-desc">Diário da Jornada, ficha de nascimento, marcos de desenvolvimento e memórias ficam gravados diretamente no navegador do seu celular ou computador. Não enviamos seus registros familiares para servidores centrais.</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">2. Sem cadastro, login ou senhas</div>
+            <div class="pillar-desc">Você não precisa fornecer seu e-mail, criar conta ou inventar senhas para cuidar da sua rotina. O aplicativo funciona imediatamente ao ser aberto.</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">3. Assistente educativo com dados minimizados</div>
+            <div class="pillar-desc">Ao tirar dúvidas com o assistente, apenas o texto da pergunta e a fase do bebê são transmitidos. Filtros automáticos removem números de documentos e telefones antes do processamento, e as respostas são baseadas em manuais oficiais de saúde (Ministério da Saúde, OMS e UNICEF).</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">4. Controle total nas suas mãos</div>
+            <div class="pillar-desc">Você pode exportar seus registros em arquivo JSON ou resumo para impressão a qualquer momento, ou apagar todos os dados locais deste aparelho com um único toque.</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">5. Sem anúncios e sem venda de dados</div>
+            <div class="pillar-desc">Não comercializamos dados pessoais, não criamos perfis para publicidade e não utilizamos ferramentas de rastreamento comportamental de terceiros.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer de Certeza Jurídica -->
+      <div class="disclaimer-card">
+        <strong>Aviso importante:</strong> Esta Política de Privacidade reflete com exatidão o código-fonte auditado e o funcionamento operacional atual do MAMAND. O aplicativo não declara possuir certificação governamental formal, selos de conformidade jurídica definitiva ou garantias de segurança absoluta, sendo seu modelo fundamentado no princípio do armazenamento local (local-first) e na minimização estrita de dados.
+      </div>
+
+      <!-- Índice -->
+      <div class="card toc-card">
+        <h2 style="font-size: 1rem; border: none; margin-bottom: 6px;">Índice da Política</h2>
+        <div class="toc">
+          <a href="#pt-1">1. Identificação Institucional e Controlador</a>
+          <a href="#pt-2">2. Arquitetura Local-First e Dispositivo</a>
+          <a href="#pt-3">3. Categorias de Dados Tratados</a>
+          <a href="#pt-4">4. Ausência de Banco Central</a>
+          <a href="#pt-5">5. Assistente, Gateway e IA (Gemini)</a>
+          <a href="#pt-6">6. Logs Técnicos e Infraestrutura</a>
+          <a href="#pt-7">7. Exportação, Restauração e Backups</a>
+          <a href="#pt-8">8. Exclusão de Dados Locais</a>
+          <a href="#pt-9">9. Segurança e Criptografia</a>
+          <a href="#pt-10">10. Direitos dos Titulares (LGPD e GDPR)</a>
+          <a href="#pt-11">11. Transparência e Consentimento</a>
+          <a href="#pt-12">12. Alterações e Disclaimers Finais</a>
+        </div>
+      </div>
+
+      <!-- Seções Completas PT-BR -->
+      <section class="card" id="pt-1">
+        <h2>1. Identificação Institucional e Controlador</h2>
+        <p>O MAMAND é um aplicativo web progressivo (PWA) de apoio e acompanhamento parental nos primeiros 1.000 dias de vida (da gestação aos dois anos de idade).</p>
+        <p>A controladora do tratamento de dados pessoais no âmbito do MAMAND é a sociedade empresária CREATIVE DESIGN PETTERSEN LTDA, inscrita no CNPJ sob o nº 24.325.181/0001-94, sediada no Brasil.</p>
+        <p>Nota de contexto e governança: O desenvolvimento conceitual inicial do projeto esteve associado à Open Child Health Booklet Initiative como iniciativa aberta de saúde infantil. Esclarecemos que tal iniciativa não substitui e não constitui a razão social da controladora responsável, sendo a CREATIVE DESIGN PETTERSEN LTDA a entidade jurídica que assume os deveres e obrigações de conformidade.</p>
+        <p>Pendências institucionais em processo de homologação: O endereço físico institucional completo e o endereço eletrônico dedicado do Encarregado pelo Tratamento de Dados Pessoais (DPO) encontram-se em fase de homologação interna de governança e serão atualizados nesta página assim que homologados formalmente, sem a publicação prévia de contatos provisórios ou fictícios.</p>
+      </section>
+
+      <section class="card" id="pt-2">
+        <h2>2. Arquitetura Local-First e Armazenamento no Dispositivo</h2>
+        <p>O MAMAND foi concebido sob o paradigma "local-first" (prioridade local). Isso significa que as informações que você insere ao longo do uso são gravadas diretamente nos mecanismos de persistência do próprio navegador web do seu dispositivo (IndexedDB e localStorage), e não em um banco de dados em nuvem operado por nós.</p>
+        <p>O banco de dados IndexedDB nativo (denominado "first1000days_db", tabela "journey_records") é utilizado para armazenar os registros dinâmicos e cronológicos da Jornada.</p>
+        <p>O mecanismo de localStorage do navegador armazena preferências de navegação e módulos de apoio através de chaves estritamente delimitadas: perfil demonstrativo (p1000_demo_profile_v1), ficha de nascimento (first1000days_birth_record), rede de apoio (first1000days_support_requests), mala da maternidade (first1000days_maternity_checklist), temporizador de descanso (first1000days_rest_timer), estado do card diário (first1000days_daily_card), histórico de leitura de artigos educativos (p1000_viewed_content_ids_v1) e preferência de idioma (first_1000_days_lang).</p>
+      </section>
+
+      <section class="card" id="pt-3">
+        <h2>3. Categorias de Dados Pessoais e de Saúde Tratados</h2>
+        <p>De acordo com as funcionalidades ativadas pelo usuário, as seguintes categorias de dados podem ser armazenadas localmente no seu dispositivo:</p>
+        <p><strong>a) Dados cadastrais e de personalização:</strong> Nome ou apelido de exibição da mãe ou cuidadora (opcional), país onde se encontra (utilizado exclusivamente para exibir telefones de emergência locais adequados ao país, como SAMU 192 no Brasil) e necessidade prioritária de apoio.</p>
+        <p><strong>b) Dados sobre o bebê e ciclo gestacional:</strong> Nome ou apelido do bebê (opcional), ciclo atual (gestação ou puerpério/primeira infância), semanas de gestação ou data de nascimento/data prevista do parto (DPP) para cálculo de dias de vida e calibragem de marcos do desenvolvimento.</p>
+        <p><strong>c) Dados de saúde e histórico clínico de nascimento:</strong> Peso, comprimento, perímetro cefálico ao nascer, notas na escala Apgar de 1º e 5º minuto, tipo de parto realizado, nome da maternidade/hospital, equipe de saúde e anotações médicas do parto.</p>
+        <p><strong>d) Registros diários da Jornada e memórias familiares:</strong> Anotações livres sobre a rotina, registros de aleitamento/alimentação, sono, trocas de fraldas, marcos motores e cognitivos, observação de sintomas leves e fotografias de memórias familiares salvas localmente.</p>
+        <p><strong>e) Rede de apoio e organização familiar:</strong> Nomes de contatos de confiança, vínculos de parentesco e telefones cadastrados pela própria usuária para facilitação de pedidos de ajuda via SMS/WhatsApp a partir de seu próprio aparelho, além da lista de itens da mala de maternidade.</p>
+      </section>
+
+      <section class="card" id="pt-4">
+        <h2>4. Ausência de Banco Central de Perfis Familiares</h2>
+        <p>O MAMAND NÃO possui nem opera um banco central de perfis familiares ou servidores centrais de sincronização de prontuários na nuvem.</p>
+        <p>A CREATIVE DESIGN PETTERSEN LTDA não mantém repositório com as fotos, nomes de bebês, fichas de nascimento ou diários criados pelos usuários. Não temos acesso visual nem realizamos cópias ocultas dos registros que residem no armazenamento do seu navegador.</p>
+      </section>
+
+      <section class="card" id="pt-5">
+        <h2>5. Assistente Educativo, Gateway Edge e Processamento por Inteligência Artificial</h2>
+        <p>O módulo "Pergunte ao MAMAND" fornece esclarecimentos educativos fundamentados em evidências oficiais de saúde pública. Para viabilizar as respostas, o assistente conecta-se a um Gateway Edge operado em nuvem.</p>
+        <p><strong>Minimização estrita de dados transmitidos:</strong> Ao enviar uma pergunta, o cliente PWA transmite ao Gateway unicamente: a pergunta em texto digitada, a fase declarada (gestação ou bebê), o estágio numérico (semanas ou meses) e o idioma selecionado. Registros da Jornada, ficha de nascimento, fotos familiares e contatos de apoio NUNCA são enviados ao Gateway.</p>
+        <p><strong>Filtros automáticos de privacidade (PII Scrubber):</strong> Tanto na aplicação cliente quanto no Gateway, o texto da pergunta passa por expressões regulares projetadas para detectar e mascarar números de CPF, números de telefone, endereços de e-mail e expressões comuns de apresentação pessoal (ex: "meu nome é...", "meu bebê se chama..."), substituindo-os por marcadores genéricos antes do processamento.</p>
+        <p><strong>Processamento pelo Google Gemini quando ativado:</strong> O Gateway utiliza uma arquitetura RAG (Recuperação Aumentada por Geração) que consulta trechos de manuais clínicos oficiais verificados (Ministério da Saúde do Brasil, OMS e UNICEF). No modo conectado com IA ativa, a pergunta com dados mascarados e os trechos de referência pertinentes são encaminhados aos servidores da Google para processamento pelo modelo Gemini 3.5 Flash-Lite, conforme as regras da API Google AI. Quando o modo simulado (Mock) está ativo, as respostas são sintetizadas localmente sem qualquer chamada a serviços externos de IA.</p>
+        <div class="warning-box">
+          <strong>Limitação técnica dos filtros automáticos:</strong> Expressões regulares automáticas não garantem 100% de anonimização e não são capazes de identificar nomes raros, apelidos afetivos ou contextos narrativos indiretos. Recomendamos enfaticamente que a usuária nunca digite nomes completos de pessoas, documentos, endereços residenciais ou dados de terceiros no campo de dúvidas do assistente.
+        </div>
+      </section>
+
+      <section class="card" id="pt-6">
+        <h2>6. Logs Técnicos e Serviços de Infraestrutura Identificados</h2>
+        <p>Para manter o aplicativo acessível e protegido contra ameaças digitais, serviços de infraestrutura de tecnologia são empregados:</p>
+        <p><strong>a) Cloudflare Workers (Gateway Edge):</strong> Processa as requisições de consulta do assistente. Em conformidade com as operações normais de redes, o Cloudflare recebe metadados transitórios de conexão (endereço IP, porta de conexão, cabeçalhos HTTP e navegador). Para proteção contra sobrecarga e abuso (rate limiting), o sistema calcula um hash criptográfico efêmero (SHA-256) combinando o IP com a data do dia e um sal rotativo diário, descartando o endereço IP original da lógica do aplicativo.</p>
+        <p><strong>b) Plataforma de Hospedagem Estática (CDN / Vercel):</strong> Distribui os arquivos HTML, scripts JavaScript, fontes e folhas de estilo do aplicativo, registrando logs padrão de servidores web estritamente necessários para a entrega de arquivos e proteção de infraestrutura.</p>
+        <p><strong>c) Google Gemini API:</strong> Processa as consultas de linguagem natural quando o assistente online está ativado, em conformidade com as políticas comerciais de API corporativa da Google (sem utilização das consultas para treinamento de modelos fundacionais públicos).</p>
+      </section>
+
+      <section class="card" id="pt-7">
+        <h2>7. Exportação, Restauração e Escopo dos Backups</h2>
+        <p>O MAMAND oferece ferramentas de soberania dos dados para que você possa retirar suas informações do aplicativo quando desejar:</p>
+        <p><strong>a) Exportação em formato aberto JSON:</strong> Gera um arquivo estruturado padronizado (schemaVersion 1.0) contendo os registros históricos da Jornada.</p>
+        <p><strong>b) Resumo para leitura TXT:</strong> Gera um relatório textual simples e legível de suas anotações para impressão ou envio a profissionais de saúde.</p>
+        <p><strong>c) Restauração de backup JSON:</strong> Permite importar um arquivo previamente exportado, oferecendo os modos de mesclagem (adiciona registros novos preservando os atuais) ou substituição completa (apaga os registros locais e carrega os do arquivo).</p>
+        <div class="warning-box">
+          <strong>IMPORTANTE — Dados que NÃO estão incluídos no backup JSON atual:</strong> O arquivo de backup da Jornada contempla estritamente os registros clínicos e memórias gravados na tabela do diário. Ele NÃO inclui os dados de perfil geral, a ficha clínica de nascimento detalhada, os contatos da rede de apoio ou a lista da mala da maternidade, que permanecem restritos ao armazenamento local do navegador.
+        </div>
+      </section>
+
+      <section class="card" id="pt-8">
+        <h2>8. Exclusão de Dados Locais e Preservação de Arquivos Baixados</h2>
+        <p>Você pode a qualquer momento apagar integralmente todas as informações salvas no MAMAND através do botão "Apagar todos os meus dados deste aparelho", localizado na tela de edição de perfil.</p>
+        <p><strong>Ao confirmar a exclusão:</strong> O banco de dados IndexedDB é completamente esvaziado e todas as chaves de dados do MAMAND no localStorage são removidas de forma irreversível do navegador.</p>
+        <p><strong>Preservação de arquivos já exportados:</strong> Arquivos JSON ou relatórios TXT que você já tenha baixado anteriormente para a pasta de downloads do seu computador, tablet ou celular estão fora do ambiente do navegador e NÃO são apagados pela função de exclusão local. O gerenciamento e descarte desses arquivos é de inteira responsabilidade da usuária.</p>
+        <p><strong>Preservação do shell offline:</strong> Os arquivos estáticos de código do aplicativo e fontes mantidos em cache pelo Service Worker não são considerados dados pessoais e permanecem disponíveis para que você possa usar o aplicativo novamente quando desejar.</p>
+      </section>
+
+      <section class="card" id="pt-9">
+        <h2>9. Segurança da Informação e Ausência de Criptografia em Nível de Aplicação</h2>
+        <p>Os dados armazenados localmente no IndexedDB e no localStorage encontram-se em formato estruturado sem camada adicional de criptografia aplicada pelo código do MAMAND.</p>
+        <p>A proteção das informações repousa diretamente sobre os mecanismos de segurança do próprio sistema operacional e do dispositivo físico utilizado (código de bloqueio de tela, biometria/TouchID/FaceID, criptografia integral de disco como FileVault no macOS, BitLocker no Windows, ou criptografia nativa no Android e iOS).</p>
+        <p>Recomendações de segurança: Em dispositivos compartilhados por várias pessoas ou sem senha de proteção de tela, qualquer pessoa com acesso físico ao navegador poderá visualizar as informações gravadas localmente. Recomendamos o uso de dispositivos individuais protegidos por senha.</p>
+        <div class="warning-box">
+          <strong>Declaração de ausência de segurança absoluta:</strong> Nenhuma tecnologia de transmissão de dados pela internet ou método de armazenamento eletrônico é 100% seguro ou inviolável. O MAMAND adota práticas de ponta em minimização de dados e eliminação de servidores centrais, mas não declara nem assegura segurança absoluta contra invasões físicas ao aparelho ou vulnerabilidades gerais de sistemas operacionais.
+        </div>
+      </section>
+
+      <section class="card" id="pt-10">
+        <h2>10. Direitos dos Titulares (LGPD e GDPR) e Canais de Contato</h2>
+        <p>O MAMAND assegura o respeito integral aos direitos dos titulares de dados pessoais previstos na legislação brasileira (Lei Geral de Proteção de Dados Pessoais - LGPD, Lei nº 13.709/2018) e, quando aplicável a residentes na União Europeia ou Espaço Econômico Europeu, no Regulamento Geral de Proteção de Dados da UE (GDPR, Regulamento 2016/679).</p>
+        <p>Exercício direto e autônomo de direitos:</p>
+        <p>• <strong>Confirmação e Acesso aos dados (Art. 18, I e II da LGPD; Art. 15 do GDPR):</strong> Todos os dados sob posse do MAMAND encontram-se visíveis e acessíveis diretamente nas telas do aplicativo.</p>
+        <p>• <strong>Correção de dados incompletos ou inexatos (Art. 18, III da LGPD; Art. 16 do GDPR):</strong> A usuária pode alterar seu nome, país, datas e registros da jornada diretamente no aplicativo.</p>
+        <p>• <strong>Eliminação dos dados (Art. 18, VI da LGPD; Art. 17 do GDPR):</strong> Pode ser executada de forma autônoma a qualquer instante pela funcionalidade "Apagar todos os meus dados deste aparelho".</p>
+        <p>• <strong>Portabilidade (Art. 18, V da LGPD; Art. 20 do GDPR):</strong> Garantida através da função de exportação em JSON e resumo TXT.</p>
+        <p>• <strong>Informação sobre compartilhamento:</strong> Descrita com total transparência nesta política (processamento temporário pelo Cloudflare e Google Gemini em consultas voluntárias).</p>
+        <p>Canal de contato e DPO: Conforme informado na identificação institucional, o canal oficial de atendimento a dúvidas de privacidade e o contato do Encarregado de Dados (DPO) estão em processo de homologação formal e serão publicados com transparência assim que homologados.</p>
+      </section>
+
+      <section class="card" id="pt-11">
+        <h2>11. Transparência, Bases Legais e Ausência de Aceite Compulsório</h2>
+        <p>O MAMAND rejeita o uso de caixas genéricas e forçadas de "Li e aceito todos os termos" como artifício para justificar qualquer tratamento de dados.</p>
+        <p>A utilização das funções de registro local (Jornada, ficha de nascimento, checklist) apoia-se na execução direta da funcionalidade pessoal solicitada pela usuária (local-first), na qual os dados permanecem sob o exclusivo controle da própria titular em seu aparelho.</p>
+        <p>O envio de perguntas ao assistente educativo constitui solicitação expressa, ativa e voluntária do usuário. Avisos contextuais de privacidade são exibidos no Onboarding e nas áreas pertinentes para assegurar que a ciência do usuário seja contínua e informada.</p>
+      </section>
+
+      <section class="card" id="pt-12">
+        <h2>12. Alterações desta Política e Disclaimers Finais</h2>
+        <p>Esta política poderá ser atualizada periodicamente para refletir o lançamento de novas funcionalidades, aprimoramentos técnicos ou a formalização de dados institucionais homologados.</p>
+        <p>Sempre que ocorrerem atualizações relevantes, a data da última revisão no topo deste documento será atualizada.</p>
+        <p>O MAMAND não declara possuir certificação formal de conformidade com agências governamentais ou entidades de acreditação internacional. A garantia oferecida aos usuários é de transparência integral, ausência de banco de dados centralizado e alinhamento do código com as melhores práticas de privacidade por padrão (Privacy by Design).</p>
+      </section>
+    </div>
+
+    <!-- CABEÇALHO EN -->
+    <div data-lang="en">
+      <div class="header-box">
+        <span class="badge">MAMAND • Transparency & Privacy</span>
+        <h1>Privacy Policy</h1>
+        <p class="meta">Version 1.0.0 • Last updated: November 13, 2026</p>
+      </div>
+
+      <!-- Institutional Controller -->
+      <div class="card card-controller">
+        <h2 style="font-size: 1.05rem; margin-bottom: 8px;">Data Controller Identification</h2>
+        <p><strong>Legal Corporate Name:</strong> CREATIVE DESIGN PETTERSEN LTDA</p>
+        <p><strong>CNPJ:</strong> 24.325.181/0001-94 • <strong>Country:</strong> Brazil</p>
+        <p style="color: #9A6B2F; font-size: 0.83rem; margin-top: 4px;">[Institutional physical address pending internal confirmation]</p>
+        <p style="color: #9A6B2F; font-size: 0.83rem;">[Official privacy contact channel and Data Protection Officer pending internal confirmation]</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed var(--border-light); paddingTop: 8px;">
+          MAMAND originated from open collaborative work inspired by the Open Child Health Booklet Initiative. However, the legal entity and data controller formally responsible for the product and data processing under applicable privacy laws is CREATIVE DESIGN PETTERSEN LTDA.
+        </p>
+      </div>
+
+      <!-- Privacy Summary at a Glance -->
+      <div class="card" style="background: var(--bg-card-muted);">
+        <h2 style="border: none; margin-bottom: 2px;">Privacy Summary at a Glance</h2>
+        <p style="color: var(--text-muted); font-size: 0.86rem;">Our transparent commitment to you, your baby, and your family:</p>
+
+        <div class="pillar-grid">
+          <div class="pillar-item">
+            <div class="pillar-title">1. Your data lives on your device</div>
+            <div class="pillar-desc">Your Journey diary, birth record, developmental milestones, and memories are saved directly inside your browser on your phone or computer. We do not transmit your family records to central servers.</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">2. No account, login, or passwords required</div>
+            <div class="pillar-desc">You do not need to provide your email address, register an account, or create passwords to use MAMAND. The application works immediately upon opening.</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">3. Educational assistant with minimized data</div>
+            <div class="pillar-desc">When asking questions, only the question text and current stage are transmitted. Automated filters mask phone numbers and identity documents before processing, and answers are retrieved from verified public health guidelines (WHO, UNICEF, Brazil Ministry of Health).</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">4. Full control in your hands</div>
+            <div class="pillar-desc">You can export your records as an open JSON file or readable text summary at any time, or erase all local data from this device with a single click.</div>
+          </div>
+          <div class="pillar-item">
+            <div class="pillar-title">5. No advertising, no tracking, no data selling</div>
+            <div class="pillar-desc">We do not sell personal data, build advertising profiles, or run third-party behavioral analytics or marketing trackers.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legal Disclaimer -->
+      <div class="disclaimer-card">
+        <strong>Important notice:</strong> This Privacy Policy strictly reflects the audited source code and current operational reality of MAMAND. The application does not claim official government certification, definitive legal compliance seals, or absolute security guarantees. Its model is founded on local-first storage and strict data minimization.
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="card toc-card">
+        <h2 style="font-size: 1rem; border: none; margin-bottom: 6px;">Table of Contents</h2>
+        <div class="toc">
+          <a href="#en-1">1. Institutional Identification & Controller</a>
+          <a href="#en-2">2. Local-First Architecture & Storage</a>
+          <a href="#en-3">3. Personal & Health Data Categories</a>
+          <a href="#en-4">4. Absence of Central Database</a>
+          <a href="#en-5">5. Assistant, Gateway & Gemini AI</a>
+          <a href="#en-6">6. Technical Logs & Infrastructure</a>
+          <a href="#en-7">7. Export, Restore & Backup Scope</a>
+          <a href="#en-8">8. Local Data Erasure</a>
+          <a href="#en-9">9. Information Security & Reliance</a>
+          <a href="#en-10">10. User Rights (LGPD & GDPR)</a>
+          <a href="#en-11">11. Transparency & No Forced Consent</a>
+          <a href="#en-12">12. Revisions & Disclaimers</a>
+        </div>
+      </div>
+
+      <!-- Sections EN -->
+      <section class="card" id="en-1">
+        <h2>1. Institutional Identification & Data Controller</h2>
+        <p>MAMAND is a Progressive Web App (PWA) designed to support and accompany parents throughout the first 1,000 days of life (from pregnancy up to two years of age).</p>
+        <p>The legal data controller responsible for MAMAND under applicable personal data protection laws is CREATIVE DESIGN PETTERSEN LTDA, registered in Brazil under CNPJ nº 24.325.181/0001-94.</p>
+        <p>Governance and lineage context: While initial conceptual development was linked to the Open Child Health Booklet Initiative as an open-source child health effort, that initiative does not serve as or replace the legal corporate name of the company. CREATIVE DESIGN PETTERSEN LTDA is the sole legal entity assuming compliance duties and responsibilities.</p>
+        <p>Pending corporate contact information: The complete physical institutional address and dedicated privacy contact email / Data Protection Officer (DPO) are currently undergoing internal corporate confirmation. They will be published on this page as soon as formally validated, without inventing placeholder or fictional contact points.</p>
+      </section>
+
+      <section class="card" id="en-2">
+        <h2>2. Local-First Architecture & Device Storage</h2>
+        <p>MAMAND is built on a "local-first" architecture. The information entered during your use is saved directly inside your local browser storage mechanisms (IndexedDB and localStorage), rather than in a cloud database hosted by us.</p>
+        <p>The browser's native IndexedDB database (named "first1000days_db", store "journey_records") is used to persist dynamic and chronological Journey entries.</p>
+        <p>The browser's localStorage holds user settings and support tools through strictly bounded keys: demo profile (p1000_demo_profile_v1), birth record (first1000days_birth_record), support network (first1000days_support_requests), hospital bag checklist (first1000days_maternity_checklist), rest timer (first1000days_rest_timer), daily card state (first1000days_daily_card), viewed articles log (p1000_viewed_content_ids_v1), and language preference (first_1000_days_lang).</p>
+      </section>
+
+      <section class="card" id="en-3">
+        <h2>3. Categories of Personal & Health Data Processed</h2>
+        <p>Depending on the features you choose to use, the following categories of data may be stored locally on your device:</p>
+        <p><strong>a) Profile and personalization:</strong> Optional display name for the mother/caregiver, country of residence (used solely to display accurate local emergency phone numbers, such as 911, 112, or 192), and primary care focus.</p>
+        <p><strong>b) Baby and gestational cycle:</strong> Optional baby's name, current phase (pregnancy or baby), gestational age in weeks or birth date / estimated due date (EDD) to compute exact age in days and align developmental guidance.</p>
+        <p><strong>c) Health and birth records:</strong> Birth weight, birth length, head circumference, 1-minute and 5-minute Apgar scores, delivery type, hospital/maternity clinic, attending healthcare team, and clinical birth notes.</p>
+        <p><strong>d) Daily Journey diary and family memories:</strong> Open text notes, feeding/nursing logs, sleep tracking, diaper changes, motor and cognitive milestones, mild symptoms observed, and locally stored family photo memories.</p>
+        <p><strong>e) Support network and hospital bag:</strong> Names, relationships, and phone numbers of trusted contacts entered locally by you to facilitate sending SMS or WhatsApp messages from your own device, and packed hospital bag checklist items.</p>
+      </section>
+
+      <section class="card" id="en-4">
+        <h2>4. Current Absence of a Central Family Database</h2>
+        <p>MAMAND DOES NOT operate a central cloud database of family profiles, cloud user accounts, or centralized medical records.</p>
+        <p>CREATIVE DESIGN PETTERSEN LTDA does not maintain cloud repositories storing your photos, baby names, birth certificates, or journal entries. We have no visual access to and make no covert copies of the data residing inside your browser storage.</p>
+      </section>
+
+      <section class="card" id="en-5">
+        <h2>5. Educational Assistant, Edge Gateway & AI Processing</h2>
+        <p>The "Ask MAMAND" assistant provides educational guidance based on official public health references. To process questions, it connects to a decoupled Edge Gateway deployed on cloud infrastructure.</p>
+        <p><strong>Strict data minimization:</strong> When submitting a question, the client sends strictly: the typed question string, declared phase (pregnancy or baby), numerical stage (weeks or months), and selected language. Journey diary entries, birth records, family photos, and support network contacts are NEVER transmitted.</p>
+        <p><strong>Automated privacy filter (PII Scrubber):</strong> On both client and server sides, the question text is passed through regular expressions designed to detect and mask national identity numbers (e.g. CPF), phone numbers, email addresses, and typical name introduction phrases (e.g., "my name is...", "my baby's name is..."), replacing them with generic placeholders.</p>
+        <p><strong>Google Gemini processing when active:</strong> The Gateway applies a Retrieval-Augmented Generation (RAG) pipeline to fetch matching verified guidance from official public health manuals (WHO, UNICEF, Brazil Ministry of Health). In connected mode with AI active, the sanitized question and retrieved official reference chunks are sent to Google servers for generation by the Gemini 3.5 Flash-Lite model, governed by Google AI enterprise API terms. When simulated (Mock) mode is active, responses are synthesized locally with zero external AI calls.</p>
+        <div class="warning-box">
+          <strong>Technical limitation of automated filters:</strong> Regular expressions cannot guarantee 100% anonymization and cannot reliably recognize uncommon names, affectionate nicknames, or subtle narrative contexts. Users are strongly urged never to type real full names, sensitive documents, home addresses, or confidential details into the question box.
+        </div>
+      </section>
+
+      <section class="card" id="en-6">
+        <h2>6. Technical Logs & Identified Infrastructure Services</h2>
+        <p>To keep the application accessible, resilient, and protected against abuse, technology infrastructure services are utilized:</p>
+        <p><strong>a) Cloudflare Workers (Edge Gateway):</strong> Processes assistant question requests. As part of standard internet edge routing and DDoS mitigation, Cloudflare receives transient connection metadata (IP address, port, HTTP headers, User-Agent). For rate limiting, the gateway computes an ephemeral daily SHA-256 hash combining the IP with the date and a rotating salt, discarding raw IP addresses from application logic.</p>
+        <p><strong>b) Static Hosting Platform (CDN / Vercel):</strong> Delivers static HTML, JavaScript bundles, self-hosted fonts, and stylesheets, maintaining standard web server access logs strictly for content delivery and infrastructure protection.</p>
+        <p><strong>c) Google Gemini API:</strong> Processes natural language queries when online AI is enabled, under commercial enterprise API terms (which stipulate that customer queries are not used to train Google's foundational models).</p>
+      </section>
+
+      <section class="card" id="en-7">
+        <h2>7. Export, Restore & Scope of Backups</h2>
+        <p>MAMAND provides data portability tools so you can export your data at any time:</p>
+        <p><strong>a) Structured JSON Export:</strong> Produces an open, machine-readable JSON file (schemaVersion 1.0) containing your Journey history.</p>
+        <p><strong>b) Readable TXT Summary:</strong> Generates a clear, human-readable text document suitable for printing or sharing with your pediatrician or family.</p>
+        <p><strong>c) Backup Restoration:</strong> Allows re-importing a valid JSON backup, supporting either Merge mode (adds new records while keeping existing ones) or Replace mode (replaces current local Journey records with the backup).</p>
+        <div class="warning-box">
+          <strong>IMPORTANT — Data NOT included in the current JSON backup:</strong> The Journey backup file exclusively exports chronological journal entries and milestones. It DOES NOT currently bundle general profile settings, detailed birth records, support network contacts, or the hospital bag checklist, which remain stored locally in browser storage.
+        </div>
+      </section>
+
+      <section class="card" id="en-8">
+        <h2>8. Local Data Erasure & Preservation of Exported Files</h2>
+        <p>You can permanently delete all information stored in MAMAND at any time using the "Erase all my data from this device" action inside Profile Settings.</p>
+        <p><strong>Upon confirming erasure:</strong> The IndexedDB database is completely wiped and all MAMAND localStorage keys are irreversibly removed from your browser.</p>
+        <p><strong>Preservation of downloaded files:</strong> JSON backups or TXT reports previously downloaded to your computer or phone filesystem are outside the browser sandbox and ARE NOT deleted by this action. Managing and deleting downloaded files is the user's sole responsibility.</p>
+        <p><strong>Preservation of offline app shell:</strong> Static code assets, self-hosted fonts, and cached icons in the Service Worker cache do not constitute personal data and are preserved so that the application remains functional offline if you choose to start anew.</p>
+      </section>
+
+      <section class="card" id="en-9">
+        <h2>9. Information Security & Device-Level Reliance</h2>
+        <p>Data stored locally in IndexedDB and localStorage is kept in structured plaintext without an additional application-level symmetric encryption layer.</p>
+        <p>Information security relies directly on the operating system and hardware controls of your personal device (passcode locks, biometric authentication such as FaceID/TouchID, and disk encryption like FileVault on macOS, BitLocker on Windows, or iOS/Android native storage sandboxing).</p>
+        <p>Security recommendations: On shared devices or devices without passcode protection, anyone with physical access to your browser can view locally stored entries. We recommend using private devices protected by screen lock passcodes.</p>
+        <div class="warning-box">
+          <strong>Disclaimer regarding absolute security:</strong> No internet transmission or electronic storage method is 100% impenetrable. While MAMAND applies state-of-the-art data minimization and eliminates central cloud databases, it makes no claim of absolute invulnerability against physical device intrusion or host operating system compromises.
+        </div>
+      </section>
+
+      <section class="card" id="en-10">
+        <h2>10. User Rights (LGPD & GDPR) & Contact Channels</h2>
+        <p>MAMAND respects user rights under Brazilian General Data Protection Law (LGPD, Law nº 13.709/2018) and, where applicable to residents of the EU or EEA, the European Union General Data Protection Regulation (GDPR, Regulation 2016/679).</p>
+        <p>Direct and autonomous exercise of rights:</p>
+        <p>• <strong>Confirmation and Access (Art. 18, I & II LGPD; Art. 15 GDPR):</strong> All personal and health data stored by MAMAND is directly visible inside the app interface.</p>
+        <p>• <strong>Rectification (Art. 18, III LGPD; Art. 16 GDPR):</strong> You can edit names, country, dates, and journal entries directly in the app at any time.</p>
+        <p>• <strong>Erasure (Art. 18, VI LGPD; Art. 17 GDPR):</strong> Can be executed autonomously anytime via the "Erase all my data from this device" button.</p>
+        <p>• <strong>Portability (Art. 18, V LGPD; Art. 20 GDPR):</strong> Provided via open JSON export and TXT summaries.</p>
+        <p>• <strong>Information on data sharing:</strong> Fully and transparently detailed in this policy (ephemeral processing by Cloudflare and Google Gemini during voluntary queries).</p>
+        <p>Contact channel and DPO: As noted under Institutional Identification, official privacy channels and Data Protection Officer contacts are undergoing internal confirmation and will be published transparently once formalized.</p>
+      </section>
+
+      <section class="card" id="en-11">
+        <h2>11. Transparency, Legal Grounds & No Forced Consent</h2>
+        <p>MAMAND rejects blanket, coercive "I agree to all terms" checkboxes as a pretext for broad data processing.</p>
+        <p>Local data storage (Journey, birth record, checklist) is based on the direct execution of the personal service requested by the user under a local-first paradigm, where data remains under the user's exclusive control.</p>
+        <p>Asking questions to the assistant constitutes a voluntary, active user request. Contextual privacy notices are presented during Onboarding and relevant touchpoints to ensure that user awareness is clear and informed.</p>
+      </section>
+
+      <section class="card" id="en-12">
+        <h2>12. Policy Revisions & Concluding Disclaimers</h2>
+        <p>This policy may be updated periodically to reflect new features, technical enhancements, or formalized corporate records.</p>
+        <p>Whenever material changes occur, the revision date at the top of this document will be updated.</p>
+        <p>MAMAND makes no claim of formal accreditation by government agencies or international auditing boards. Our commitment to users is complete transparency, zero central databases, and strict Privacy by Design alignment.</p>
+      </section>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer>
+      <p>© 2026 CREATIVE DESIGN PETTERSEN LTDA. CNPJ 24.325.181/0001-94. <span data-lang="pt-BR">Todos os direitos reservados.</span><span data-lang="en">All rights reserved.</span></p>
+      <div style="margin-top: 14px;">
+        <a href="/" class="btn btn-primary">
+          ← <span data-lang="pt-BR">Voltar ao MAMAND</span><span data-lang="en">Back to MAMAND</span>
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function setLanguage(lang) {
+      document.querySelectorAll('[data-lang]').forEach(function(el) {
+        if (el.getAttribute('data-lang') === lang) {
+          el.style.display = el.tagName === 'SPAN' ? 'inline' : 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      document.getElementById('btn-pt').classList.toggle('active', lang === 'pt-BR');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.documentElement.lang = lang;
+    }
+
+    // Inicialização conforme preferência salva ou navegador
+    (function init() {
+      var savedLang = null;
+      try {
+        savedLang = localStorage.getItem('first_1000_days_lang');
+      } catch (e) {}
+
+      var defaultLang = (savedLang === 'en' || (!savedLang && navigator.language && navigator.language.startsWith('en'))) ? 'en' : 'pt-BR';
+      setLanguage(defaultLang);
+    })();
+  </script>
+</body>
+</html>

@@ -633,6 +633,21 @@ export const en: TranslationDictionary = {
     genericPhrase: 'your local emergency number',
     restartOnboarding: 'Restart setup'
   },
+  privacy: {
+    policyLink: 'Privacy Policy',
+    policyTitle: 'Privacy & Data Protection Policy',
+    summaryTitle: 'Your data lives on your device',
+    summarySubtitle: 'Local storage, no account registration, and zero data selling.',
+    openFullPolicy: 'View complete Privacy Policy',
+    backToApp: 'Back to app',
+    onboardingNotice: 'Your routine and health entries are stored solely on this device. We do not create accounts or send your records to the cloud.',
+    onboardingBadge: 'Local privacy by default',
+    profileLinkDesc: 'Learn how your local records are protected, the absence of a central database, and our AI safeguards.',
+    journeyLinkText: 'Privacy & local data',
+    versionLabel: 'Version',
+    lastUpdated: 'Last updated',
+    pendingNotice: 'Institutional contact fields currently undergoing internal confirmation.'
+  },
   common: {
     loading: 'Loading local data...',
     dbErrorTitle: 'Local Storage Restricted',

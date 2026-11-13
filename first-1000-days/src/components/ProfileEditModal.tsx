@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, UserPhase, MainNeed } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
-import { Baby, Heart, X, Check, Sparkles, Trash2, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { Baby, Heart, X, Check, Sparkles, Trash2, AlertTriangle, ShieldAlert, Shield } from 'lucide-react';
 import { calculateAgeInMonths, formatBabyAgeDetailed } from '../utils/dateUtils';
 import { NameField, CountryField } from './ProfileFields';
 
@@ -13,6 +13,7 @@ interface ProfileEditModalProps {
   onSave: (updated: UserProfile) => void;
   onReset: () => void;
   onWipeAllData?: () => Promise<void> | void;
+  onOpenPrivacy?: () => void;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
@@ -21,7 +22,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   onClose,
   onSave,
   onReset,
-  onWipeAllData
+  onWipeAllData,
+  onOpenPrivacy
 }) => {
   const { language, t } = useLanguage();
 
@@ -369,6 +371,47 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <span>{t.region.restartOnboarding}</span>
             </button>
           </div>
+
+          {/* Link para Política de Privacidade */}
+          {onOpenPrivacy && (
+            <div
+              style={{
+                marginTop: '6px',
+                paddingTop: '12px',
+                borderTop: '1px solid var(--border-light)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenPrivacy();
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--primary)',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  textDecoration: 'underline'
+                }}
+              >
+                <Shield size={14} />
+                <span>{t.privacy.policyLink}</span>
+              </button>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                {t.privacy.profileLinkDesc}
+              </span>
+            </div>
+          )}
 
           {/* Zona de Privacidade: Exclusão Completa dos Dados Locais */}
           {onWipeAllData && (

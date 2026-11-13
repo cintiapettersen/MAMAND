@@ -41,7 +41,8 @@ import {
   HeartHandshake,
   Award,
   Compass,
-  Music
+  Music,
+  Shield
 } from 'lucide-react';
 import { BackupValidationResult } from '../services/indexedDbService';
 
@@ -52,6 +53,7 @@ interface JourneyViewProps {
   onClearRecords: () => void;
   onRestoreRecords?: (updated: JourneyRecord[]) => void;
   storageError?: string | null;
+  onOpenPrivacy?: () => void;
 }
 
 interface MemorySuggestion {
@@ -66,7 +68,8 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   onAddRecord,
   onClearRecords,
   onRestoreRecords,
-  storageError
+  storageError,
+  onOpenPrivacy
 }) => {
   const { language, t } = useLanguage();
 
@@ -433,26 +436,51 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         title={t.journey.title}
         subtitle={t.journey.subtitle}
         action={
-        <button
-          onClick={() => setIsExportMenuOpen(true)}
-          className="btn btn-secondary"
-          title={t.journey.exportMenuBtn}
-          aria-label={t.journey.exportMenuBtn}
-          style={{
-            width: 'auto',
-            padding: '8px 12px',
-            minHeight: '38px',
-            fontSize: '0.82rem',
-            borderRadius: 'var(--radius-sm)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            flexShrink: 0
-          }}
-        >
-          <Download size={15} />
-          <span>{language === 'en' ? 'Backup' : 'Exportar'}</span>
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {onOpenPrivacy && (
+            <button
+              type="button"
+              onClick={onOpenPrivacy}
+              className="btn btn-secondary"
+              title={t.privacy.policyLink}
+              aria-label={t.privacy.policyLink}
+              style={{
+                width: 'auto',
+                padding: '8px 10px',
+                minHeight: '38px',
+                fontSize: '0.82rem',
+                borderRadius: 'var(--radius-sm)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                flexShrink: 0
+              }}
+            >
+              <Shield size={15} color="var(--sage)" />
+              <span>{t.privacy.journeyLinkText}</span>
+            </button>
+          )}
+          <button
+            onClick={() => setIsExportMenuOpen(true)}
+            className="btn btn-secondary"
+            title={t.journey.exportMenuBtn}
+            aria-label={t.journey.exportMenuBtn}
+            style={{
+              width: 'auto',
+              padding: '8px 12px',
+              minHeight: '38px',
+              fontSize: '0.82rem',
+              borderRadius: 'var(--radius-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              flexShrink: 0
+            }}
+          >
+            <Download size={15} />
+            <span>{language === 'en' ? 'Backup' : 'Exportar'}</span>
+          </button>
+        </div>
         }
       />
 
@@ -1188,6 +1216,24 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
                 </div>
               </button>
 
+              {onOpenPrivacy && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsExportMenuOpen(false);
+                    onOpenPrivacy();
+                  }}
+                  className="btn btn-secondary"
+                  style={{ justifyContent: 'flex-start', padding: '12px 14px', fontSize: '0.88rem' }}
+                >
+                  <Shield size={16} color="var(--sage)" />
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontWeight: 600 }}>{t.privacy.policyLink}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t.privacy.summarySubtitle}</div>
+                  </div>
+                </button>
+              )}
+
               <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '10px', marginTop: '6px' }}>
                 <button
                   onClick={() => {
@@ -1358,7 +1404,31 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
               }}
             >
               <ShieldAlert size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
-              <div>{t.journey.restorePrivacyWarning}</div>
+              <div>
+                <div>{t.journey.restorePrivacyWarning}</div>
+                {onOpenPrivacy && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRestoreModalOpen(false);
+                      onOpenPrivacy();
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#92400E',
+                      textDecoration: 'underline',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontSize: '0.75rem',
+                      padding: '4px 0 0 0',
+                      display: 'block'
+                    }}
+                  >
+                    {t.privacy.policyLink} →
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Seletor de Arquivo */}
