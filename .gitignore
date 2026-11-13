@@ -41,3 +41,6 @@ gateway/scripts/localGateway.cjs
 
 # Piloto privado do Gemini: fica só na máquina local
 gateway/pilot/
+
+# Vercel
+.vercel

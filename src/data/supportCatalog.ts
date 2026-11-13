@@ -1,4 +1,4 @@
-import { SupportCategory, SupportedLanguage } from '../types';
+import type { SupportCategory, SupportedLanguage } from '../types/index.ts';
 
 export const SUPPORT_CATEGORIES_PT: SupportCategory[] = [
   {

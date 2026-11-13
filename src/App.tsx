@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserProfile, ActiveTab, JourneyRecord, HealthAppointment } from './types';
 import { profileStorage } from './services/profileStorage';
 import { indexedDbService } from './services/indexedDbService';
+import { wipeAllMamandLocalData } from './services/localDataWipeService';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Header } from './components/Header';
 import { Navigation } from './components/Navigation';
@@ -16,6 +17,7 @@ import { SupportNetworkView } from './components/SupportNetworkView';
 import { SelfCareView } from './components/SelfCareView';
 import { MaternityChecklistView } from './components/MaternityChecklistView';
 import { HealthChecksView } from './components/HealthChecksView';
+import { PrivacyPolicyView } from './views/PrivacyPolicyView';
 import { SplashScreen } from './components/SplashScreen';
 
 const MainApp: React.FC = () => {
@@ -33,6 +35,76 @@ const MainApp: React.FC = () => {
   const [isSelfCareOpen, setIsSelfCareOpen] = useState<boolean>(false);
   const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
   const [isHealthChecksOpen, setIsHealthChecksOpen] = useState<boolean>(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState<boolean>(false);
+  const [resetCounter, setResetCounter] = useState<number>(0);
+
+  const isPrivacyUrl = () => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    return (
+      path === '/privacy' ||
+      path === '/privacidade' ||
+      path === '/privacy.html' ||
+      hash === '#/privacy' ||
+      hash === '#/privacidade' ||
+      hash === '#privacy' ||
+      hash === '#privacidade'
+    );
+  };
+
+  useEffect(() => {
+    if (isPrivacyUrl()) {
+      setIsPrivacyOpen(true);
+    }
+
+    const handlePopState = () => {
+      setIsPrivacyOpen(isPrivacyUrl());
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
+  }, []);
+
+  const handleOpenPrivacy = () => {
+    try {
+      window.history.pushState({ privacy: true }, '', '/privacy');
+    } catch {
+      window.location.hash = '/privacy';
+    }
+    setIsPrivacyOpen(true);
+  };
+
+  const handleClosePrivacy = () => {
+    setIsPrivacyOpen(false);
+    try {
+      if (window.history.state && window.history.state.privacy) {
+        window.history.back();
+      } else {
+        window.history.pushState({}, '', '/');
+      }
+    } catch {
+      window.location.hash = '';
+    }
+  };
+
+  const handleWipeAllLocalData = async () => {
+    await wipeAllMamandLocalData();
+    profileStorage.clearProfile();
+    setProfile(null);
+    setRecords([]);
+    setIsEditModalOpen(false);
+    setIsBirthRecordOpen(false);
+    setIsSupportNetworkOpen(false);
+    setIsSelfCareOpen(false);
+    setIsChecklistOpen(false);
+    setIsHealthChecksOpen(false);
+    setResetCounter((prev) => prev + 1);
+  };
 
   useEffect(() => {
     // 1. Carrega preferências demonstrativas do onboarding (localStorage)
@@ -139,6 +211,14 @@ const MainApp: React.FC = () => {
     );
   }
 
+  if (isPrivacyOpen) {
+    return (
+      <div className="app-container">
+        <PrivacyPolicyView onBack={handleClosePrivacy} initialLang={language} />
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       <Header
@@ -157,6 +237,8 @@ const MainApp: React.FC = () => {
             setProfile(updated);
           }}
           onReset={handleResetProfile}
+          onWipeAllData={handleWipeAllLocalData}
+          onOpenPrivacy={handleOpenPrivacy}
         />
       )}
 
@@ -190,7 +272,7 @@ const MainApp: React.FC = () => {
       )}
 
       {!profile ? (
-        <Onboarding onComplete={handleCompleteOnboarding} />
+        <Onboarding key={resetCounter} onComplete={handleCompleteOnboarding} onOpenPrivacy={handleOpenPrivacy} />
       ) : isBirthRecordOpen ? (
         <BirthRecordView
           profile={profile}
@@ -247,6 +329,7 @@ const MainApp: React.FC = () => {
               onUpdateAppointment={handleUpdateAppointment}
               onRestoreRecords={(updated) => setRecords(updated)}
               storageError={storageError}
+              onOpenPrivacy={handleOpenPrivacy}
             />
           )}
           {activeTab === 'care' && (

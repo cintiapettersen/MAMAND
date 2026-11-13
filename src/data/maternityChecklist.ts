@@ -1,4 +1,4 @@
-import { MaternityChecklistCategory, SupportedLanguage } from '../types';
+import type { MaternityChecklistCategory, SupportedLanguage } from '../types/index.ts';
 
 // Lista compacta e internacional: sem documentos ou serviços específicos de um país
 export const MATERNITY_CHECKLIST_PT: MaternityChecklistCategory[] = [

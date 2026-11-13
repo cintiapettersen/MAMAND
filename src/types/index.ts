@@ -102,7 +102,7 @@ export type ContentCategory =
 
 // Situação de revisão de um conteúdo de saúde (veja CONTENT.md).
 // Citar uma instituição não é revisão clínica: 'clinically_reviewed' exige registro documentado.
-export type ContentReviewStatus = 'clinically_reviewed' | 'source_based' | 'pending_review' | 'demonstrative';
+export type ContentReviewStatus = 'clinically_reviewed' | 'source_based' | 'pending_review' | 'demonstrative' | 'verified';
 
 export interface ClinicalReviewRecord {
   reviewer: string;
@@ -120,7 +120,7 @@ export interface ContentItem {
   phase: 'pregnancy' | 'baby' | 'both';
   minStageMonths?: number;
   maxStageMonths?: number;
-  theme: string;
+  theme?: string;
   educationalText: string;
   practicalAction?: string;
   tagLabel?: string;
@@ -129,6 +129,9 @@ export interface ContentItem {
   // "Baseado em fontes oficiais"; não indica revisão clínica.
   validationStatus: ContentReviewStatus;
   clinicalReview?: ClinicalReviewRecord;
+  hasVerifiableSource?: boolean;
+  clinicalApprovalStatus?: 'pending_review' | 'clinically_approved' | 'rejected';
+  isSensitiveClinical?: boolean;
   // Observação interna para a revisão clínica (não aparece na interface)
   reviewNote?: string;
   // Preenchido quando o conteúdo foi retirado da interface até revisão profissional

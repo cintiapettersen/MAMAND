@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, UserPhase, MainNeed } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
-import { Baby, Heart, Check, Sparkles } from 'lucide-react';
+import { Baby, Heart, Check, Sparkles, Shield } from 'lucide-react';
 import {
   calculateAgeInMonths,
   formatBabyAgeDetailed,
@@ -18,9 +18,10 @@ import { NameField, CountryField, CareCountryField } from '../components/Profile
 interface OnboardingProps {
   onComplete: (profile: UserProfile) => void;
   initialProfile?: UserProfile | null;
+  onOpenPrivacy?: () => void;
 }
 
-export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfile }) => {
+export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfile, onOpenPrivacy }) => {
   const { language, t } = useLanguage();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [phase, setPhase] = useState<UserPhase>(initialProfile?.phase || 'baby');
@@ -207,6 +208,47 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
             >
               {t.onboarding.nextBtn} →
             </button>
+          </div>
+
+          {/* Aviso Acolhedor de Privacidade Local (Sem Caixa Genérica de Consentimento) */}
+          <div
+            style={{
+              marginTop: '24px',
+              padding: '14px 16px',
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-light)',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--sage)', fontSize: '0.78rem', fontWeight: 700 }}>
+              <Shield size={14} />
+              <span>{t.privacy.onboardingBadge}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
+              {t.privacy.onboardingNotice}
+            </p>
+            {onOpenPrivacy && (
+              <button
+                type="button"
+                onClick={onOpenPrivacy}
+                style={{
+                  alignSelf: 'flex-start',
+                  background: 'none',
+                  border: 'none',
+                  padding: '2px 0',
+                  color: 'var(--primary)',
+                  fontSize: '0.79rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                {t.privacy.policyLink} →
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -503,6 +545,29 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
               {t.onboarding.startBtn} →
             </button>
           </div>
+        </div>
+      )}
+
+      {onOpenPrivacy && (
+        <div style={{ textAlign: 'center', marginTop: '24px', paddingBottom: '12px' }}>
+          <button
+            type="button"
+            onClick={onOpenPrivacy}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              fontSize: '0.78rem',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <Shield size={12} />
+            <span>{t.privacy.policyLink}</span>
+          </button>
         </div>
       )}
     </div>

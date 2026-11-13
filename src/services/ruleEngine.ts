@@ -1,6 +1,6 @@
-import { ContentItem, UserProfile, CheckInMood, SupportedLanguage } from '../types';
-import { getContentCatalog } from '../data/contents';
-import { getCheckinQuestions } from '../data/checkins';
+import type { ContentItem, UserProfile, CheckInMood, SupportedLanguage } from '../types/index.ts';
+import { getContentCatalog } from '../data/contents.ts';
+import { getCheckinQuestions } from '../data/checkins.ts';
 
 const VIEWED_STORAGE_KEY = 'p1000_viewed_content_ids_v1';
 
