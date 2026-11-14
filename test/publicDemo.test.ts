@@ -59,6 +59,16 @@ test('Cuidados: instruções só com revisão profissional registrada (produçã
   assert.strictEqual(canShowCareInstructions({ validationStatus: 'clinically_reviewed' }, false), false, 'sem registro de revisão');
   assert.strictEqual(
     canShowCareInstructions({ validationStatus: 'clinically_reviewed', clinicalReview: {} as any }, false),
+    false,
+    'sem publicationAllowed: true, não libera'
+  );
+  assert.strictEqual(
+    canShowCareInstructions({ validationStatus: 'clinically_reviewed', clinicalReview: {} as any, publicationAllowed: true, suspendedReason: 'em reavaliação' }, false),
+    false,
+    'suspendedReason bloqueia mesmo com revisão'
+  );
+  assert.strictEqual(
+    canShowCareInstructions({ validationStatus: 'clinically_reviewed', clinicalReview: {} as any, publicationAllowed: true }, false),
     true
   );
   assert.strictEqual(canShowCareInstructions({ validationStatus: 'pending_review' }, true), true);

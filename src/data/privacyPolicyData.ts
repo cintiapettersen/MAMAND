@@ -64,8 +64,8 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       },
       {
         icon: 'assistant',
-        title: 'Assistente educativo com dados minimizados',
-        description: 'Ao tirar dúvidas com o assistente, apenas quatro campos estritamente delimitados são transmitidos ao gateway: a pergunta sanitizada, a fase declarada (gestação ou bebê), o estágio numérico (semanas ou meses) e o idioma selecionado. Filtros automáticos de privacidade mascaram dados pessoais antes do envio, e as respostas são baseadas em manuais oficiais de saúde (Ministério da Saúde, OMS e UNICEF).'
+        title: 'Assistente educativo em revisão profissional',
+        description: 'Nesta distribuição pública, a aba Pergunte exibe apenas o aviso de pausa para revisão com profissionais de saúde e os contatos locais de emergência, sem envio de perguntas a servidores externos ou geração de respostas clínicas automáticas. Caso o gateway opcional seja reativado após revisão, apenas quatro campos estritamente delimitados serão transmitidos.'
       },
       {
         icon: 'control',
@@ -242,8 +242,8 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       },
       {
         icon: 'assistant',
-        title: 'Educational assistant with minimized data',
-        description: 'When asking questions, strictly four bounded fields are transmitted to the gateway: the sanitized question text, declared phase (pregnancy or baby), numerical stage (weeks or months), and selected language. Automated privacy filters mask personal data prior to transmission, and answers are retrieved from verified public health guidelines (WHO, UNICEF, Brazil Ministry of Health).'
+        title: 'Educational assistant under professional review',
+        description: 'In this public distribution, the Ask tab displays only the review-pause notice and local emergency contacts, without sending questions to external servers or generating automated clinical answers. Should the optional gateway be re-enabled after review, only four bounded fields would be transmitted.'
       },
       {
         icon: 'control',
