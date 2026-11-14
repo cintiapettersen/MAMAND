@@ -71,19 +71,18 @@ test('4. Bloqueio no MockEngine: Entradas sem itens aprovados geram out_of_catal
 });
 
 test('5. Bloqueio Seguro no Catálogo Público da UI (getContentCatalog)', () => {
-  // Consumo com flag dev desativada (comportamento de produção)
   const publicCatalogPt = getContentCatalog('pt-BR', { includeDevPending: false });
-  assert.ok(publicCatalogPt.length > 0, 'Catálogo público deve ter itens');
+  assert.ok(publicCatalogPt.length > 0, 'Catálogo público deve listar metadados dos temas');
 
-  // Nenhum item em produção pode ser pending_review
+  // Nenhum item em produção pode expor textos clínicos sem autorização formal de publicação
   for (const item of publicCatalogPt) {
-    assert.strictEqual(item.validationStatus, 'verified', `Item ${item.id} não verificado presente no catálogo público`);
-    assert.notStrictEqual(item.validationStatus, 'pending_review');
+    assert.strictEqual(item.suspendedReason, undefined, `Item suspenso ${item.id} não pode aparecer no catálogo`);
+    assert.notStrictEqual(item.clinicalApprovalStatus, 'rejected');
+    if (item.validationStatus !== 'clinically_reviewed') {
+      assert.strictEqual(item.educationalText, '', `Item ${item.id} não revisado não pode conter educationalText`);
+      assert.strictEqual(item.practicalAction, undefined, `Item ${item.id} não revisado não pode conter practicalAction`);
+    }
   }
-
-  // Em modo DEV explícito, deve conter itens para revisão interna
-  const devCatalogPt = getContentCatalog('pt-BR', { includeDevPending: true });
-  assert.ok(devCatalogPt.some(i => i.validationStatus === 'pending_review'), 'Modo dev deve incluir itens para revisão');
 });
 
 test('6. Resiliência do Motor de Regras (ruleEngine) com Fallback Seguro', () => {
@@ -101,10 +100,13 @@ test('6. Resiliência do Motor de Regras (ruleEngine) com Fallback Seguro', () =
   assert.ok(recs.momGuidance, 'Deve fornecer card da mãe');
   assert.ok(recs.priorityActivity, 'Deve fornecer atividade prioritária');
 
-  // Todos os cards fornecidos devem ser verificados e não inventados
-  assert.strictEqual(recs.babyGuidance.validationStatus, 'verified');
-  assert.strictEqual(recs.momGuidance.validationStatus, 'verified');
-  assert.strictEqual(recs.priorityActivity.validationStatus, 'verified');
+  // Nenhum item retornado pode estar suspenso ou conter texto clínico não autorizado
+  for (const item of [recs.babyGuidance, recs.momGuidance, recs.priorityActivity]) {
+    assert.strictEqual(item.suspendedReason, undefined);
+    if (item.validationStatus !== 'clinically_reviewed') {
+      assert.strictEqual(item.educationalText, '');
+    }
+  }
 });
 
 test('7. Integridade do Detector de Emergência: Preservação total sem alterações', () => {

@@ -102,7 +102,13 @@ export type ContentCategory =
   | 'safety_prevention';
 
 // Situação de revisão de um conteúdo de saúde (veja CONTENT.md).
-// Citar uma instituição não é revisão clínica: 'clinically_reviewed' exige registro documentado.
+// Separação explícita entre:
+// - sourceVerified / hasVerifiableSource: fonte bibliográfica verificada (NÃO autoriza publicação)
+// - 'source_based': conteúdo baseado em fonte identificável, sem revisão clínica
+// - 'pending_review': conteúdo aguardando revisão clínica
+// - 'clinically_reviewed': conteúdo clinicamente revisado (exige clinicalReview documentado)
+// - publicationAllowed: autorização explícita para publicação (exige revisão clínica)
+// - 'verified': legado equivalente a fonte verificada; NÃO equivale a 'clinically_reviewed'.
 export type ContentReviewStatus = 'clinically_reviewed' | 'source_based' | 'pending_review' | 'demonstrative' | 'verified';
 
 export interface ClinicalReviewRecord {
@@ -126,12 +132,15 @@ export interface ContentItem {
   practicalAction?: string;
   tagLabel?: string;
   source: string;
-  // Veja ContentReviewStatus: 'source_based' cita publicação identificável e libera só o selo
-  // "Baseado em fontes oficiais"; não indica revisão clínica.
+  // Fonte bibliográfica verificada (não equivale a revisão clínica nem autoriza publicação)
+  sourceVerified?: boolean;
+  hasVerifiableSource?: boolean;
+  // Situação de revisão clínica
   validationStatus: ContentReviewStatus;
   clinicalReview?: ClinicalReviewRecord;
-  hasVerifiableSource?: boolean;
   clinicalApprovalStatus?: 'pending_review' | 'clinically_approved' | 'rejected';
+  // Autorização explícita para publicação pública (nunca inferida apenas pela fonte)
+  publicationAllowed?: boolean;
   isSensitiveClinical?: boolean;
   // Observação interna para a revisão clínica (não aparece na interface)
   reviewNote?: string;

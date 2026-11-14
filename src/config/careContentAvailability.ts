@@ -12,11 +12,34 @@ export function resolveCareFullTextEnabled(env: { DEV?: boolean }): boolean {
 
 export const CARE_FULL_TEXT_ENABLED = resolveCareFullTextEnabled((import.meta as any).env ?? {});
 
+export function isContentAuthorizedForPublication(
+  item: Pick<
+    ContentItem,
+    'validationStatus' | 'clinicalReview' | 'publicationAllowed' | 'suspendedReason' | 'clinicalApprovalStatus'
+  > & { educationalText?: string }
+): boolean {
+  if (item.suspendedReason) return false;
+  if (item.clinicalApprovalStatus === 'rejected') return false;
+  if (item.educationalText !== undefined && item.educationalText.trim() === '') return false;
+  return (
+    item.validationStatus === 'clinically_reviewed' &&
+    !!item.clinicalReview &&
+    item.publicationAllowed === true
+  );
+}
+
 export function canShowCareInstructions(
-  item: Pick<ContentItem, 'validationStatus' | 'clinicalReview'> & { educationalText?: string },
+  item: Pick<
+    ContentItem,
+    'validationStatus' | 'clinicalReview' | 'publicationAllowed' | 'suspendedReason' | 'clinicalApprovalStatus'
+  > & { educationalText?: string },
   fullTextEnabled = CARE_FULL_TEXT_ENABLED
 ): boolean {
-  // A versão pública não traz os textos completos: sem texto, não há instruções para mostrar
+  // Itens suspensos ou rejeitados nunca podem ser exibidos em nenhuma circunstância
+  if (item.suspendedReason) return false;
+  if (item.clinicalApprovalStatus === 'rejected') return false;
+  // Sem texto, não há instruções para mostrar
   if (item.educationalText !== undefined && item.educationalText.trim() === '') return false;
-  return fullTextEnabled || (item.validationStatus === 'clinically_reviewed' && !!item.clinicalReview);
+  if (fullTextEnabled) return true;
+  return isContentAuthorizedForPublication(item);
 }

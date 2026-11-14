@@ -321,15 +321,15 @@ export const CareView: React.FC<CareViewProps> = ({
                     {art.categoryLabel}
                   </span>
 
-                  {/* Selo de revisão clínica só com registro documentado */}
-                  {art.validationStatus === 'clinically_reviewed' && art.clinicalReview && (
+                  {/* Selo de revisão clínica só com registro documentado e autorização de publicação */}
+                  {art.validationStatus === 'clinically_reviewed' && art.clinicalReview && art.publicationAllowed === true && (
                     <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                       <ShieldCheck size={13} color="var(--sage)" />
                       <span>{language === 'en' ? 'Reviewed by a health professional' : 'Revisado por profissional de saúde'}</span>
                     </span>
                   )}
                   {/* Selo só com referência pública identificável; não indica revisão clínica */}
-                  {art.validationStatus === 'source_based' && (
+                  {(art.validationStatus === 'source_based' || art.validationStatus === 'verified') && (
                     <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                       <ShieldCheck size={13} color="var(--sage)" />
                       <span>{language === 'en' ? 'Based on official sources' : 'Baseado em fontes oficiais'}</span>
