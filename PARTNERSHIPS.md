@@ -54,7 +54,7 @@ The following capabilities are implemented in the current prototype and covered 
 We welcome conversations with NGOs, foundations, academic researchers, public health institutions, and impact funders across three main tracks:
 
 ### A. Impact Funding & Sponsorship
-Funding can accelerate the transition from an independent prototype to a clinically reviewed, accessible Digital Public Good — supporting dedicated multidisciplinary clinical review, WCAG 2.1 AA accessibility audits, multilingual localization, and sustainable open-source maintenance.
+Funding can accelerate the transition from an independent prototype to a clinically reviewed, accessible open-source resource aligned with digital public good principles (without implying any existing certification or official recognition) — supporting dedicated multidisciplinary clinical review, WCAG 2.1 AA accessibility audits, multilingual localization, and sustainable open-source maintenance.
 *(Note: No automated sponsorship or donation channel is enabled on GitHub yet while governance and receiving mechanisms are being structured. Organizations interested in grants or sponsorship are invited to contact us directly.)*
 
 ### B. Institutional Adaptation & Localization

@@ -6,7 +6,11 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-protótipo_sem_validação_clínica-lightgrey.svg)](ROADMAP.md)
 [![Language](https://img.shields.io/badge/Language-pt--BR%20%7C%20en-orange.svg)](LOCALIZATION.md)
-[![Partnerships](https://img.shields.io/badge/Partnerships-welcome-teal.svg)](PARTNERSHIPS.md)
+[![Partnerships](https://img.shields.io/badge/Partnerships-seeking_institutional_partners-teal.svg)](PARTNERSHIPS.md)
+
+> **Buscamos parceiros institucionais / Seeking institutional partners:** O MAMAND é um protótipo independente alinhado a princípios de bens públicos digitais (sem certificação ou reconhecimento oficial obtido) e **ainda não possui validação clínica formal**. Buscamos ONGs, fundações, pesquisadores, profissionais de saúde e organizações de impacto para revisão clínica, acessibilidade, tradução, pilotos de pesquisa e financiamento de impacto. Veja [PARTNERSHIPS.md](PARTNERSHIPS.md) ou entre em contato: [hello@mamand.app](mailto:hello@mamand.app).
+>
+> *MAMAND is an independent prototype aligned with digital public good principles (with no certification or official recognition obtained) and **does not yet have formal clinical validation**. We are actively seeking NGOs, foundations, researchers, healthcare professionals, and impact organizations for clinical review, accessibility, translation, research pilots, and impact funding. See [PARTNERSHIPS.md](PARTNERSHIPS.md) or contact [hello@mamand.app](mailto:hello@mamand.app).*
 
 ### Visão geral / Overview
 
@@ -33,7 +37,7 @@
 
 ### Salvaguardas Clínicas e de Distribuição Pública
 
-Para resguardar as famílias e manter conformidade com padrões de saúde pública e Digital Public Goods (DPG):
+Para resguardar as famílias e buscar alinhamento com boas práticas de saúde pública e princípios de bens públicos digitais (sem certificação ou reconhecimento oficial obtido):
 
 - **Ausência de validação clínica formal:** O MAMAND é um protótipo educativo e de registro pessoal. **Nenhum conteúdo possui validação médica ou aprovação sanitária formal.** A indicação de fonte bibliográfica verificada (`verified` ou `source_based`) atesta apenas a conformidade documental com publicações oficiais identificáveis (Ministério da Saúde, OMS, UNICEF, AAP), **não substituindo a avaliação médica presencial**.
 - **Orientações práticas de Cuidados bloqueadas em produção:** O texto completo e as ideias práticas dos temas de saúde permanecem sob aviso de revisão pendente (`canShowCareInstructions`). Eles só são liberados caso haja registro formal e documentado de revisão profissional por profissional de saúde (`clinically_reviewed`).
