@@ -1,5 +1,4 @@
 import React from 'react';
-import { BarChart3 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface AnalyticsConsentBannerProps {
@@ -23,9 +22,9 @@ export const AnalyticsConsentBanner: React.FC<AnalyticsConsentBannerProps> = ({
       data-testid="analytics-consent-banner"
       style={{
         position: 'fixed',
-        left: '12px',
-        right: '12px',
-        bottom: '12px',
+        left: 'max(10px, env(safe-area-inset-left))',
+        right: 'max(10px, env(safe-area-inset-right))',
+        bottom: 'max(8px, env(safe-area-inset-bottom))',
         zIndex: 850,
         display: 'flex',
         justifyContent: 'center',
@@ -37,46 +36,45 @@ export const AnalyticsConsentBanner: React.FC<AnalyticsConsentBannerProps> = ({
         style={{
           pointerEvents: 'auto',
           width: '100%',
-          maxWidth: '480px',
+          maxWidth: '440px',
           backgroundColor: 'var(--bg-card)',
           border: '1px solid var(--border-light)',
-          borderRadius: 'var(--radius-lg)',
-          boxShadow: '0 8px 28px rgba(44, 30, 24, 0.14)',
-          padding: '14px 16px',
+          borderRadius: 'var(--radius-md)',
+          boxShadow: '0 6px 20px rgba(44, 30, 24, 0.12)',
+          padding: '10px 12px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '10px'
+          gap: '8px'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-          <BarChart3 size={18} color="var(--primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
-          <div style={{ fontSize: '0.8rem', lineHeight: 1.45, color: 'var(--text-main)' }}>
-            <strong style={{ display: 'block', marginBottom: '2px', fontSize: '0.84rem' }}>
-              {isPt ? 'Estatísticas agregadas de alcance' : 'Aggregate reach statistics'}
-            </strong>
-            <span>
-              {isPt
-                ? 'Podemos contar visualizações agregadas de páginas (sem cookies e sem acessar seus registros familiares) para entender o alcance do MAMAND? '
-                : 'May we count aggregate page views (without cookies and without accessing your family records) to understand MAMAND’s reach? '}
-            </span>
-            <button
-              type="button"
-              onClick={onOpenPrivacy}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                color: 'var(--primary)',
-                textDecoration: 'underline',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              {isPt ? 'Política de Privacidade' : 'Privacy Policy'}
-            </button>
-          </div>
-        </div>
+        <p
+          style={{
+            margin: 0,
+            fontSize: '0.76rem',
+            lineHeight: 1.38,
+            color: 'var(--text-main)'
+          }}
+        >
+          {isPt
+            ? 'Podemos contar visitas ao MAMAND, sem cookies e sem acessar seus registros? '
+            : 'May we count visits to MAMAND, without cookies or accessing your records? '}
+          <button
+            type="button"
+            onClick={onOpenPrivacy}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              color: 'var(--primary)',
+              textDecoration: 'underline',
+              fontSize: '0.74rem',
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+          >
+            {isPt ? 'Saiba mais' : 'Learn more'}
+          </button>
+        </p>
 
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
@@ -85,13 +83,13 @@ export const AnalyticsConsentBanner: React.FC<AnalyticsConsentBannerProps> = ({
             data-testid="analytics-consent-decline"
             style={{
               flex: 1,
-              minHeight: '40px',
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-md)',
+              minHeight: '34px',
+              padding: '6px 10px',
+              borderRadius: 'var(--radius-sm)',
               border: '1.5px solid var(--border-medium, #D5C8BE)',
               backgroundColor: 'var(--bg-main)',
               color: 'var(--text-main)',
-              fontSize: '0.84rem',
+              fontSize: '0.78rem',
               fontWeight: 600,
               cursor: 'pointer'
             }}
@@ -104,13 +102,13 @@ export const AnalyticsConsentBanner: React.FC<AnalyticsConsentBannerProps> = ({
             data-testid="analytics-consent-accept"
             style={{
               flex: 1,
-              minHeight: '40px',
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-md)',
+              minHeight: '34px',
+              padding: '6px 10px',
+              borderRadius: 'var(--radius-sm)',
               border: '1.5px solid var(--primary)',
               backgroundColor: 'var(--primary)',
               color: '#FFFFFF',
-              fontSize: '0.84rem',
+              fontSize: '0.78rem',
               fontWeight: 600,
               cursor: 'pointer'
             }}
