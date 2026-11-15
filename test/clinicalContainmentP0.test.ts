@@ -30,6 +30,16 @@ test('P0-1. Aba Pergunte isolada: sem importação de respostas clínicas não a
   assert.match(askViewSrc, /data-testid="ask-suspended-notice"/);
   assert.match(askViewSrc, /<EmergencyStrip\s+country=\{profile\.country\}\s*\/>/);
   assert.ok(!/<textarea/.test(askViewSrc), 'Formulário de perguntas não deve existir na distribuição pública');
+  assert.strictEqual(
+    askViewSrc.match(/t\.ask\.suspendedTitle/g)?.length ?? 0,
+    1,
+    't.ask.suspendedTitle deve aparecer apenas uma vez (no PageHeader)'
+  );
+  assert.strictEqual(
+    askViewSrc.match(/t\.ask\.suspendedText/g)?.length ?? 0,
+    1,
+    't.ask.suspendedText deve aparecer apenas uma vez (no PageHeader)'
+  );
 
   const navSrc = fs.readFileSync('src/components/Navigation.tsx', 'utf8');
   assert.match(navSrc, /id:\s*'ask'/);
@@ -132,4 +142,26 @@ test('P0-5. Contatos de emergência operacionais e sem número inventado sem pa�
   assert.strictEqual(getEmergencyContact('NO')?.emergency.number, '113');
   assert.strictEqual(getEmergencyContact('PT')?.emergency.number, '112');
   assert.strictEqual(getEmergencyContact(undefined), null);
+});
+
+test('P0-6. CareView diferencia fonte oficial de autorização clínica nos selos de cartão', () => {
+  const careViewSrc = fs.readFileSync('src/views/CareView.tsx', 'utf8');
+  const headerBlock = careViewSrc.slice(
+    careViewSrc.indexOf('className="care-card-header"'),
+    careViewSrc.indexOf('className="care-card-title"')
+  );
+
+  assert.match(headerBlock, /isContentAuthorizedForPublication\(art\)/);
+  assert.strictEqual(
+    headerBlock.match(/ShieldCheck/g)?.length ?? 0,
+    1,
+    'ShieldCheck deve aparecer apenas no ramo autorizado clinicamente'
+  );
+  assert.strictEqual(
+    headerBlock.match(/var\(--sage\)/g)?.length ?? 0,
+    2,
+    'Cor verde sage no cabeçalho de validação deve ser exclusiva do selo clinicamente revisado'
+  );
+  assert.match(headerBlock, /BookOpen/);
+  assert.match(headerBlock, /Em Revisão/);
 });
