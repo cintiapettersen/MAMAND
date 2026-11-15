@@ -1,15 +1,28 @@
 # MAMAND
 
-**Aplicativo educativo e de registros para gestantes e famílias, da gestação aos dois anos da criança.**
-*An educational and record-keeping app for pregnant people and families, from pregnancy to the child's second birthday.*
+**Apoio gratuito, de código aberto e offline para gestantes e famílias nos primeiros 1.000 dias — da gestação aos dois anos da criança.**
+*Free, open-source, offline-first support for pregnant people and families during the first 1,000 days — from pregnancy through the child's second birthday.*
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-protótipo_em_revisão-lightgrey.svg)](ROADMAP.md)
+[![Status](https://img.shields.io/badge/Status-protótipo_sem_validação_clínica-lightgrey.svg)](ROADMAP.md)
 [![Language](https://img.shields.io/badge/Language-pt--BR%20%7C%20en-orange.svg)](LOCALIZATION.md)
+[![Partnerships](https://img.shields.io/badge/Partnerships-seeking_institutional_partners-teal.svg)](PARTNERSHIPS.md)
 
-> **Transparência.** Projeto independente de código aberto, em fase de protótipo, preparado para a candidatura ao **UNICEF FemTech Ventures 2026**. Não há parceria formal, financiamento nem aprovação de nenhuma instituição. **Nenhum conteúdo de saúde tem revisão profissional registrada**, e o aplicativo não foi validado clinicamente. Ele não faz diagnóstico, não indica exames, não interpreta resultados e não substitui a equipe de saúde.
+> **Buscamos parceiros institucionais / Seeking institutional partners:** O MAMAND é um protótipo independente alinhado a princípios de bens públicos digitais (sem certificação ou reconhecimento oficial obtido) e **ainda não possui validação clínica formal**. Buscamos ONGs, fundações, pesquisadores, profissionais de saúde e organizações de impacto para revisão clínica, acessibilidade, tradução, pilotos de pesquisa e financiamento de impacto. Veja [PARTNERSHIPS.md](PARTNERSHIPS.md) ou entre em contato: [hello@mamand.app](mailto:hello@mamand.app).
 >
-> *Independent open-source prototype prepared for the UNICEF FemTech Ventures 2026 application. No formal partnership, funding or institutional approval. **No health content has a recorded professional review**, and the app has not been clinically validated. It does not diagnose, recommend tests, interpret results or replace the care team.*
+> *MAMAND is an independent prototype aligned with digital public good principles (with no certification or official recognition obtained) and **does not yet have formal clinical validation**. We are actively seeking NGOs, foundations, researchers, healthcare professionals, and impact organizations for clinical review, accessibility, translation, research pilots, and impact funding. See [PARTNERSHIPS.md](PARTNERSHIPS.md) or contact [hello@mamand.app](mailto:hello@mamand.app).*
+
+### Visão geral / Overview
+
+- **Apoio gratuito nos primeiros 1.000 dias / Free support in the first 1,000 days:** Aplicativo web instalável (PWA) educativo e de registros pessoais para acompanhar gestação, pós-parto, rotina, consultas e marcos do desenvolvimento, sem login, cadastro ou anúncios.
+- **Código aberto e funcionamento offline / Open source and offline-first:** Funciona 100% offline no dispositivo após o carregamento inicial, pensado para contextos com conectividade limitada.
+- **Privacidade e armazenamento local / Privacy and local storage:** Dados de saúde e registros familiares ficam armazenados exclusivamente no aparelho do usuário (IndexedDB e `localStorage`), com exclusão local irreversível em 1 clique e estatísticas opcionais (Vercel Web Analytics) ativadas apenas mediante consentimento.
+- **Parcerias institucionais e financiamento de impacto / Institutional partnerships & impact funding:** Buscamos colaboração com ONGs, fundações, pesquisadores, profissionais de saúde e organizações de impacto interessadas em revisão clínica, acessibilidade, tradução, pilotos de pesquisa ou patrocínio. Veja [PARTNERSHIPS.md](PARTNERSHIPS.md) ou escreva para [hello@mamand.app](mailto:hello@mamand.app).
+- **Status de protótipo / Prototype status:** Protótipo independente em desenvolvimento ativo, **ainda sem validação clínica formal**.
+
+> **Transparência / Transparency.** Projeto independente de código aberto, em fase de protótipo, originalmente estruturado para a candidatura ao **UNICEF FemTech Ventures 2026**. Não há parceria formal, financiamento, certificação nem aprovação de nenhuma instituição. **Nenhum conteúdo de saúde tem revisão profissional registrada**, e o aplicativo não foi validado clinicamente. Ele não faz diagnóstico, não indica exames, não interpreta resultados e não substitui a equipe de saúde.
+>
+> *Independent open-source prototype, originally structured for the UNICEF FemTech Ventures 2026 application. There is no formal partnership, funding, certification, or institutional approval. **No health content has a recorded professional review**, and the app has not been clinically validated. It does not diagnose, recommend tests, interpret results, or replace the care team.*
 
 ---
 
@@ -24,7 +37,7 @@
 
 ### Salvaguardas Clínicas e de Distribuição Pública
 
-Para resguardar as famílias e manter conformidade com padrões de saúde pública e Digital Public Goods (DPG):
+Para resguardar as famílias e buscar alinhamento com boas práticas de saúde pública e princípios de bens públicos digitais (sem certificação ou reconhecimento oficial obtido):
 
 - **Ausência de validação clínica formal:** O MAMAND é um protótipo educativo e de registro pessoal. **Nenhum conteúdo possui validação médica, reconhecimento da OMS ou aprovação da DPGA.** A indicação de fonte bibliográfica verificada (`sourceVerified` / `source_based` / legado `verified`) atesta apenas a conformidade documental com publicações oficiais identificáveis (Ministério da Saúde, OMS, UNICEF, AAP), **não equivale a revisão clínica** e **não autoriza publicação automática**.
 - **Orientações práticas de Cuidados removidas do bundle público:** Os campos `educationalText` e `practicalAction` dos conteúdos sem revisão clínica foram removidos do bundle de produção e preservados em `research/clinical-knowledge/care_contents_unreviewed_v0_1.json`. Na interface pública (`canShowCareInstructions`), apenas conteúdos com `validationStatus: 'clinically_reviewed'`, registro `clinicalReview`, `publicationAllowed: true` e ausência de `suspendedReason` podem ser exibidos.
@@ -36,8 +49,9 @@ Para resguardar as famílias e manter conformidade com padrões de saúde públi
 
 - **Sem conta, sem login e sem servidores centrais:** O aplicativo não requer cadastro, e-mail, senha ou autenticação externa.
 - **Dados gravados exclusivamente no aparelho:** Registros da Jornada, consultas, exames e triagens são gravados no IndexedDB do navegador; perfil, ficha de nascimento e configurações residem no `localStorage`.
-- **Exclusão total e irreversível:** Função dedicada no perfil ("Apagar todos os meus dados deste aparelho") que limpa integralmente o IndexedDB e o localStorage com confirmação explícita.
-- **Política de Privacidade transparente:** Disponível in-app (`/privacy`) e em página HTML estática pré-compilada (`/privacy.html`), com dados da controladora responsável (CREATIVE DESIGN PETTERSEN LTDA), canais de atendimento operacionais e sem rastreadores comerciais (zero Google Analytics, Facebook Pixel ou cookies publicitários).
+- **Exclusão total e irreversível:** Função dedicada no perfil ("Apagar todos os meus dados deste aparelho") que limpa integralmente o IndexedDB, o `localStorage` e a preferência de consentimento de estatísticas com confirmação explícita.
+- **Estatísticas opcionais apenas com consentimento (Vercel Web Analytics):** O aplicativo não carrega rastreadores comerciais (zero Google Analytics, Facebook Pixel ou cookies publicitários). O **Vercel Web Analytics** permanece desativado por padrão (`pending`) e só é ativado mediante consentimento afirmativo explícito no banner inicial ou nas preferências do perfil, exclusivamente no host oficial de produção e quando o navegador estiver online, com sanitização de URLs (`beforeSend`). A pessoa usuária pode recusar ou revogar o consentimento a qualquer momento.
+- **Política de Privacidade transparente:** Disponível in-app (`/privacy`) e em página HTML estática pré-compilada (`/privacy.html`), com dados da controladora responsável (CREATIVE DESIGN PETTERSEN LTDA) e canais de atendimento operacionais.
 - **Fontes 100% locais e offline:** Todas as fontes tipográficas (Fraunces, Nunito, Plus Jakarta Sans) são auto-hospedadas em WOFF2 e cacheadas pelo Service Worker, sem conexões a servidores externos (zero Google Fonts).
 - **Backups estruturados (schemaVersion 1.1):** Exportação aberta contendo registros da Jornada, Ficha de Nascimento e Exames/Triagens. Compatível com a restauração de backups legados 1.0.
 
@@ -79,7 +93,7 @@ O app opera de forma autônoma e não requer chaves de API externas para execuç
 └── docs/         # Documentação de governança, arquitetura e convenções
 ```
 
-Documentos: [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.md), [CONTENT.md](CONTENT.md), [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md).
+Documentos: [PARTNERSHIPS.md](PARTNERSHIPS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.md), [CONTENT.md](CONTENT.md), [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
