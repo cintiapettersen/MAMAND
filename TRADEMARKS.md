@@ -17,12 +17,16 @@ especialmente uma com conteúdo de saúde alterado, com o MAMAND.
   rosa claro sobre fundo terracota (ícones em `public/` e o desenho vetorial
   da tela de abertura em `src/components/SplashScreen.tsx`).
 
-**Titular:** Cintia Pettersen, pessoa física.
+**Titular de origem:** Cintia Pettersen, pessoa física (sem cessão de direitos patrimoniais à CREATIVE DESIGN PETTERSEN LTDA).
 
-> **⚠️ Pendente: revisão jurídica.** A titularidade definitiva, a busca de
-> anterioridade e o registro da marca ainda não foram resolvidos
-> (pendências internas J1 e J2). O símbolo ™ indica uso como marca; ele não
-> significa registro.
+> **⚠️ Sem registro de marca / Pendente de revisão jurídica.** A marca
+> **MAMAND** ainda não possui registro formal; a busca de anterioridade e o
+> eventual pedido de registro ainda não foram realizados (pendências internas
+> J1 e J2). **Não há declaração de exclusividade jurídica sobre marca
+> registrada.** O símbolo ™ indica apenas uso identificador do projeto, não
+> registro concedido. A empresa brasileira **CREATIVE DESIGN PETTERSEN LTDA**
+> mantém apenas vínculo institucional com o projeto e com a candidatura ao
+> UNICEF FemTech Ventures 2026, sem transferência de titularidade.
 
 ## 1. Uso dos arquivos abertos: livre
 

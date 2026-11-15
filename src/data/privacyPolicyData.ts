@@ -17,11 +17,16 @@ export interface PrivacyPolicyDocument {
   lastUpdated: string;
   productName: string;
   controller: {
-    corporateName: string;
-    cnpj: string;
+    name: string;
+    roleLabel: string;
     country: string;
     privacyEmail: string;
     generalEmail: string;
+    institutionalPartner?: {
+      corporateName: string;
+      cnpj: string;
+      roleNotice: string;
+    };
     initiativeContextNotice: string;
     governanceNotice: string;
   };
@@ -39,13 +44,18 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
   lastUpdated: '13 de novembro de 2026',
   productName: 'MAMAND',
   controller: {
-    corporateName: 'CREATIVE DESIGN PETTERSEN LTDA',
-    cnpj: '24.325.181/0001-94',
-    country: 'Brasil',
+    name: 'Cintia Pettersen',
+    roleLabel: 'Pessoa física (operadora e controladora atual)',
+    country: 'Noruega',
     privacyEmail: 'privacidade@mamand.app',
     generalEmail: 'hello@mamand.app',
-    initiativeContextNotice: 'O MAMAND é uma iniciativa independente criada e desenvolvida pela CREATIVE DESIGN PETTERSEN LTDA, sociedade empresária titular do projeto e controladora formalmente responsável pelo produto e pelo tratamento de dados nos termos da legislação aplicável.',
-    governanceNotice: 'Como o MAMAND opera sob o modelo local-first sem criação de contas de usuário ou armazenamento central em nuvem, a gestão e a proteção dos dados pessoais são exercidas diretamente pela titular em seu próprio dispositivo. Para solicitações sobre privacidade, proteção de dados e exercício de direitos, a CREATIVE DESIGN PETTERSEN LTDA disponibiliza o canal direto privacidade@mamand.app. Para dúvidas institucionais e contato geral, utilize hello@mamand.app.'
+    institutionalPartner: {
+      corporateName: 'CREATIVE DESIGN PETTERSEN LTDA',
+      cnpj: '24.325.181/0001-94',
+      roleNotice: 'Entidade institucional vinculada ao MAMAND e proponente na candidatura UNICEF FemTech Ventures 2026 (não atua como controladora do aplicativo público atual).'
+    },
+    initiativeContextNotice: 'O MAMAND é uma iniciativa independente concebida, desenvolvida e custeada pessoalmente por Cintia Pettersen, titular dos direitos patrimoniais do projeto (sem cessão à pessoa jurídica). A CREATIVE DESIGN PETTERSEN LTDA mantém vínculo institucional e figura como proponente da candidatura ao UNICEF FemTech Ventures 2026, sem transferência de propriedade intelectual e sem operar diretamente a versão pública atual.',
+    governanceNotice: 'Como o MAMAND opera sob o modelo local-first sem criação de contas de usuário ou armazenamento central em nuvem, os registros familiares permanecem sob controle direto da usuária em seu próprio dispositivo. Para solicitações sobre privacidade, proteção de dados e exercício de direitos perante a operadora e controladora atual (Cintia Pettersen), utilize privacidade@mamand.app. Para dúvidas institucionais e contato geral, utilize hello@mamand.app.'
   },
   disclaimerNotice: 'Esta Política de Privacidade reflete com exatidão o código-fonte auditado e o funcionamento operacional atual do MAMAND. O aplicativo não declara possuir certificação governamental formal, selos de conformidade jurídica definitiva ou garantias de segurança absoluta, sendo seu modelo fundamentado no princípio do armazenamento local (local-first) e na minimização estrita de dados.',
   summary: {
@@ -85,8 +95,8 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       title: '1. Identificação Institucional e Controlador',
       content: [
         'O MAMAND é um aplicativo web progressivo (PWA) de apoio e acompanhamento parental nos primeiros 1.000 dias de vida (da gestação aos dois anos de idade).',
-        'A controladora do tratamento de dados pessoais no âmbito do MAMAND é a sociedade empresária CREATIVE DESIGN PETTERSEN LTDA, inscrita no CNPJ sob o nº 24.325.181/0001-94, sediada no Brasil.',
-        'Origem e titularidade independente: O MAMAND é uma iniciativa independente concebida, desenvolvida e operada com exclusividade pela CREATIVE DESIGN PETTERSEN LTDA, entidade jurídica brasileira que assume todos os deveres e obrigações legais de conformidade e privacidade.',
+        'Na operação pública atual, a operadora e controladora responsável pelos tratamentos de dados pessoais vinculados ao aplicativo (hospedagem estática, analytics opcional e canais de atendimento) é Cintia Pettersen, pessoa física residente na Noruega.',
+        'Origem, titularidade e vínculo institucional: O MAMAND é uma iniciativa independente concebida, desenvolvida e custeada pessoalmente por Cintia Pettersen, que detém a titularidade patrimonial do software (licenciado sob Apache License 2.0), sem cessão de direitos à pessoa jurídica. A empresa brasileira CREATIVE DESIGN PETTERSEN LTDA (CNPJ 24.325.181/0001-94) mantém vínculo institucional com o projeto e atua como entidade proponente da candidatura ao UNICEF FemTech Ventures 2026, não atuando como controladora do aplicativo público atual; eventual operação de projetos futuros pela empresa dependerá de formalização própria e atualização desta Política.',
         'Governança e canais oficiais de comunicação: Por operar sob a arquitetura "local-first", o aplicativo não mantém contas de usuário, login ou repositórios centrais de dados em nuvem. A gestão dos dados é realizada de forma autônoma pela própria usuária em seu dispositivo. Para solicitações sobre privacidade, proteção de dados pessoais e direitos dos titulares, o canal oficial direto de atendimento é privacidade@mamand.app (este endereço constitui o canal oficial de comunicação para assuntos de proteção de dados, não representando a nomeação de um Encarregado de Proteção de Dados/DPO formal). Para questões gerais, parcerias e contato institucional, o canal oficial é hello@mamand.app.'
       ]
     },
@@ -95,8 +105,8 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       title: '2. Arquitetura Local-First e Armazenamento no Dispositivo',
       content: [
         'O MAMAND foi concebido sob o modelo "local-first" (prioridade local). Isso significa que as informações que você insere ao longo da rotina com seu bebê são gravadas diretamente no próprio navegador web do seu celular ou computador, e não em servidores centrais operados por nós.',
-        'Linha do tempo, consultas e exames de saúde: O aplicativo utiliza o mecanismo de armazenamento local do navegador (IndexedDB) para guardar com segurança as anotações diárias da Jornada, consultas de saúde agendadas ou realizadas, registros de amamentação, sono, trocas de fraldas, marcos do desenvolvimento e o acompanhamento de exames e triagens neonatais.',
-        'Preferências e módulos de apoio familiar: O armazenamento local do navegador (localStorage) guarda de maneira reservada as informações de apoio do dia a dia: dados do perfil de acompanhamento, informações da ficha de nascimento do bebê, contatos de confiança da sua rede de apoio, lista da mala da maternidade, temporizador de descanso materno, cartões diários lidos e preferência de idioma.'
+        'Linha do tempo, consultas e exames de saúde: O aplicativo utiliza o mecanismo de armazenamento local do navegador (IndexedDB) para gravar localmente as anotações diárias da Jornada, consultas de saúde agendadas ou realizadas, registros de amamentação, sono, trocas de fraldas, marcos do desenvolvimento e o acompanhamento de exames e triagens neonatais.',
+        'Preferências e módulos de apoio familiar: O armazenamento local do navegador (localStorage) grava localmente as informações de apoio do dia a dia: dados do perfil de acompanhamento, informações da ficha de nascimento do bebê, contatos de confiança da sua rede de apoio, lista da mala da maternidade, temporizador de descanso materno, cartões diários lidos e preferência de idioma.'
       ]
     },
     {
@@ -117,30 +127,31 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       title: '4. Ausência de Banco Central de Perfis Familiares',
       content: [
         'O MAMAND NÃO possui nem opera um banco central de perfis familiares ou servidores centrais de sincronização de prontuários na nuvem.',
-        'A CREATIVE DESIGN PETTERSEN LTDA não mantém repositório com as fotos, nomes de bebês, fichas de nascimento ou diários criados pelos usuários. Não temos acesso visual nem realizamos cópias ocultas dos registros que residem no armazenamento do seu navegador.'
+        'Nem a operadora e controladora atual (Cintia Pettersen) nem a CREATIVE DESIGN PETTERSEN LTDA mantêm repositório com as fotos, nomes de bebês, fichas de nascimento ou diários criados pelos usuários. Não temos acesso visual nem realizamos cópias ocultas dos registros que residem no armazenamento do seu navegador.'
       ]
     },
     {
       id: 'assistente-gateway-ia',
       title: '5. Assistente Educativo, Gateway Edge e Processamento por Inteligência Artificial',
       content: [
-        'O módulo "Pergunte ao MAMAND" fornece esclarecimentos educativos fundamentados em evidências oficiais de saúde pública. Para viabilizar as respostas, o assistente conecta-se a um Gateway Edge operado em nuvem.',
-        'Minimização estrita dos quatro campos transmitidos ao Gateway: Ao formular uma dúvida no assistente educativo, a aplicação cliente envia exclusivamente uma carga técnica composta por quatro campos delimitados: 1) o texto da pergunta digitada (submetido previamente à rotina cliente de sanitização), 2) a fase declarada (gestação ou bebê), 3) o estágio numérico correspondente (semanas de gestação ou meses de vida) e 4) o idioma selecionado (português ou inglês). Nenhuma outra informação pessoal — como diário da Jornada, Ficha de Nascimento, fotografias, contatos da rede de apoio ou nome da mãe/cuidadora — é transmitida ao Gateway.',
-        'Filtros automáticos de privacidade (PII Scrubber) e limitações inerentes: Tanto na aplicação cliente quanto no Gateway, o texto da pergunta passa por expressões regulares projetadas para detectar e mascarar números de CPF, telefones, e-mails e frases comuns de apresentação pessoal (ex: "meu nome é...", "meu bebê se chama..."). Contudo, filtros automatizados baseados em regras possuem limitações técnicas estruturais e NÃO garantem a desidentificação completa ou a anonimização absoluta do texto digitado.',
-        'Processamento pelo Google Gemini quando ativado: O Gateway utiliza uma arquitetura RAG (Recuperação Aumentada por Geração) que consulta trechos de manuais clínicos oficiais verificados (Ministério da Saúde do Brasil, OMS e UNICEF). No modo conectado com IA ativa, o prompt transmitido à API do Google Gemini (modelo Gemini 3.5 Flash-Lite) é composto pelas instruções de sistema, pelos trechos oficiais recuperados do contexto clínico e pelo texto da pergunta com o filtro de privacidade aplicado. A aplicação não anexa identificadores de conta, cadastros de perfil ou metadados de dispositivo ao prompt; contudo, não havendo garantia de remoção completa de identificadores pelos filtros automáticos, quaisquer dados pessoais ou informações identificáveis inseridas pela própria usuária no texto da pergunta que não sejam interceptadas pelas expressões regulares serão enviadas e processadas pela API do Google Gemini para a elaboração da resposta. Quando o modo simulado (Mock) está ativo, as respostas são sintetizadas localmente sem qualquer chamada a serviços externos de IA.',
-        'Pontos de revisão jurídica sobre o assistente e trânsito de dados: O módulo assistente fornece orientações puramente educativas sobre saúde pública, não prestando assistência médica, diagnóstico ou procedimento clínico. Caso a usuária voluntariamente insira informações sobre saúde na pergunta, o eventual processamento dessas informações, a transferência internacional de dados e o trânsito técnico em infraestrutura global em nuvem (Cloudflare Edge e API de inteligência artificial quando ativada) constituem pontos sob revisão jurídica externa contínua, para determinação formal das hipóteses legais definitivas perante a LGPD e o GDPR e para auditoria de garantias contratuais de fornecedores. A CREATIVE DESIGN PETTERSEN LTDA não declara antecipadamente a confirmação definitiva dessas bases nem presume consentimentos tácitos ou dispensas automáticas.'
+        'Status atual na distribuição pública (em pausa para revisão): O módulo "Pergunte ao MAMAND" encontra-se temporariamente suspenso na versão pública enquanto passa por revisão com profissionais de saúde. Nesta distribuição, a aba Pergunte não possui formulário de perguntas, não realiza chamadas de rede e não envia nenhum texto para o Gateway Edge (Cloudflare Workers) nem para a API do Google Gemini.',
+        'Arquitetura experimental opcional (desativada em produção): O repositório contém uma arquitetura experimental desacoplada de Gateway Edge e RAG (Recuperação Aumentada por Geração) para futura avaliação controlada. Caso esse módulo venha a ser habilitado após revisão clínica e jurídica formal, aplicam-se os limites técnicos abaixo:',
+        'Minimização estrita dos quatro campos previstos para o Gateway (quando ativo): Ao formular uma dúvida no assistente educativo, a aplicação cliente foi desenhada para enviar exclusivamente quatro campos delimitados: 1) o texto da pergunta digitada (submetido previamente à rotina cliente de sanitização), 2) a fase declarada (gestação ou bebê), 3) o estágio numérico correspondente (semanas de gestação ou meses de vida) e 4) o idioma selecionado (português ou inglês). Nenhuma outra informação pessoal — como diário da Jornada, Ficha de Nascimento, fotografias, contatos da rede de apoio ou nome da mãe/cuidadora — é incluída nessa carga.',
+        'Filtros automáticos de privacidade (PII Scrubber) e limitações inerentes: Na arquitetura experimental, o texto da pergunta passa por expressões regulares projetadas para detectar e mascarar números de CPF, telefones, e-mails e frases comuns de apresentação pessoal (ex: "meu nome é...", "meu bebê se chama..."). Contudo, filtros automatizados baseados em regras possuem limitações técnicas estruturais e NÃO garantem a desidentificação completa ou a anonimização absoluta do texto digitado.',
+        'Processamento pelo Google Gemini (somente se ativado no futuro): No modo conectado com IA ativa, o prompt transmitido à API do Google Gemini (modelo Gemini 3.5 Flash-Lite) é composto pelas instruções de sistema, pelos trechos oficiais recuperados do contexto clínico e pelo texto da pergunta com o filtro de privacidade aplicado. Embora identificadores de conta ou metadados de dispositivo não sejam anexados, quaisquer dados pessoais inseridos no texto da pergunta que escapem às expressões regulares seriam enviados à API do Google Gemini. Quando o modo simulado (Mock) está ativo, nenhuma chamada a serviços externos de IA é feita.',
+        'Pontos de revisão jurídica sobre eventual reativação do assistente: Caso a usuária voluntariamente insira informações sobre saúde quando o módulo estiver ativo, o processamento transitório, a transferência internacional de dados e o trânsito em infraestrutura global em nuvem (Cloudflare Edge e API de IA) permanecem sob revisão jurídica externa contínua antes de qualquer reativação pública. Não há declaração antecipada de bases legais definitivas nem presunção de dispensas automáticas.'
       ],
-      warningBox: 'Aviso sobre limitações dos filtros de privacidade: Expressões regulares automáticas não asseguram anonimização total e não são capazes de identificar nomes incomuns, apelidos afetivos, locais ou contextos narrativos indiretos. Qualquer dado pessoal digitado no texto da pergunta que escape aos filtros automatizados integrará o prompt transmitido ao Google Gemini. Recomendamos enfaticamente que a usuária nunca digite nomes completos de pessoas, números de documentos, endereços residenciais, contatos ou informações confidenciais no campo de dúvidas do assistente.'
+      warningBox: 'Aviso importante: Na distribuição pública atual, o formulário de perguntas está desativado. Caso venha a ser reativado após revisão profissional, expressões regulares automáticas não asseguram anonimização total e dados não filtrados integrariam o prompt enviado ao Google Gemini; nunca digite nomes completos, documentos, endereços ou dados confidenciais.'
     },
     {
       id: 'logs-infraestrutura',
       title: '6. Logs Técnicos e Serviços de Infraestrutura Identificados',
       content: [
-        'Para manter o aplicativo acessível e protegido contra ameaças digitais, serviços de infraestrutura de tecnologia são empregados:',
-        'a) Cloudflare Workers (Gateway Edge): Processa as requisições de consulta do assistente. Em conformidade com as operações normais de redes, o Cloudflare recebe metadados transitórios de conexão (endereço IP, porta de conexão, cabeçalhos HTTP e navegador). Para proteção contra sobrecarga e abuso (rate limiting), o sistema calcula um hash criptográfico efêmero (SHA-256) combinando o IP com a data do dia e um sal rotativo diário, descartando o endereço IP original da lógica do aplicativo.',
-        'b) Plataforma de Hospedagem Estática (CDN): Distribui os arquivos HTML, scripts JavaScript, fontes e folhas de estilo do aplicativo, registrando logs padrão de servidores web estritamente necessários para a entrega de arquivos e proteção de infraestrutura.',
-        'c) Google Gemini API: Processa as consultas de linguagem natural quando o assistente online está ativado, em conformidade com as políticas comerciais de API do provedor (onde requisições de API não são utilizadas para treinar modelos fundacionais públicos da Google).',
-        'd) Estatísticas agregadas de alcance (Vercel Web Analytics — somente após consentimento): Quando você aceita expressamente no aviso inicial ou nas preferências, o aplicativo carrega o Vercel Web Analytics exclusivamente para medir visualizações agregadas de páginas, visitantes estimados (calculados via hash criptográfico efêmero de 24 horas) e origem geral do tráfego (referrer e país aproximado). O serviço não utiliza cookies de rastreamento, não grava identificadores persistentes no aparelho e não lê nem recebe nenhum dado do perfil, da Jornada, da Ficha de Nascimento, de consultas, exames ou perguntas ao assistente — todos os registros familiares permanecem integralmente no seu próprio dispositivo.'
+        'Para manter o aplicativo acessível e protegido contra ameaças digitais, serviços de infraestrutura de tecnologia são empregados conforme o estado real da distribuição:',
+        'a) Cloudflare Workers (Gateway Edge — INATIVO na distribuição pública atual): Quando o módulo experimental de perguntas não está em pausa, processa requisições de consulta recebendo metadados transitórios de conexão (IP, porta, cabeçalhos HTTP) e gerando hash diário (SHA-256) com sal rotativo para limitação de taxa. Na distribuição pública atual, nenhum tráfego é enviado a este serviço.',
+        'b) Plataforma de Hospedagem Estática (Vercel CDN — ativo): Distribui os arquivos HTML, scripts JavaScript, fontes auto-hospedadas e folhas de estilo do aplicativo, registrando logs padrão de servidores web estritamente necessários para a entrega de arquivos e proteção de infraestrutura.',
+        'c) Google Gemini API (INATIVA na distribuição pública atual): Somente caso o assistente online venha a ser reativado após revisão clínica e jurídica, processa consultas de linguagem natural sob termos comerciais de API. Na distribuição pública atual, nenhuma consulta é enviada à API do Google Gemini.',
+        'd) Estatísticas agregadas de alcance (Vercel Web Analytics — somente após consentimento): Desativado por padrão. Somente quando você aceita expressamente no aviso inicial ou nas preferências — e apenas nos domínios oficiais de produção (mamand.app / www.mamand.app) com o navegador online — o aplicativo carrega o Vercel Web Analytics para medir visualizações agregadas de páginas (com remoção prévia de query strings e fragmentos de URL), visitantes estimados (hash efêmero de 24 horas) e origem geral do tráfego. O serviço não utiliza cookies de rastreamento, não grava identificadores persistentes no aparelho e não lê nem recebe nenhum dado do perfil, da Jornada, da Ficha de Nascimento, de consultas, exames ou perguntas.'
       ]
     },
     {
@@ -173,7 +184,7 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
         'A proteção das informações repousa diretamente sobre os mecanismos de segurança do próprio sistema operacional e do dispositivo físico utilizado (código de bloqueio de tela, biometria/TouchID/FaceID, criptografia integral de disco como FileVault no macOS, BitLocker no Windows, ou criptografia nativa no Android e iOS).',
         'Recomendações de segurança: Em dispositivos compartilhados por várias pessoas ou sem senha de proteção de tela, qualquer pessoa com acesso físico ao navegador poderá visualizar as informações gravadas localmente. Recomendamos o uso de dispositivos individuais protegidos por senha.'
       ],
-      warningBox: 'Declaração de ausência de segurança absoluta: Nenhuma tecnologia de transmissão de dados pela internet ou método de armazenamento eletrônico é 100% seguro ou inviolável. O MAMAND adota práticas de ponta em minimização de dados e eliminação de servidores centrais, mas não declara nem assegura segurança absoluta contra invasões físicas ao aparelho ou vulnerabilidades gerais de sistemas operacionais.'
+      warningBox: 'Declaração de ausência de segurança absoluta: Nenhuma tecnologia de transmissão de dados pela internet ou método de armazenamento eletrônico é 100% seguro ou inviolável. O MAMAND adota minimização estrita de dados e ausência de servidores centrais para registros familiares, mas não declara nem assegura segurança absoluta contra invasões físicas ao aparelho ou vulnerabilidades gerais de sistemas operacionais.'
     },
     {
       id: 'direitos-titulares',
@@ -181,12 +192,12 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       content: [
         'O MAMAND assegura o respeito integral aos direitos dos titulares de dados pessoais previstos na legislação brasileira (Lei Geral de Proteção de Dados Pessoais - LGPD, Lei nº 13.709/2018) e, quando aplicável a residentes na União Europeia ou Espaço Econômico Europeu, no Regulamento Geral de Proteção de Dados da UE (GDPR, Regulamento 2016/679).',
         'Exercício direto e autônomo de direitos:',
-        '• Confirmação e Acesso aos dados (Art. 18, I e II da LGPD; Art. 15 do GDPR): Todos os dados sob posse do MAMAND encontram-se visíveis e acessíveis diretamente nas telas do aplicativo.',
+        '• Confirmação e Acesso aos dados (Art. 18, I e II da LGPD; Art. 15 do GDPR): Todos os dados armazenados localmente pelo aplicativo encontram-se visíveis e acessíveis diretamente nas telas do aplicativo.',
         '• Correção de dados incompletos ou inexatos (Art. 18, III da LGPD; Art. 16 do GDPR): A usuária pode alterar seu nome, país, datas e registros da jornada diretamente no aplicativo a qualquer momento.',
         '• Eliminação dos dados (Art. 18, VI da LGPD; Art. 17 do GDPR): Pode ser executada de forma autônoma a qualquer instante pela funcionalidade "Apagar todos os meus dados deste aparelho".',
         '• Portabilidade (Art. 18, V da LGPD; Art. 20 do GDPR): Garantida através da função de exportação em JSON estruturado e resumo TXT.',
-        '• Informação sobre compartilhamento: Descrita com total transparência nesta política (eventual processamento transitório pelo Cloudflare e Google Gemini caso o assistente online venha a ser ativado em consultas voluntárias).',
-        'Canal direto e funcional de privacidade: As funcionalidades do aplicativo conferem total autonomia para que o titular exerça a maior parte de seus direitos diretamente em seu próprio aparelho. Para esclarecimentos adicionais, requisições formais de direitos ou dúvidas sobre o tratamento de dados pessoais pela controladora, os titulares podem entrar em contato diretamente pelo e-mail privacidade@mamand.app. Mensagens institucionais gerais ou dúvidas sobre o projeto podem ser direcionadas a hello@mamand.app. Os canais são operados diretamente pela equipe responsável da CREATIVE DESIGN PETTERSEN LTDA.'
+        '• Informação sobre compartilhamento: Descrita com total transparência nesta política (na distribuição pública atual não há envio de perguntas a IA externa; apenas entrega estática via Vercel CDN e, mediante consentimento, métricas agregadas via Vercel Web Analytics).',
+        'Canal direto e funcional de privacidade: As funcionalidades do aplicativo conferem total autonomia para que o titular exerça a maior parte de seus direitos diretamente em seu próprio aparelho. Para esclarecimentos adicionais, requisições formais de direitos ou dúvidas sobre o tratamento de dados pessoais pela controladora atual, os titulares podem entrar em contato diretamente pelo e-mail privacidade@mamand.app. Mensagens institucionais gerais ou dúvidas sobre o projeto podem ser direcionadas a hello@mamand.app. Os canais são atendidos diretamente sob responsabilidade de Cintia Pettersen.'
       ]
     },
     {
@@ -194,10 +205,10 @@ export const PRIVACY_POLICY_PT: PrivacyPolicyDocument = {
       title: '11. Transparência, Bases Legais e Ausência de Aceite Compulsório',
       content: [
         'O MAMAND rejeita o uso de caixas genéricas e forçadas de "Li e aceito todos os termos" como artifício para justificar qualquer tratamento de dados.',
-        'A utilização das funções de registro local (Jornada, ficha de nascimento, checklist) apoia-se na execução direta da funcionalidade pessoal solicitada pela usuária (local-first), na qual os dados permanecem sob o exclusivo controle da própria titular em seu aparelho. A CREATIVE DESIGN PETTERSEN LTDA esclarece que a natureza local do aplicativo não é invocada como dispensa automática de obrigações corporativas da controladora perante a LGPD ou o GDPR.',
-        'O envio de perguntas ao assistente educativo constitui solicitação voluntária do usuário. Avisos contextuais de privacidade são exibidos para assegurar a ciência informada da usuária, não se considerando o simples clique de envio como consentimento explícito e destacado automaticamente válido.',
+        'A utilização das funções de registro local (Jornada, ficha de nascimento, checklist) apoia-se na execução direta da funcionalidade pessoal solicitada pela usuária (local-first), na qual os dados permanecem sob o exclusivo controle da própria titular em seu aparelho. Esclarece-se que a natureza local do aplicativo não é invocada como dispensa automática de obrigações aplicáveis perante a LGPD ou o GDPR.',
+        'O envio de perguntas ao assistente educativo (atualmente desativado na versão pública) constitui solicitação voluntária do usuário quando ativo. Avisos contextuais de privacidade são exibidos para assegurar a ciência informada da usuária, não se considerando o simples clique de envio como consentimento explícito e destacado automaticamente válido.',
         'Consentimento para estatísticas de alcance (LGPD, GDPR e Noruega/EEE): A medição via Vercel Web Analytics inicia desativada por padrão. A ausência de cookies não dispensa automaticamente o consentimento prévio, especialmente sob a Diretiva ePrivacy, o GDPR e a legislação norueguesa (ekomloven § 3-15), que exigem escolha ativa e bloqueio prévio de scripts de medição não estritamente necessários no dispositivo. Você pode aceitar ou recusar com o mesmo destaque no aviso inicial e alterar ou revogar sua escolha a qualquer momento em "Editar Perfil" ou nesta Política de Privacidade; ao recusar ou revogar, o script não é carregado e novos envios são interrompidos imediatamente.',
-        'Revisão contínua de enquadramento legal e ausência de definitividade: A CREATIVE DESIGN PETTERSEN LTDA submete todo o enquadramento de privacidade à auditoria e validação jurídica independente. A menção a cenários regulatórios destina-se estritamente à transparência e governança interna pré-publicação, sem emitir declarações de conformidade jurídica definitiva, sem emitir atestados de segurança absoluta e sem presumir imunidade legal.'
+        'Revisão contínua de enquadramento legal e ausência de definitividade: A operadora atual submete todo o enquadramento de privacidade à auditoria e validação jurídica independente. A menção a cenários regulatórios destina-se estritamente à transparência e governança interna pré-publicação, sem emitir declarações de conformidade jurídica definitiva, sem emitir atestados de segurança absoluta e sem presumir imunidade legal.'
       ]
     },
     {
@@ -217,13 +228,18 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
   lastUpdated: 'November 13, 2026',
   productName: 'MAMAND',
   controller: {
-    corporateName: 'CREATIVE DESIGN PETTERSEN LTDA',
-    cnpj: '24.325.181/0001-94',
-    country: 'Brazil',
+    name: 'Cintia Pettersen',
+    roleLabel: 'Individual (current operator and data controller)',
+    country: 'Norway',
     privacyEmail: 'privacidade@mamand.app',
     generalEmail: 'hello@mamand.app',
-    initiativeContextNotice: 'MAMAND is an independent initiative created and developed by CREATIVE DESIGN PETTERSEN LTDA, the sole legal entity and data controller formally responsible for the product and data processing under applicable privacy laws.',
-    governanceNotice: 'Because MAMAND operates on a local-first model without cloud user accounts or central databases, personal data governance is exercised directly by the user on their own device. For privacy inquiries, personal data protection, and user rights, CREATIVE DESIGN PETTERSEN LTDA provides the direct channel privacidade@mamand.app. For general inquiries and institutional communications, contact hello@mamand.app.'
+    institutionalPartner: {
+      corporateName: 'CREATIVE DESIGN PETTERSEN LTDA',
+      cnpj: '24.325.181/0001-94',
+      roleNotice: 'Institutionally affiliated entity and applicant for the UNICEF FemTech Ventures 2026 application (not acting as data controller of the current public app).'
+    },
+    initiativeContextNotice: 'MAMAND is an independent initiative conceived, developed, and funded personally by Cintia Pettersen, who retains copyright ownership of the project (with no assignment to a legal entity). CREATIVE DESIGN PETTERSEN LTDA maintains an institutional affiliation and acts as the applicant entity for the UNICEF FemTech Ventures 2026 application, without copyright transfer and without directly operating the current public release.',
+    governanceNotice: 'Because MAMAND operates on a local-first model without cloud user accounts or central databases, family records remain under the user\'s direct control on their own device. For privacy inquiries, personal data protection, and user rights directed to the current operator and data controller (Cintia Pettersen), contact privacidade@mamand.app. For general inquiries and institutional communications, contact hello@mamand.app.'
   },
   disclaimerNotice: 'This Privacy Policy strictly reflects the audited source code and current operational reality of MAMAND. The application does not claim official government certification, definitive legal compliance seals, or absolute security guarantees. Its model is founded on local-first storage and strict data minimization.',
   summary: {
@@ -263,8 +279,8 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       title: '1. Institutional Identification & Data Controller',
       content: [
         'MAMAND is a Progressive Web App (PWA) designed to support and accompany parents throughout the first 1,000 days of life (from pregnancy up to two years of age).',
-        'The legal data controller responsible for MAMAND under applicable personal data protection laws is CREATIVE DESIGN PETTERSEN LTDA, registered in Brazil under CNPJ nº 24.325.181/0001-94.',
-        'Independent origin and ownership: MAMAND is an independent initiative designed, developed, and operated exclusively by CREATIVE DESIGN PETTERSEN LTDA, the Brazilian legal entity assuming all legal compliance and privacy responsibilities.',
+        'In the current public operation, the operator and data controller responsible for personal data processing linked to the application (static hosting, optional analytics, and support channels) is Cintia Pettersen, an individual resident in Norway.',
+        'Independent origin, ownership, and institutional affiliation: MAMAND is an independent initiative conceived, developed, and funded personally by Cintia Pettersen, who retains copyright ownership of the software (licensed under Apache License 2.0), with no assignment of rights to a legal entity. The Brazilian company CREATIVE DESIGN PETTERSEN LTDA (CNPJ 24.325.181/0001-94) maintains an institutional affiliation with the project and serves as the applicant entity for the UNICEF FemTech Ventures 2026 application, without acting as data controller of the current public application; any future operation of projects by the company will require separate formalization and prior update of this Policy.',
         'Governance and official communication channels: Operating under a "local-first" paradigm, the app maintains no user accounts, logins, or cloud database repositories. Data governance is handled directly and autonomously by the user on their own device. For requests regarding privacy, personal data protection, and user rights, the official direct communication channel is privacidade@mamand.app (this serves as the designated official privacy communication channel and does not constitute a formally appointed statutory DPO). For general inquiries, partnerships, and institutional matters, contact hello@mamand.app.'
       ]
     },
@@ -273,8 +289,8 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       title: '2. Local-First Architecture & Device Storage',
       content: [
         'MAMAND is built on a "local-first" architecture. This means that the information you record during your daily routine with your baby is saved directly inside your phone or computer web browser, rather than in central cloud servers managed by us.',
-        'Journey timeline, health appointments, and screenings: The application uses the browser local storage mechanism (IndexedDB) to securely persist chronological journal entries, prenatal and well-child visit logs, feeding logs, sleep patterns, diaper changes, developmental milestones, and lab/newborn screening records.',
-        'Family settings and support tools: Your browser local storage (localStorage) securely retains day-to-day organizational data: caregiver profile preferences, baby birth record details, trusted support network contacts, hospital bag checklist items, maternal rest timer states, read educational cards, and language selection.'
+        'Journey timeline, health appointments, and screenings: The application uses the browser local storage mechanism (IndexedDB) to store locally chronological journal entries, prenatal and well-child visit logs, feeding logs, sleep patterns, diaper changes, developmental milestones, and lab/newborn screening records.',
+        'Family settings and support tools: Your browser local storage (localStorage) stores locally day-to-day organizational data: caregiver profile preferences, baby birth record details, trusted support network contacts, hospital bag checklist items, maternal rest timer states, read educational cards, and language selection.'
       ]
     },
     {
@@ -295,30 +311,31 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       title: '4. Current Absence of a Central Family Database',
       content: [
         'MAMAND DOES NOT operate a central cloud database of family profiles, cloud user accounts, or centralized medical records.',
-        'CREATIVE DESIGN PETTERSEN LTDA does not maintain cloud repositories storing your photos, baby names, birth certificates, or journal entries. We have no visual access to and make no covert copies of the data residing inside your browser storage.'
+        'Neither the current operator and data controller (Cintia Pettersen) nor CREATIVE DESIGN PETTERSEN LTDA maintains cloud repositories storing your photos, baby names, birth certificates, or journal entries. We have no visual access to and make no covert copies of the data residing inside your browser storage.'
       ]
     },
     {
       id: 'assistente-gateway-ia',
       title: '5. Educational Assistant, Edge Gateway & AI Processing',
       content: [
-        'The "Ask MAMAND" assistant provides educational guidance based on official public health references. To process questions, it connects to a decoupled Edge Gateway deployed on cloud infrastructure.',
-        'Strict data minimization across the four fields transmitted to the Gateway: When submitting a question to the educational assistant, the client application transmits strictly four bounded fields: 1) the typed question text (previously submitted to client-side sanitization), 2) declared phase (pregnancy or baby), 3) numerical stage (gestational weeks or age in months), and 4) selected language (Portuguese or English). No other information — such as Journey diary entries, Birth Record, family photos, support network contacts, or caregiver names — is ever transmitted to the Gateway.',
-        'Automated privacy filter (PII Scrubber) and inherent limitations: On both client and server sides, the question text is passed through regular expressions designed to detect and mask national identity numbers (e.g., CPF), phone numbers, email addresses, and typical name introduction phrases (e.g., "my name is...", "my baby\'s name is..."). However, pattern-based automated filters have inherent technical limitations and DO NOT guarantee complete de-identification or absolute anonymization of user-entered text.',
-        'Google Gemini processing when active: The Gateway applies a Retrieval-Augmented Generation (RAG) pipeline to fetch matching verified guidance from official public health manuals (WHO, UNICEF, Brazil Ministry of Health). In connected mode with AI active, the prompt sent to the Google Gemini API (model Gemini 3.5 Flash-Lite) consists of system instructions, retrieved official health excerpts, and the question text with privacy filters applied. While the application does not attach account identifiers, profile databases, or device metadata to the prompt, automated filters cannot guarantee complete removal of personal details; consequently, any identifying information or personal context typed directly by the user that is not caught by the regular expressions will be transmitted to and processed by the Google Gemini API to generate the response. When simulated (Mock) mode is active, responses are synthesized locally with zero external API calls.',
-        'Points of legal review regarding the assistant and data transit: The assistant module provides strictly educational public health guidance and does not provide medical care, clinical procedures, or healthcare services. If a user voluntarily enters health-related details into a question, the transient processing of such information, international data transfers, and technical transit across global cloud infrastructure (Cloudflare Edge and AI API when active) are treated as open points of ongoing external legal review to formally define definitive legal grounds under LGPD and GDPR and to audit vendor contractual safeguards. CREATIVE DESIGN PETTERSEN LTDA makes no definitive prior claim regarding these bases, nor does it assume automatic exemptions or unverified contractual assurances.'
+        'Current status in the public distribution (paused for review): The "Ask MAMAND" module is temporarily suspended in the public release while it undergoes review with health professionals. In this distribution, the Ask tab contains no question form, makes no network requests, and transmits no text to the Edge Gateway (Cloudflare Workers) or the Google Gemini API.',
+        'Optional experimental architecture (disabled in production): The repository contains a decoupled experimental Edge Gateway and RAG architecture for future controlled evaluation. Should this module be enabled after formal clinical and legal review, the technical boundaries below apply:',
+        'Strict data minimization across the four fields designed for the Gateway (when active): When submitting a question, the client application is designed to transmit strictly four bounded fields: 1) the typed question text (previously submitted to client-side sanitization), 2) declared phase (pregnancy or baby), 3) numerical stage (gestational weeks or age in months), and 4) selected language (Portuguese or English). No other information — such as Journey diary entries, Birth Record, family photos, support network contacts, or caregiver names — is included in that payload.',
+        'Automated privacy filter (PII Scrubber) and inherent limitations: In the experimental architecture, the question text is passed through regular expressions designed to detect and mask national identity numbers (e.g., CPF), phone numbers, email addresses, and typical name introduction phrases. However, pattern-based automated filters have inherent technical limitations and DO NOT guarantee complete de-identification or absolute anonymization of user-entered text.',
+        'Google Gemini processing (only if enabled in the future): In connected mode with AI active, the prompt sent to the Google Gemini API (model Gemini 3.5 Flash-Lite) consists of system instructions, retrieved official health excerpts, and the question text with privacy filters applied. Although account identifiers or device metadata are not attached, any personal details typed into the question that escape the regular expressions would be sent to the Google Gemini API. When simulated (Mock) mode is active, zero external AI API calls are made.',
+        'Points of legal review regarding eventual reactivation: If a user voluntarily enters health-related details when the module is active, transient processing, international data transfers, and transit across global cloud infrastructure (Cloudflare Edge and AI API) remain subject to ongoing external legal review prior to any public reactivation. No definitive legal grounds or automatic exemptions are claimed in advance.'
       ],
-      warningBox: 'Notice regarding privacy filter limitations: Automated regular expressions cannot ensure absolute anonymization and cannot reliably recognize uncommon names, affectionate nicknames, specific locations, or subtle narrative contexts. Any identifying information typed into the question box that is not caught by the automated filters will be included in the prompt sent to Google Gemini. Users are therefore strongly urged never to type real full names, identity documents, home addresses, contact details, or confidential information into the assistant question box.'
+      warningBox: 'Important notice: In the current public distribution, the question form is disabled. If reactivated after professional review, automated regular expressions cannot ensure absolute anonymization and unfiltered details would be included in the prompt sent to Google Gemini; never type real full names, identity documents, home addresses, or confidential information.'
     },
     {
       id: 'logs-infraestrutura',
       title: '6. Technical Logs & Identified Infrastructure Services',
       content: [
-        'To keep the application accessible, resilient, and protected against abuse, technology infrastructure services are utilized:',
-        'a) Cloudflare Workers (Edge Gateway): Processes assistant question requests. As part of standard internet edge routing and DDoS mitigation, Cloudflare receives transient connection metadata (IP address, port, HTTP headers, User-Agent). For rate limiting, the gateway computes an ephemeral daily SHA-256 hash combining the IP with the date and a rotating salt, discarding raw IP addresses from application logic.',
-        'b) Static Hosting Platform (CDN): Delivers static HTML, JavaScript bundles, self-hosted fonts, and stylesheets, maintaining standard web server access logs strictly for content delivery and infrastructure protection.',
-        'c) Google Gemini API: Processes natural language queries when online AI is enabled, under commercial enterprise API terms (which stipulate that customer API queries are not used to train Google\'s foundational models).',
-        'd) Aggregate reach statistics (Vercel Web Analytics — opt-in only): Only after you explicitly accept in the initial notice or preferences, the app loads Vercel Web Analytics strictly to measure aggregate page views, estimated visitors (computed via an ephemeral 24-hour cryptographic hash), and general traffic sources (referrer and approximate country). It uses no tracking cookies, stores no persistent tracking IDs on your device, and never accesses or transmits profile details, Journey entries, Birth Record data, Health Checks, or assistant questions — all family records remain exclusively on your own device.'
+        'To keep the application accessible and protected against abuse, technology infrastructure services are used according to the actual state of the distribution:',
+        'a) Cloudflare Workers (Edge Gateway — INACTIVE in the current public distribution): Only when the experimental Q&A module is active, it processes assistant requests receiving transient connection metadata (IP address, port, HTTP headers) and computing an ephemeral daily SHA-256 hash with a rotating salt for rate limiting. In the current public distribution, no traffic is sent to this service.',
+        'b) Static Hosting Platform (Vercel CDN — active): Delivers static HTML, JavaScript bundles, self-hosted fonts, and stylesheets, maintaining standard web server access logs strictly for content delivery and infrastructure protection.',
+        'c) Google Gemini API (INACTIVE in the current public distribution): Only if the online assistant is reactivated after clinical and legal review, it processes natural language queries under commercial enterprise API terms. In the current public distribution, no queries are sent to the Google Gemini API.',
+        'd) Aggregate reach statistics (Vercel Web Analytics — opt-in only): Disabled by default. Only after you explicitly accept in the initial notice or preferences — and only on the official production domains (mamand.app / www.mamand.app) while online — the app loads Vercel Web Analytics to measure aggregate page views (after stripping URL query strings and fragments), estimated visitors (ephemeral 24-hour cryptographic hash), and general traffic sources. It uses no tracking cookies, stores no persistent tracking IDs on your device, and never accesses or transmits profile details, Journey entries, Birth Record data, Health Checks, or questions.'
       ]
     },
     {
@@ -351,7 +368,7 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
         'Information security relies directly on the operating system and hardware controls of your personal device (passcode locks, biometric authentication such as FaceID/TouchID, and disk encryption like FileVault on macOS, BitLocker on Windows, or iOS/Android native storage sandboxing).',
         'Security recommendations: On shared devices or devices without passcode protection, anyone with physical access to your browser can view locally stored entries. We recommend using private devices protected by screen lock passcodes.'
       ],
-      warningBox: 'Disclaimer regarding absolute security: No internet transmission or electronic storage method is 100% impenetrable. While MAMAND applies state-of-the-art data minimization and eliminates central cloud databases, it makes no claim of absolute invulnerability against physical device intrusion or host operating system compromises.'
+      warningBox: 'Disclaimer regarding absolute security: No internet transmission or electronic storage method is 100% impenetrable. While MAMAND applies strict data minimization and maintains no central cloud databases for family records, it makes no claim of absolute invulnerability against physical device intrusion or host operating system compromises.'
     },
     {
       id: 'direitos-titulares',
@@ -359,12 +376,12 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       content: [
         'MAMAND respects user rights under Brazilian General Data Protection Law (LGPD, Law nº 13.709/2018) and, where applicable to residents of the EU or EEA, the European Union General Data Protection Regulation (GDPR, Regulation 2016/679).',
         'Direct and autonomous exercise of rights:',
-        '• Confirmation and Access (Art. 18, I & II LGPD; Art. 15 GDPR): All personal and health data stored by MAMAND is directly visible inside the app interface.',
+        '• Confirmation and Access (Art. 18, I & II LGPD; Art. 15 GDPR): All personal and health data stored locally by the application is directly visible inside the app interface.',
         '• Rectification (Art. 18, III LGPD; Art. 16 GDPR): You can edit names, country, dates, and journal entries directly in the app at any time.',
         '• Erasure (Art. 18, VI LGPD; Art. 17 GDPR): Can be executed autonomously anytime via the "Erase all my data from this device" button.',
         '• Portability (Art. 18, V LGPD; Art. 20 GDPR): Provided via open JSON export and TXT summaries.',
-        '• Information on data sharing: Fully and transparently detailed in this policy (eventual ephemeral processing by Cloudflare and Google Gemini if online assistant mode is enabled during voluntary queries).',
-        'Direct and functional privacy channel: The application features provide full autonomy for users to exercise most of their rights directly on their device (access, rectification, export portability, and local wipe). For additional clarifications, formal rights requests, or questions regarding personal data processing, data subjects can contact us directly at privacidade@mamand.app. General corporate correspondence and project questions can be addressed to hello@mamand.app. Both channels are operated directly by the responsible team at CREATIVE DESIGN PETTERSEN LTDA.'
+        '• Information on data sharing: Fully and transparently detailed in this policy (in the current public distribution, no queries are sent to external AI; only static delivery via Vercel CDN and, upon opt-in consent, aggregate metrics via Vercel Web Analytics occur).',
+        'Direct and functional privacy channel: The application features provide full autonomy for users to exercise most of their rights directly on their device (access, rectification, export portability, and local wipe). For additional clarifications, formal rights requests, or questions regarding personal data processing by the current controller, data subjects can contact us directly at privacidade@mamand.app. General inquiries and project questions can be addressed to hello@mamand.app. Both channels are handled directly under the responsibility of Cintia Pettersen.'
       ]
     },
     {
@@ -372,10 +389,10 @@ export const PRIVACY_POLICY_EN: PrivacyPolicyDocument = {
       title: '11. Transparency, Legal Grounds & No Forced Consent',
       content: [
         'MAMAND rejects blanket, coercive "I agree to all terms" checkboxes as a pretext for broad data processing.',
-        'Local family logging features (Journey, birth record, checklist) rely on the direct execution of the personal service requested by the user under a local-first paradigm, where data remains under the user\'s exclusive control. CREATIVE DESIGN PETTERSEN LTDA clarifies that this local architecture is not invoked as an automatic exemption from corporate controller obligations under privacy law.',
-        'Asking questions to the educational assistant constitutes a voluntary user request. Contextual privacy notices are displayed to ensure informed user awareness, without treating a simple submit click as automatically valid explicit consent.',
+        'Local family logging features (Journey, birth record, checklist) rely on the direct execution of the personal service requested by the user under a local-first paradigm, where data remains under the user\'s exclusive control. It is clarified that this local architecture is not invoked as an automatic exemption from applicable controller obligations under privacy law.',
+        'Asking questions to the educational assistant (currently disabled in the public release) constitutes a voluntary user request when active. Contextual privacy notices are displayed to ensure informed user awareness, without treating a simple submit click as automatically valid explicit consent.',
         'Consent for reach statistics (LGPD, GDPR, and Norway/EEA): Measurement via Vercel Web Analytics is disabled by default. The absence of cookies does not automatically waive prior consent, particularly under the ePrivacy Directive, GDPR, and Norwegian law (ekomloven § 3-15), which require active choice and prior blocking of non-essential measurement scripts on the user\'s device. You may accept or decline with equal prominence in the initial notice and change or withdraw your preference at any time in "Edit Profile" or within this Privacy Policy; upon declining or withdrawing, the script is not loaded and any further transmissions stop immediately.',
-        'Ongoing legal review and absence of definitive certification: CREATIVE DESIGN PETTERSEN LTDA submits this entire privacy framework to independent legal review. Discussion of regulatory scenarios serves internal governance and transparency, without asserting definitive legal compliance, without providing absolute security claims, and without assuming statutory immunity.'
+        'Ongoing legal review and absence of definitive certification: The current operator submits this entire privacy framework to independent legal review. Discussion of regulatory scenarios serves internal governance and transparency, without asserting definitive legal compliance, without providing absolute security claims, and without assuming statutory immunity.'
       ]
     },
     {
