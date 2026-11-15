@@ -290,11 +290,11 @@ export interface TranslationDictionary {
   };
   ask: {
     badge: string;
-    suspendedBadge?: string;
-    suspendedTitle?: string;
-    suspendedText?: string;
-    suspendedCare?: (emergency: string) => string;
-    suspendedEmergencyFallback?: string;
+    suspendedBadge: string;
+    suspendedTitle: string;
+    suspendedText: string;
+    suspendedCare: (emergency: string) => string;
+    suspendedEmergencyFallback: string;
     title: string;
     subtitle: string;
     disclaimerTitle: string;

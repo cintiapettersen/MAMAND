@@ -1,6 +1,6 @@
 # Arquitetura do MAMAND
 
-> **Situação (novembro de 2026).** Esta distribuição pública contém só o aplicativo local-first. O assistente experimental de perguntas livres (busca, respostas, integração com IA, detector de sinais e catálogo de evidências) e o painel de critérios de sinais de alerta **não fazem parte dela** enquanto aguardam revisão clínica e regulatória. Nenhum conteúdo de saúde tem revisão profissional registrada. Os dados ficam só no aparelho, **sem criptografia própria**.
+> **Situação (novembro de 2026).** Esta distribuição pública contém só o aplicativo local-first. A aba Pergunte exibe apenas o aviso de pausa para revisão profissional e os contatos oficiais de emergência por país (`EmergencyStrip`), sem formulário de perguntas nem importação de `evidenceCatalog`, `ragService`, `mockEngine` ou `askService` no bundle público. Os textos completos de Cuidados (`educationalText` e `practicalAction`) sem autorização de publicação também foram removidos do bundle público e preservados em `research/clinical-knowledge/care_contents_unreviewed_v0_1.json`. Nenhum conteúdo de saúde tem revisão profissional registrada. Os dados ficam só no aparelho, **sem criptografia própria**.
 
 ## 1. Visão geral
 
@@ -56,8 +56,8 @@ O aplicativo implementa padrões modernos de PWA para garantir funcionamento aut
    - **Assets Estáticos**: Estratégia *Cache-First* combinada com *Stale-While-Revalidate* para o bundle JS/CSS e imagens.
    - **Navegação SPA**: Estratégia *Network-First* com fallback para o `index.html` em cache, viabilizando recargas de tela e navegação profunda sem internet.
    - **Isolamento Estrito de Privacidade**: O Service Worker intercepta requisições para `/api/*` e chamadas ao Edge Gateway local (porta 8787). Essas rotas **nunca são armazenadas no CacheStorage**. Em caso de falha de rede, o Service Worker devolve uma resposta HTTP 503 sintética sem persistir consultas ou respostas médicas.
-3. **Eliminação do Bloqueio de Rede para Fontes**:
-   - Folhas de estilo externas do Google Fonts são carregadas de forma assíncrona e não-bloqueadora (`media="print"` com comutação no evento `onload`).
+3. **Fontes 100% locais e offline (zero Google Fonts):**
+   - Todas as fontes tipográficas (`Fraunces`, `Nunito`, `Plus Jakarta Sans`) são auto-hospedadas em WOFF2 (`@fontsource` e `public/fonts/`), sem requisições a servidores externos.
    - O CSS define fallbacks nativos (`system-ui, -apple-system, sans-serif` e `Georgia, serif`), assegurando que a interface seja pintada imediatamente mesmo com a conexão desligada.
 
 ---

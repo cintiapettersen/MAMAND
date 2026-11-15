@@ -5,7 +5,7 @@ import { journeyStorage } from '../services/journeyStorage';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
 import { PageHeader } from '../components/PageHeader';
-import { CARE_FULL_TEXT_ENABLED, canShowCareInstructions } from '../config/careContentAvailability';
+import { CARE_FULL_TEXT_ENABLED, canShowCareInstructions, isContentAuthorizedForPublication } from '../config/careContentAvailability';
 import {
   Baby,
   Heart,
@@ -321,26 +321,29 @@ export const CareView: React.FC<CareViewProps> = ({
                     {art.categoryLabel}
                   </span>
 
-                  {/* Selo de revisão clínica só com registro documentado */}
-                  {art.validationStatus === 'clinically_reviewed' && art.clinicalReview && (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                      <ShieldCheck size={13} color="var(--sage)" />
-                      <span>{language === 'en' ? 'Reviewed by a health professional' : 'Revisado por profissional de saúde'}</span>
-                    </span>
-                  )}
-                  {/* Selo só com referência pública identificável; não indica revisão clínica */}
-                  {art.validationStatus === 'source_based' && (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                      <ShieldCheck size={13} color="var(--sage)" />
-                      <span>{language === 'en' ? 'Based on official sources' : 'Baseado em fontes oficiais'}</span>
-                    </span>
-                  )}
-                  {art.validationStatus === 'pending_review' && (
-                    <span style={{ fontSize: '0.72rem', color: '#99631E', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                      <AlertCircle size={12} color="#99631E" />
-                      <span>{language === 'en' ? 'Under Review' : 'Em Revisão'}</span>
-                    </span>
-                  )}
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    {isContentAuthorizedForPublication(art) ? (
+                      /* Selo de revisão clínica só com registro documentado e autorização de publicação */
+                      <span style={{ fontSize: '0.72rem', color: 'var(--sage)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                        <ShieldCheck size={13} color="var(--sage)" />
+                        <span>{language === 'en' ? 'Reviewed by a health professional' : 'Revisado por profissional de saúde'}</span>
+                      </span>
+                    ) : (
+                      <>
+                        {/* Indicação neutra de fonte oficial (não equivale a autorização clínica) */}
+                        {(art.validationStatus === 'source_based' || art.validationStatus === 'verified') && (
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 500 }}>
+                            <BookOpen size={12} color="var(--text-muted)" />
+                            <span>{language === 'en' ? 'Based on official sources' : 'Baseado em fontes oficiais'}</span>
+                          </span>
+                        )}
+                        <span style={{ fontSize: '0.72rem', color: '#99631E', display: 'inline-flex', alignItems: 'center', gap: '3px', fontWeight: 600 }}>
+                          <AlertCircle size={12} color="#99631E" />
+                          <span>{language === 'en' ? 'Under Review' : 'Em Revisão'}</span>
+                        </span>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Título Editorial com Tipografia Serena */}

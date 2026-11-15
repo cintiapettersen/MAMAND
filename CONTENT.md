@@ -41,28 +41,19 @@ não permite sugerir que a autora endossa uma adaptação.
 
 ### 2.1 Natureza do conteúdo de saúde
 
-Nesta distribuição, a biblioteca de Cuidados (`src/data/contents.ts`) traz só
-as informações básicas de cada tema: título, categoria, fase, tema, fonte e
-situação da revisão. Os textos completos de orientação, as ideias práticas e o
-catálogo de evidências do assistente experimental **não fazem parte desta
-distribuição** até a revisão profissional registrada.
+Nesta distribuição, a biblioteca de Cuidados (`src/data/contents.ts`) traz só as informações básicas de cada tema: título, categoria, fase, tema, fonte e situação da revisão. Os textos completos (`educationalText`) e as ideias práticas (`practicalAction`) sem autorização de publicação foram removidos do bundle público e preservados integralmente em `research/clinical-knowledge/care_contents_unreviewed_v0_1.json` para futura revisão profissional. O catálogo de evidências do assistente experimental também não é importado pelo frontend público.
 
-Versões anteriores deste repositório (até o commit `7d43d3f`) incluem os
-textos completos e o catálogo de evidências. Eles são resumos escritos para o
-MAMAND que citam as publicações de referência, sem revisão profissional.
+Versões anteriores deste repositório (até o commit `7d43d3f`) incluem os textos completos e o catálogo de evidências. Eles são resumos escritos para o MAMAND que citam as publicações de referência, sem revisão profissional.
 
-- **Sem revisão clínica profissional documentada.** Nenhum conteúdo de saúde
-  deste repositório passou, até agora, por revisão clínica profissional
-  documentada. Cada item tem um `validationStatus`:
-  - `clinically_reviewed`: revisão por profissional de saúde, com registro
-    obrigatório (quem revisou, credencial, data e referência). Hoje nenhum.
-  - `source_based`: resumo de publicação identificável; revisão pendente.
-  - `pending_review`: sem fonte identificável confirmada ou com ressalva;
-    revisão pendente.
-  - `demonstrative`: texto de exemplo, sem valor de orientação.
+- **Sem revisão clínica profissional documentada.** Nenhum conteúdo de saúde deste repositório passou, até agora, por revisão clínica profissional documentada. Os estados de validação são separados em cinco dimensões independentes:
+  - **Fonte bibliográfica verificada** (`sourceVerified` / `hasVerifiableSource` / legado `verified`): confirma apenas que a referência citada existe; **não equivale a revisão clínica** e **não autoriza publicação**.
+  - **Conteúdo baseado em fonte** (`validationStatus: 'source_based'`): resumo de publicação identificável; revisão clínica pendente.
+  - **Aguardando revisão clínica** (`validationStatus: 'pending_review'`): sem fonte confirmada ou com ressalva; revisão pendente.
+  - **Clinicamente revisado** (`validationStatus: 'clinically_reviewed'` + `clinicalReview` obrigatório): revisão formal por profissional de saúde habilitado (quem revisou, credencial, data e referência). Hoje nenhum.
+  - **Autorizado para publicação** (`publicationAllowed: true`): liberação explícita exigida junto com `clinically_reviewed` e `clinicalReview`.
+  - **Texto demonstrativo** (`validationStatus: 'demonstrative'`): texto de exemplo, sem valor de orientação.
 
-  Um item com `suspendedReason` fica fora da interface e das respostas do
-  assistente até a revisão profissional, qualquer que seja o status.
+  Um item com `suspendedReason` fica obrigatoriamente fora da interface e de qualquer caminho de publicação até a revisão profissional, qualquer que seja o status.
 
   Citar uma instituição não é revisão clínica. Nenhum conteúdo tem, hoje,
   revisão profissional registrada.

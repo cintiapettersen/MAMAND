@@ -12,11 +12,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Descanso e Rede de Apoio',
-    educationalText: 'O ritmo de sono no início do puerpério acompanha as necessidades frequentes do bebê. A orientação de saúde pública é repousar nos intervalos em que o recém-nascido dorme e compartilhar os afazeres domésticos com a rede de apoio para preservar a recuperação física e mental da mãe.',
-    practicalAction: 'Aproveite uma das sonecas do bebê para se deitar e descansar, delegando as tarefas da casa para a sua rede de apoio.',
+    educationalText: '',
     tagLabel: 'Pausa para descanso compartilhado',
     source: 'Caderneta da Gestante / Ministério da Saúde (6ª Edição, 2023, pág. 38)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'mom-self-compassion',
@@ -28,11 +28,12 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Saúde Emocional',
-    educationalText: 'Sentir sobrecarga em dias com muitas demandas é uma reação humana compreensível. Reduzir as expectativas sobre afazeres domésticos é uma medida preventiva essencial de saúde mental.',
-    practicalAction: 'Escolha uma tarefa secundária da casa hoje e decida conscientemente deixá-la para depois.',
+    educationalText: '',
     tagLabel: 'Reduzi cobranças e priorizei o descanso',
     source: 'Diretrizes de Saúde Mental Perinatal / OMS (2022)',
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'mom-hydration-energy',
@@ -44,12 +45,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Nutrição e Vitalidade',
-    educationalText: 'A produção de leite materno e a recuperação física demandam maior aporte hídrico. A desidratação leve muitas vezes se manifesta como fadiga, cefaleia e irritabilidade.',
-    practicalAction: 'Mantenha um copo ou garrafa de água fresca sempre ao alcance nos momentos de amamentação ou descanso.',
+    educationalText: '',
     tagLabel: 'Hidratação consciente ao longo do dia',
     source: 'Guia Alimentar para a População Brasileira / Ministério da Saúde',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'mom-gentle-movement',
@@ -61,12 +63,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 1,
     maxStageMonths: 24,
     theme: 'Postura e Alívio Físico',
-    educationalText: 'O ato de amamentar, ninar e carregar o bebê exige muito da musculatura cervical e dorsal. Pequenos movimentos circulares de ombros aliviam tensões acumuladas ao longo do dia.',
-    practicalAction: 'Gire suavemente os ombros para trás 10 vezes e respire profundamente soltando o ar pela boca.',
+    educationalText: '',
     tagLabel: 'Alongamento e alívio da musculatura',
     source: 'Caderneta da Gestante / Ministério da Saúde (2023)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- SEGURANÇA E PREVENÇÃO (NOVA CATEGORIA) ---
@@ -80,11 +83,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Prevenção de Asfixia e Morte Súbita',
-    educationalText: 'Colocar o bebê para dormir de barriga para cima (posição supina) é a medida mais eficaz na prevenção da Síndrome da Morte Súbita do Lactente. O colchão deve ser firme e o berço deve estar livre de travesseiros, protetores acolchoados, cobertores soltos e bichos de pelúcia.',
-    practicalAction: 'Verifique se o espaço de sono do bebê está plano, firme e totalmente desimpedido antes de colocá-lo para dormir.',
+    educationalText: '',
     tagLabel: 'Berço seguro e posição de barriga para cima',
     source: 'Caderneta da Criança / Ministério da Saúde (2023, pág. 26) e Sociedade Brasileira de Pediatria (SBP)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-elevated-surfaces',
@@ -96,11 +99,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Prevenção de Quedas',
-    educationalText: 'Bebês podem se virar, empurrar com os pés ou rolar inesperadamente desde as primeiras semanas. Quedas de trocadores, camas de casal e sofás são causas frequentes de traumatismo cranioencefálico em lactentes.',
-    practicalAction: 'Mantenha sempre uma mão firme sobre o bebê durante a troca de fraldas e nunca o deixe desacompanhado em superfícies altas, nem por um segundo.',
+    educationalText: '',
     tagLabel: 'Atenção redobrada em superfícies elevadas',
     source: 'Guia de Prevenção de Acidentes na Infância / Sociedade Brasileira de Pediatria (SBP)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-bath-water',
@@ -112,11 +115,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Segurança no Banho',
-    educationalText: 'A pele do bebê é muito mais fina e sensível ao calor que a de um adulto. Além disso, afogamentos podem ocorrer em poucos centímetros de água e em silêncio absoluto.',
-    practicalAction: 'Teste a temperatura da água com a parte interna do antebraço (deve estar morna, em torno de 36-37°C) e nunca se afaste da banheira com o bebê dentro.',
+    educationalText: '',
     tagLabel: 'Teste térmico e supervisão constante no banho',
     source: 'Caderneta da Criança / Ministério da Saúde (2023, Cuidados com o Recém-Nascido)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-choking-small-objects',
@@ -128,11 +131,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 3,
     maxStageMonths: 24,
     theme: 'Prevenção de Sufocação',
-    educationalText: 'Ao aprender a agarrar e levar objetos à boca (fase oral exploratória), o bebê explora o ambiente. Qualquer objeto menor que o diâmetro de um rolo de papel higiênico (moedas, tampas de caneta, baterias de botão, brinquedos quebrados) representa grave risco de engasgo e asfixia.',
-    practicalAction: 'Faça uma varredura visual no chão e nas mesinhas de centro, guardando pequenos objetos e remédios em gavetas travadas.',
+    educationalText: '',
     tagLabel: 'Ambiente seguro e livre de peças miúdas',
     source: 'Guia de Segurança na Infância / Sociedade Brasileira de Pediatria (SBP) e UNICEF',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
 
   // --- BEBÊ & DESENVOLVIMENTO ---
@@ -146,12 +149,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Visão e Interação',
-    educationalText: 'Nos primeiros três meses, a acuidade visual do bebê alcança com nitidez distâncias de 20 a 30 centímetros — exatamente a distância entre o rosto de quem amamenta e os olhos do bebê.',
-    practicalAction: 'Aproxime seu rosto suavemente a cerca de 25 cm, faça expressões calmas e fale em tom cantarolado.',
+    educationalText: '',
     tagLabel: 'Contato visual próximo e tom suave',
     source: 'Caderneta da Criança / Ministério da Saúde (Edição 2023, pág. 44)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'baby-tummy-time-gentle',
@@ -163,11 +167,12 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 1,
     maxStageMonths: 6,
     theme: 'Desenvolvimento Motor',
-    educationalText: 'Colocar o bebê acordado de bruços, sempre sob supervisão atenta e por poucos minutos, fortalece os músculos do pescoço, costas e cintura escapular necessários para rolar e sentar.',
-    practicalAction: 'Deite-se e posicione o bebê de barriguinha apoiada sobre o seu próprio peito por 2 a 3 minutos.',
+    educationalText: '',
     tagLabel: 'Momento de barriguinha no peito (tummy time)',
     source: 'Sociedade Brasileira de Pediatria (SBP) / Departamento de Desenvolvimento',
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'baby-social-smile',
@@ -179,12 +184,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 2,
     maxStageMonths: 4,
     theme: 'Marcos Socioemocionais',
-    educationalText: 'Por volta do segundo mês, o sorriso deixa de ser apenas reflexo involuntário e passa a ser uma resposta intencional à voz e ao carinho dos cuidadores, marcando o início da comunicação social.',
-    practicalAction: 'Sorria e espere alguns segundos pela resposta do bebê, dando tempo para ele processar a interação.',
+    educationalText: '',
     tagLabel: 'Estímulo à troca de sorrisos sociais',
     source: 'Caderneta da Criança / Ministério da Saúde (2023, Marcos do 2º mês)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- AMAMENTAÇÃO E NUTRIÇÃO ---
@@ -198,12 +204,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Alimentação Consciente',
-    educationalText: 'Movimentar a cabeça lateralmente procurando o peito, lamber os lábios e levar as mãos à boca são sinais de fome inicial. O choro é um sinal tardio de estresse por fome.',
-    practicalAction: 'Observe as mãozinhas e a boquinha do bebê ao acordar e ofereça o peito antes que o choro comece.',
+    educationalText: '',
     tagLabel: 'Atendimento aos sinais precoces de fome',
     source: 'Guia Alimentar para Crianças Brasileiras Menores de 2 Anos (MS/OPAS)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'feed-latch-comfort',
@@ -215,12 +222,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Amamentação com Conforto',
-    educationalText: 'A amamentação não deve doer. Uma pega adequada abrange grande parte da aréola inferior, com boca bem aberta ("peixinho") e queixo encostado na mama, permitindo sucção eficiente.',
-    practicalAction: 'Apoie o bebê barriga com barriga e espere ele abrir a boca bem ampla antes de aproximá-lo da mama.',
+    educationalText: '',
     tagLabel: 'Ajuste de pega barriga com barriga',
     source: 'Caderneta da Criança / Ministério da Saúde (Edição 2023, Manejo da Lactação)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- GESTAÇÃO ---
@@ -234,12 +242,13 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Vínculo e Conexão',
-    educationalText: 'A partir da metade da gestação, os movimentos fetais tornam-se perceptíveis e indicam a vitalidade do bebê. Momentos de repouso após as refeições facilitam essa percepção.',
-    practicalAction: 'Sente-se confortavelmente após o jantar, coloque as mãos na barriga e observe os movimentos durante 10 minutos.',
+    educationalText: '',
     tagLabel: 'Momento de percepção dos movimentos do bebê',
     source: 'Caderneta da Gestante / Ministério da Saúde (2023)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'preg-pelvic-breathing',
@@ -251,11 +260,12 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Conforto na Gestação',
-    educationalText: 'A respiração profunda e consciente auxilia na oxigenação placentária e no relaxamento da musculatura pélvica, aliviando o peso lombar comum no segundo e terceiro trimestres.',
-    practicalAction: 'Inspire pelo nariz expandindo as costelas por 4 segundos e expire suavemente pela boca por 6 segundos.',
+    educationalText: '',
     tagLabel: 'Respiração profunda para alívio pélvico',
     source: 'Caderneta da Gestante / Ministério da Saúde (Edição 2023)',
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- GESTAÇÃO: SEGURANÇA E PREVENÇÃO (pendente de revisão profissional) ---
@@ -269,11 +279,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Segurança no Trânsito',
-    educationalText: 'Usar o cinto de três pontos em todas as viagens, inclusive no banco de trás, protege você e o bebê em caso de freada ou acidente. A faixa de baixo deve passar abaixo da barriga, apoiada sobre os ossos do quadril, e a faixa diagonal deve cruzar entre os seios e ao lado da barriga, nunca sobre ela. Depois de qualquer acidente de carro, mesmo leve, procure avaliação no serviço de saúde.',
-    practicalAction: 'Na próxima vez que entrar no carro, ajuste o cinto: faixa de baixo sob a barriga e faixa diagonal entre os seios.',
+    educationalText: '',
     tagLabel: 'Cinto ajustado abaixo da barriga',
     source: 'OMS e Colégio Americano de Obstetras e Ginecologistas (ACOG)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-food',
@@ -285,11 +295,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Segurança Alimentar',
-    educationalText: 'Algumas infecções transmitidas por alimentos, como a toxoplasmose e a listeriose, podem afetar o bebê. Para reduzir o risco, prefira carnes, peixes e ovos bem cozidos, evite leite e queijos não pasteurizados, lave bem frutas, verduras e legumes e lave as mãos depois de mexer com carne crua, terra ou areia de gato.',
-    practicalAction: 'Hoje, lave bem as frutas e verduras antes de comer e confira se as carnes estão bem passadas.',
+    educationalText: '',
     tagLabel: 'Higiene e cuidado com alimentos crus',
     source: 'OMS e Serviço Nacional de Saúde do Reino Unido (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-alcohol-smoke',
@@ -301,11 +311,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Exposições a Evitar',
-    educationalText: 'Não existe quantidade segura de bebida alcoólica durante a gestação: o álcool passa pela placenta e pode afetar o desenvolvimento do bebê. Fumar e respirar a fumaça de outras pessoas também traz riscos para a gravidez. Se for difícil parar, você não precisa fazer isso sozinha: o serviço de saúde pode ajudar, sem julgamentos.',
-    practicalAction: 'Combine com quem mora com você que ninguém fuma dentro de casa ou do carro.',
+    educationalText: '',
     tagLabel: 'Ambiente livre de fumaça',
     source: 'OMS: orientações sobre álcool e tabaco na gestação',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-falls',
@@ -317,11 +327,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Prevenção de Acidentes em Casa',
-    educationalText: 'Com o crescimento da barriga, o equilíbrio do corpo muda e fica mais difícil enxergar os próprios pés. Calçados firmes e antiderrapantes, pisos secos, tapetes bem presos e o uso do corrimão nas escadas ajudam a evitar quedas. Depois de uma queda, principalmente com impacto na barriga, procure avaliação no serviço de saúde.',
-    practicalAction: 'Dê uma volta pela casa e retire ou prenda os tapetes soltos no caminho que você mais usa.',
+    educationalText: '',
     tagLabel: 'Casa sem tapetes soltos',
     source: 'Colégio Americano de Obstetras e Ginecologistas (ACOG) e NHS',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-medicines',
@@ -333,11 +343,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Uso Seguro de Medicamentos',
-    educationalText: 'Alguns medicamentos, inclusive os vendidos sem receita, além de chás, fitoterápicos e suplementos, podem não ser seguros na gestação. Antes de usar qualquer um deles, converse com um profissional de saúde. E não interrompa por conta própria um tratamento que você já faz: fale primeiro com quem acompanha você.',
-    practicalAction: 'Anote os remédios, chás e suplementos que você usa e leve a lista na próxima consulta.',
+    educationalText: '',
     tagLabel: 'Lista de remédios para a consulta',
     source: 'OMS: recomendações de cuidado pré-natal (2016)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
 
   // --- RECÉM-NASCIDO: GUIA DE CUIDADOS (pendente de revisão profissional) ---
@@ -351,11 +361,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 1,
     theme: 'Higiene do Recém-Nascido',
-    educationalText: 'O banho pode ser curto, de 5 a 10 minutos, com a água morna, entre 36,5 °C e 37,5 °C. Teste a temperatura com o cotovelo ou com um termômetro antes de colocar o bebê. Use pouco sabonete, neutro e próprio para bebês, e seque bem as dobrinhas. Deixe tudo preparado antes e nunca deixe o bebê sozinho na banheira, nem por um instante.',
-    practicalAction: 'Antes do próximo banho, deixe toalha, fralda e roupa ao alcance da mão e teste a água com o cotovelo.',
+    educationalText: '',
     tagLabel: 'Banho preparado com segurança',
     source: 'OMS (cuidados essenciais ao recém-nascido) e Academia Americana de Pediatria (AAP)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-cord-care',
@@ -367,11 +377,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 1,
     theme: 'Higiene do Recém-Nascido',
-    educationalText: 'O coto umbilical costuma secar e cair sozinho entre 5 e 15 dias de vida. Mantenha-o limpo e seco, com a borda da fralda dobrada abaixo dele para deixá-lo arejado, e siga a orientação do seu pediatra sobre a limpeza. Procure atendimento se houver vermelhidão que se espalha pela pele ao redor, secreção com pus, mau cheiro ou sangramento que não para.',
-    practicalAction: 'Na próxima troca, dobre a borda da fralda para baixo do coto e deixe a região secar ao ar por alguns instantes.',
+    educationalText: '',
     tagLabel: 'Coto limpo e arejado',
     source: 'OMS: recomendações de cuidado pós-natal (2022)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'feed-on-demand',
@@ -383,11 +393,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Aleitamento Materno',
-    educationalText: 'O leite materno é o único alimento de que o bebê precisa até os 6 meses, sem água nem chás. Nos primeiros dias, os recém-nascidos costumam mamar de 8 a 12 vezes em 24 horas, sempre que pedirem. Se o bebê passar mais de 3 horas sem mamar nas primeiras semanas, ou estiver sonolento demais para mamar, converse com o pediatra. Se você usa fórmula, siga a orientação do pediatra sobre quantidades e intervalos.',
-    practicalAction: 'Hoje, observe os sinais de fome e anote os horários das mamadas para conhecer o ritmo do seu bebê.',
+    educationalText: '',
     tagLabel: 'Mamadas no ritmo do bebê',
     source: 'OMS e UNICEF (aleitamento materno exclusivo) e AAP',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'feed-burp-spitup',
@@ -399,11 +409,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Conforto Após as Mamadas',
-    educationalText: 'O arroto ajuda, mas não é obrigatório: se não sair em alguns minutos, tudo bem. Manter o bebê em pé no colo por um tempo depois da mamada costuma ajudar. Pequenas regurgitações e soluços são comuns e tendem a diminuir com os meses. Procure atendimento com urgência se o vômito for verde ou tiver sangue, e converse com o pediatra se os vômitos forem em jato e frequentes ou se o bebê não estiver ganhando peso.',
-    practicalAction: 'Depois da próxima mamada, mantenha o bebê em pé no colo, com a cabeça apoiada no seu ombro, por alguns minutos.',
+    educationalText: '',
     tagLabel: 'Bebê em pé após a mamada',
     source: 'AAP (HealthyChildren.org) e Serviço Nacional de Saúde do Reino Unido (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-infant-choking',
@@ -415,11 +425,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Primeiros Socorros',
-    educationalText: 'Engasgos leves durante a mamada são comuns: se o bebê tosse, chora ou respira, deixe-o tossir e observe. Se ele não conseguir respirar, chorar nem tossir, ou ficar roxo, peça para alguém ligar imediatamente para o número de emergência. Enquanto isso, apoie o bebê de bruços no seu antebraço, com a cabeça mais baixa que o corpo, e dê até 5 tapas firmes nas costas, entre as escápulas. Se não resolver, vire-o de barriga para cima e faça até 5 compressões com dois dedos no centro do peito, logo abaixo da linha dos mamilos. Repita até o objeto sair ou a ajuda chegar. Se o bebê ficar desacordado, siga as instruções da emergência.',
-    practicalAction: 'Procure um curso de primeiros socorros para bebês: praticar com um instrutor faz toda a diferença na hora.',
+    educationalText: '',
     tagLabel: 'Curso de primeiros socorros',
     source: 'Cruz Vermelha, AAP e Conselho Europeu de Ressuscitação (ERC)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-colic',
@@ -431,11 +441,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 4,
     theme: 'Choro e Cólicas',
-    educationalText: 'As cólicas costumam começar por volta da 2ª ou 3ª semana e melhorar entre o 3º e o 4º mês. São crises de choro intenso, muitas vezes no fim do dia, em um bebê que fica bem no restante do tempo. Colo, contato pele a pele, embalo suave, um ruído contínuo e massagem na barriguinha podem acalmar. Não dê remédios nem chás sem orientação. Procure o pediatra se o choro vier com febre, vômitos ou recusa das mamadas. Se sentir que vai perder a paciência, coloque o bebê em um lugar seguro, como o berço, e respire por alguns minutos. Nunca sacuda o bebê.',
-    practicalAction: 'Hoje, com o bebê calmo e acordado, experimente uma massagem circular suave na barriguinha, no sentido horário.',
+    educationalText: '',
     tagLabel: 'Massagem suave na barriguinha',
     source: 'Serviço Nacional de Saúde do Reino Unido (NHS) e AAP',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-diapers-stool',
@@ -447,11 +457,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Xixi e Cocô',
-    educationalText: 'Depois dos primeiros dias, é esperado que o bebê molhe pelo menos 6 fraldas por dia, com xixi claro. As primeiras fezes, o mecônio, são escuras e pegajosas e aos poucos mudam para amarelo, verde ou marrom, o que é normal. Fezes muito claras, brancas, cinza ou cor de massa, ou xixi escuro, podem indicar um problema no fígado e precisam ser avaliadas pelo pediatra o quanto antes. Procure também atendimento se o bebê molhar poucas fraldas.',
-    practicalAction: 'Na próxima troca, observe a cor do cocô e do xixi. Se tiver dúvida, tire uma foto para mostrar ao pediatra.',
+    educationalText: '',
     tagLabel: 'Olhar atento às fraldas',
     source: 'OMS, AAP e Cartão de Cor das Fezes (triagem de atresia biliar)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-thermal-comfort',
@@ -463,11 +473,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Conforto Térmico',
-    educationalText: 'Uma boa referência é vestir o bebê com uma camada a mais do que você usa para se sentir confortável. Mãos e pés costumam ficar mais frios e não mostram a temperatura do corpo: confira a nuca ou as costas. Suor, pele avermelhada e respiração acelerada podem indicar excesso de roupa. Para dormir, evite gorros e roupas pesadas, para o bebê não esquentar demais.',
-    practicalAction: 'Agora, toque a nuca do bebê: se estiver morna e seca, a roupa está adequada.',
+    educationalText: '',
     tagLabel: 'Nuca morna e seca',
     source: 'AAP e Serviço Nacional de Saúde do Reino Unido (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-nasal',
@@ -479,11 +489,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Higiene Nasal',
-    educationalText: 'Os bebês respiram principalmente pelo nariz, então um pouco de secreção já pode atrapalhar a mamada e o sono. Algumas gotas de soro fisiológico em cada narina ajudam a soltar a secreção. Use apenas soro fisiológico e não coloque cotonetes dentro do nariz. Um ambiente sem fumaça também protege a respiração do bebê. Procure atendimento se houver respiração acelerada, chiado, costelas afundando ao respirar ou febre.',
-    practicalAction: 'Se o narizinho estiver entupido, pingue algumas gotas de soro fisiológico em cada narina antes da próxima mamada.',
+    educationalText: '',
     tagLabel: 'Soro fisiológico antes da mamada',
     source: 'AAP e Serviço Nacional de Saúde do Reino Unido (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-visits-outings',
@@ -495,11 +505,11 @@ export const CONTENTS_CATALOG_PT: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Proteção nas Primeiras Semanas',
-    educationalText: 'Nas primeiras semanas, as defesas do bebê ainda estão amadurecendo. Peça que as visitas lavem as mãos antes de pegar o bebê, evitem beijar o rostinho e as mãos dele e que pessoas gripadas deixem a visita para depois. Prefira passeios ao ar livre a lugares fechados e cheios. Em qualquer trajeto de carro, o bebê vai na cadeirinha própria para a idade, voltada para trás. E você pode, sim, limitar as visitas para descansar.',
-    practicalAction: 'Combine com a família uma regrinha simples: lavar as mãos antes de pegar o bebê e adiar a visita se estiver doente.',
+    educationalText: '',
     tagLabel: 'Mãos lavadas antes do colo',
     source: 'OMS e AAP',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   }
 ];
 
@@ -515,11 +525,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Rest and Support Network',
-    educationalText: 'Sleep patterns in the early postpartum period naturally follow the baby’s frequent feeding and care needs. Public health guidelines recommend resting whenever the newborn sleeps and sharing household chores with support partners to enable maternal physical and emotional recovery.',
-    practicalAction: 'Use one of baby’s nap times to lie down and rest, delegating household chores to your support network.',
+    educationalText: '',
     tagLabel: 'Pause for shared rest',
     source: 'Pregnant Woman\'s Handbook / Ministry of Health (Brazil) (6th Edition, 2023, p. 38)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'mom-self-compassion',
@@ -531,11 +541,12 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Emotional Health',
-    educationalText: 'Feeling overwhelmed on days with heavy care demands is an understandable human response. Lowering expectations regarding household chores is an essential preventive mental health measure.',
-    practicalAction: 'Choose one secondary household task today and consciously decide to postpone it.',
+    educationalText: '',
     tagLabel: 'Reduced pressure and prioritized rest',
     source: 'Perinatal Mental Health Guidelines / WHO (2022)',
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'mom-hydration-energy',
@@ -547,12 +558,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Nutrition and Vitality',
-    educationalText: 'Breast milk production and maternal physical recovery require increased fluid intake. Mild dehydration frequently manifests as fatigue, headaches, and irritability.',
-    practicalAction: 'Keep a glass or bottle of fresh water always within reach during feeding or resting sessions.',
+    educationalText: '',
     tagLabel: 'Mindful hydration throughout the day',
     source: 'Dietary Guidelines for the Brazilian Population / Ministry of Health (Brazil)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'mom-gentle-movement',
@@ -564,12 +576,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 1,
     maxStageMonths: 24,
     theme: 'Posture and Physical Relief',
-    educationalText: 'Feeding, rocking, and carrying a baby puts heavy demands on neck and upper back muscles. Small circular shoulder rolls help release tension accumulated throughout the day.',
-    practicalAction: 'Gently roll your shoulders backward 10 times and take a deep breath, releasing the air through your mouth.',
+    educationalText: '',
     tagLabel: 'Muscle stretching and tension relief',
     source: 'Pregnant Woman\'s Handbook / Ministry of Health (Brazil) (2023 Edition)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- SAFETY & PREVENTION (NEW CATEGORY) ---
@@ -583,11 +596,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Suffocation and SIDS Prevention',
-    educationalText: 'Placing babies on their backs (supine position) to sleep is the single most effective measure to prevent Sudden Infant Death Syndrome (SIDS). The mattress should be firm, and the crib must remain free of pillows, padded bumpers, loose blankets, and stuffed toys.',
-    practicalAction: 'Ensure the baby’s sleep area is flat, firm, and completely clear before laying baby down to sleep.',
+    educationalText: '',
     tagLabel: 'Safe crib and back-to-sleep position',
     source: 'Child Health Record Handbook / Ministry of Health (Brazil) (2023, p. 26) and Brazilian Society of Pediatrics (SBP)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-elevated-surfaces',
@@ -599,11 +612,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Fall Prevention',
-    educationalText: 'Babies can wiggle, push with their feet, or roll unexpectedly from early weeks onward. Falls from changing tables, adult beds, and sofas are a leading cause of head trauma in infants.',
-    practicalAction: 'Always keep one firm hand on the baby during diaper changes and never leave baby unattended on elevated surfaces, even for a second.',
+    educationalText: '',
     tagLabel: 'Close supervision on elevated surfaces',
     source: 'Childhood Injury Prevention Guidelines / Brazilian Society of Pediatrics (SBP)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-bath-water',
@@ -615,11 +628,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 24,
     theme: 'Bath Safety',
-    educationalText: 'An infant’s skin is much thinner and more sensitive to heat than an adult’s. Additionally, drowning can occur silently in just a few inches of water.',
-    practicalAction: 'Test the water temperature using the inside of your forearm (it should feel pleasantly lukewarm, around 36-37°C / 97-98°F) and never step away from the tub.',
+    educationalText: '',
     tagLabel: 'Temperature check and uninterrupted supervision in bath',
     source: 'Child Health Record Handbook / Ministry of Health (Brazil) (2023, Newborn Care Guidelines)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-choking-small-objects',
@@ -631,11 +644,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 3,
     maxStageMonths: 24,
     theme: 'Choking Prevention',
-    educationalText: 'As babies learn to grasp and bring items to their mouth (oral exploratory phase), any object smaller than a toilet paper roll diameter (coins, pen caps, button batteries, loose buttons) poses a serious choking hazard.',
-    practicalAction: 'Scan floors and low surfaces at baby eye level, keeping small items and button batteries securely locked away.',
+    educationalText: '',
     tagLabel: 'Small-parts-free play area',
     source: 'Child Safety Guidelines / Brazilian Society of Pediatrics (SBP) and UNICEF',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
 
   // --- BABY & DEVELOPMENT ---
@@ -649,12 +662,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Vision and Interaction',
-    educationalText: 'During the first three months, an infant\'s visual acuity focuses sharply at distances of 20 to 30 centimeters (8-12 inches) — precisely the distance between the caregiver\'s face and the baby\'s eyes during feeding.',
-    practicalAction: 'Gently bring your face to about 25 cm (10 inches), use calm facial expressions, and speak in a melodic tone.',
+    educationalText: '',
     tagLabel: 'Close eye contact and gentle voice',
     source: 'Child Health Record Handbook / Ministry of Health (Brazil) (2023 Edition, p. 44)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'baby-tummy-time-gentle',
@@ -666,11 +680,12 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 1,
     maxStageMonths: 6,
     theme: 'Motor Development',
-    educationalText: 'Placing an awake baby on their tummy, always under close supervision and for short intervals, strengthens neck, back, and shoulder muscles required for rolling and sitting.',
-    practicalAction: 'Lie back comfortably and place the baby tummy-down on your own chest for 2 to 3 minutes.',
+    educationalText: '',
     tagLabel: 'Tummy time on chest',
     source: 'Brazilian Society of Pediatrics (SBP) / Child Development Department',
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'baby-social-smile',
@@ -682,12 +697,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 2,
     maxStageMonths: 4,
     theme: 'Socioemotional Milestones',
-    educationalText: 'Around the second month, smiling transitions from an involuntary reflex to an intentional response to caregivers\' voices and affection, marking the beginning of active social communication.',
-    practicalAction: 'Smile and wait a few seconds for the baby\'s response, giving them time to process the interaction.',
+    educationalText: '',
     tagLabel: 'Social smile exchange',
     source: 'Child Health Record Handbook / Ministry of Health (Brazil) (2023 Edition, 2nd Month Milestones)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- BREASTFEEDING & NUTRITION ---
@@ -701,12 +717,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Responsive Feeding',
-    educationalText: 'Turning the head side-to-side rooting for the breast, licking lips, and bringing hands to the mouth are early hunger cues. Crying is a late sign of hunger-induced distress.',
-    practicalAction: 'Watch your baby\'s hands and mouth upon waking, and offer the breast or feed before crying starts.',
+    educationalText: '',
     tagLabel: 'Responding to early hunger cues',
     source: 'Dietary Guidelines for Brazilian Children Under 2 Years (MS/PAHO)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'feed-latch-comfort',
@@ -718,12 +735,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Comfortable Breastfeeding',
-    educationalText: 'Breastfeeding should not be painful. A proper latch covers a large portion of the lower areola, with a wide-open mouth ("flanged fish lips") and chin resting against the breast for effective, pain-free suction.',
-    practicalAction: 'Position the baby tummy-to-tummy and wait for a wide-open mouth before bringing baby gently to the breast.',
+    educationalText: '',
     tagLabel: 'Tummy-to-tummy latch adjustment',
     source: 'Child Health Record Handbook / Ministry of Health (Brazil) (2023 Edition, Lactation Management)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- PREGNANCY ---
@@ -737,12 +755,13 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Bonding and Connection',
-    educationalText: 'From the middle of pregnancy onward, fetal movements become noticeable and reflect baby\'s vitality. Resting comfortably after meals helps heighten awareness of these movements.',
-    practicalAction: 'Sit comfortably after dinner, place both hands on your belly, and quietly observe movements for 10 minutes.',
+    educationalText: '',
     tagLabel: 'Quiet moment observing baby movements',
     source: 'Pregnant Woman\'s Handbook / Ministry of Health (Brazil) (2023 Edition)',
     hasVerifiableSource: true,
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
   {
     id: 'preg-pelvic-breathing',
@@ -754,11 +773,12 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Pregnancy Comfort',
-    educationalText: 'Deep, mindful breathing supports placental oxygenation and relaxes pelvic floor muscles, alleviating lower back discomfort common in the second and third trimesters.',
-    practicalAction: 'Inhale through your nose expanding your ribs for 4 seconds, and gently exhale through your mouth for 6 seconds.',
+    educationalText: '',
     tagLabel: 'Deep breathing for pelvic relaxation',
     source: 'Pregnant Woman\'s Handbook / Ministry of Health (Brazil) (2023 Edition)',
-    validationStatus: 'verified'
+    sourceVerified: true,
+    validationStatus: 'source_based',
+    publicationAllowed: false
   },
 
   // --- PREGNANCY: SAFETY & PREVENTION (pending professional review) ---
@@ -772,11 +792,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Road Safety',
-    educationalText: 'Wearing a three-point seat belt on every trip, including in the back seat, protects you and your baby in case of sudden braking or a crash. The lap belt should sit below your bump, across your hip bones, and the shoulder belt should cross between your breasts and to the side of your bump, never over it. After any car accident, even a minor one, get checked at a health service.',
-    practicalAction: 'Next time you get in the car, adjust your belt: lap belt under the bump and shoulder belt between your breasts.',
+    educationalText: '',
     tagLabel: 'Seat belt fitted below the bump',
     source: 'WHO and American College of Obstetricians and Gynecologists (ACOG)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-food',
@@ -788,11 +808,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Food Safety',
-    educationalText: 'Some foodborne infections, such as toxoplasmosis and listeriosis, can affect the baby. To lower the risk, choose well-cooked meat, fish and eggs, avoid unpasteurised milk and cheeses, wash fruit and vegetables well, and wash your hands after handling raw meat, soil or cat litter.',
-    practicalAction: 'Today, wash fruit and vegetables well before eating and make sure meat is cooked through.',
+    educationalText: '',
     tagLabel: 'Hygiene and care with raw foods',
     source: 'WHO and UK National Health Service (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-alcohol-smoke',
@@ -804,11 +824,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Exposures to Avoid',
-    educationalText: 'There is no known safe amount of alcohol during pregnancy: alcohol crosses the placenta and can affect the baby’s development. Smoking and breathing other people’s smoke also carry risks for the pregnancy. If stopping is hard, you don’t have to do it alone: your health service can help, without judgement.',
-    practicalAction: 'Agree with the people you live with that nobody smokes inside the home or the car.',
+    educationalText: '',
     tagLabel: 'Smoke-free environment',
     source: 'WHO guidance on alcohol and tobacco in pregnancy',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-falls',
@@ -820,11 +840,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Home Accident Prevention',
-    educationalText: 'As your bump grows, your balance shifts and it gets harder to see your own feet. Sturdy non-slip shoes, dry floors, secured rugs and using the handrail on stairs help prevent falls. After a fall, especially with an impact to the bump, get checked at a health service.',
-    practicalAction: 'Walk around your home and remove or secure loose rugs along the path you use most.',
+    educationalText: '',
     tagLabel: 'Home without loose rugs',
     source: 'American College of Obstetricians and Gynecologists (ACOG) and NHS',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'preg-safety-medicines',
@@ -836,11 +856,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 42,
     theme: 'Safe Use of Medicines',
-    educationalText: 'Some medicines, including over-the-counter ones, as well as herbal teas, herbal remedies and supplements, may not be safe in pregnancy. Before taking any of them, talk to a health professional. And don’t stop a treatment you already take on your own: speak first with the person caring for you.',
-    practicalAction: 'Write down the medicines, teas and supplements you use and bring the list to your next appointment.',
+    educationalText: '',
     tagLabel: 'Medicine list for your appointment',
     source: 'WHO recommendations on antenatal care (2016)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
 
   // --- NEWBORN: CARE GUIDE (pending professional review) ---
@@ -854,11 +874,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 1,
     theme: 'Newborn Hygiene',
-    educationalText: 'Baths can be short, 5 to 10 minutes, with warm water between 36.5 °C and 37.5 °C. Check the temperature with your elbow or a thermometer before putting the baby in. Use a little mild, baby-specific soap and dry the skin folds well. Get everything ready beforehand and never leave the baby alone in the bath, not even for a moment.',
-    practicalAction: 'Before the next bath, keep the towel, diaper and clothes within reach and test the water with your elbow.',
+    educationalText: '',
     tagLabel: 'Safely prepared bath',
     source: 'WHO (essential newborn care) and American Academy of Pediatrics (AAP)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-cord-care',
@@ -870,11 +890,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 1,
     theme: 'Newborn Hygiene',
-    educationalText: 'The cord stump usually dries and falls off on its own between 5 and 15 days of life. Keep it clean and dry, with the diaper edge folded below it so it can air out, and follow your pediatrician’s advice on cleaning. Seek care if there is redness spreading to the skin around it, pus, a bad smell or bleeding that doesn’t stop.',
-    practicalAction: 'At the next change, fold the diaper edge below the stump and let the area air-dry for a few moments.',
+    educationalText: '',
     tagLabel: 'Clean, airy cord stump',
     source: 'WHO recommendations on postnatal care (2022)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'feed-on-demand',
@@ -886,11 +906,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Breastfeeding',
-    educationalText: 'Breast milk is the only food a baby needs until 6 months, with no water or teas. In the first days, newborns usually feed 8 to 12 times in 24 hours, whenever they ask. If the baby goes more than 3 hours without feeding in the first weeks, or is too sleepy to feed, talk to your pediatrician. If you use formula, follow your pediatrician’s advice on amounts and intervals.',
-    practicalAction: 'Today, watch for hunger cues and jot down feeding times to get to know your baby’s rhythm.',
+    educationalText: '',
     tagLabel: 'Feeding at baby’s pace',
     source: 'WHO and UNICEF (exclusive breastfeeding) and AAP',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'feed-burp-spitup',
@@ -902,11 +922,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 6,
     theme: 'Comfort After Feeds',
-    educationalText: 'Burping helps, but it isn’t mandatory: if it doesn’t come in a few minutes, that’s fine. Holding the baby upright for a while after a feed usually helps. Small spit-ups and hiccups are common and tend to ease over the months. Seek urgent care if vomit is green or contains blood, and talk to your pediatrician if vomiting is forceful and frequent or the baby isn’t gaining weight.',
-    practicalAction: 'After the next feed, hold the baby upright with their head resting on your shoulder for a few minutes.',
+    educationalText: '',
     tagLabel: 'Upright after feeds',
     source: 'AAP (HealthyChildren.org) and UK National Health Service (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-infant-choking',
@@ -918,11 +938,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'First Aid',
-    educationalText: 'Mild choking during feeds is common: if the baby is coughing, crying or breathing, let them cough and watch closely. If they can’t breathe, cry or cough, or turn blue, have someone call your emergency number right away. Meanwhile, lay the baby face down along your forearm, head lower than the body, and give up to 5 firm back blows between the shoulder blades. If that doesn’t work, turn them face up and give up to 5 chest thrusts with two fingers in the centre of the chest, just below the nipple line. Repeat until the object comes out or help arrives. If the baby becomes unresponsive, follow the emergency operator’s instructions.',
-    practicalAction: 'Look for an infant first aid course: practising with an instructor makes all the difference when it matters.',
+    educationalText: '',
     tagLabel: 'Infant first aid course',
     source: 'Red Cross, AAP and European Resuscitation Council (ERC)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-colic',
@@ -934,11 +954,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 4,
     theme: 'Crying and Colic',
-    educationalText: 'Colic usually starts around the 2nd or 3rd week and eases between the 3rd and 4th month. It shows up as bouts of intense crying, often in the evening, in a baby who is otherwise well. Holding, skin-to-skin contact, gentle rocking, steady background noise and a tummy massage can soothe. Don’t give medicines or teas without advice. See your pediatrician if crying comes with fever, vomiting or refusing feeds. If you feel you’re losing your patience, put the baby somewhere safe, like the crib, and breathe for a few minutes. Never shake a baby.',
-    practicalAction: 'Today, with the baby calm and awake, try a gentle clockwise circular massage on their tummy.',
+    educationalText: '',
     tagLabel: 'Gentle tummy massage',
     source: 'UK National Health Service (NHS) and AAP',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-diapers-stool',
@@ -950,11 +970,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Pee and Poop',
-    educationalText: 'After the first few days, a baby is expected to wet at least 6 diapers a day, with pale urine. The first stools, meconium, are dark and sticky and gradually change to yellow, green or brown, which is normal. Very pale, white, grey or putty-coloured stools, or dark urine, can signal a liver problem and need to be checked by a pediatrician as soon as possible. Also seek care if the baby wets few diapers.',
-    practicalAction: 'At the next change, look at the colour of the poop and pee. If unsure, take a photo to show your pediatrician.',
+    educationalText: '',
     tagLabel: 'A careful look at diapers',
     source: 'WHO, AAP and the Infant Stool Colour Card (biliary atresia screening)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-thermal-comfort',
@@ -966,11 +986,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Thermal Comfort',
-    educationalText: 'A good rule of thumb is to dress the baby in one more layer than you need to feel comfortable. Hands and feet are often cooler and don’t show body temperature: check the back of the neck or the back instead. Sweating, flushed skin and fast breathing can mean too many clothes. For sleep, avoid hats and heavy clothing so the baby doesn’t overheat.',
-    practicalAction: 'Right now, touch the back of the baby’s neck: if it’s warm and dry, the clothing is right.',
+    educationalText: '',
     tagLabel: 'Warm, dry neck',
     source: 'AAP and UK National Health Service (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'baby-nasal',
@@ -982,11 +1002,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 12,
     theme: 'Nasal Care',
-    educationalText: 'Babies breathe mainly through the nose, so even a little mucus can disturb feeding and sleep. A few drops of saline in each nostril help loosen it. Use saline only and don’t put cotton swabs inside the nose. A smoke-free home also protects the baby’s breathing. Seek care if there is fast breathing, wheezing, ribs pulling in with each breath or fever.',
-    practicalAction: 'If the little nose is blocked, put a few drops of saline in each nostril before the next feed.',
+    educationalText: '',
     tagLabel: 'Saline before feeds',
     source: 'AAP and UK National Health Service (NHS)',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   },
   {
     id: 'safety-visits-outings',
@@ -998,11 +1018,11 @@ export const CONTENTS_CATALOG_EN: ContentItem[] = [
     minStageMonths: 0,
     maxStageMonths: 3,
     theme: 'Protection in the First Weeks',
-    educationalText: 'In the first weeks, the baby’s defences are still maturing. Ask visitors to wash their hands before holding the baby, avoid kissing the baby’s face and hands, and postpone visits if they have a cold or are unwell. Choose outdoor outings over crowded indoor places. On every car trip, the baby rides in an age-appropriate, rear-facing car seat. And yes, you can limit visits so you can rest.',
-    practicalAction: 'Agree on a simple family rule: wash hands before holding the baby and postpone visits when unwell.',
+    educationalText: '',
     tagLabel: 'Clean hands before cuddles',
     source: 'WHO and AAP',
-    validationStatus: 'pending_review'
+    validationStatus: 'pending_review',
+    publicationAllowed: false
   }
 ];
 
@@ -1017,20 +1037,21 @@ export const getContentCatalog = (
 ): ContentItem[] => {
   const fullCatalog = lang === 'en' ? CONTENTS_CATALOG_EN : CONTENTS_CATALOG_PT;
 
-  // Em modo de desenvolvimento (ou teste com flag explícita), permite visualizar o catálogo completo com etiquetas de revisão
+  // Itens suspensos ou rejeitados nunca ficam disponíveis, em nenhum ambiente
+  const nonSuspendedCatalog = fullCatalog.filter(
+    (item) => !item.suspendedReason && item.clinicalApprovalStatus !== 'rejected'
+  );
+
+  // Em modo de desenvolvimento (ou teste com flag explícita), retorna todos os itens não suspensos
   const isDevEnvironment = typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV;
   if (options?.includeDevPending ?? isDevEnvironment) {
-    return fullCatalog;
+    return nonSuspendedCatalog;
   }
 
-  // Em produção / consumo público: bloqueia categoricamente conteúdos clínicos pendentes
-  // e itens sem aprovação clínica formal
-  return fullCatalog.filter((item) => {
-    // 1. Rejeição de status não verificado
-    if (item.validationStatus !== 'verified') return false;
-    // 2. Se for explicitamente rejeitado clinicamente, nunca publicar
-    if (item.clinicalApprovalStatus === 'rejected') return false;
-    // 3. Conteúdos marcados como conduta clínica sensível requerem aprovação explícita
+  // Em produção / consumo público: lista apenas metadados (título, tema, fonte e situação da revisão)
+  // para itens não suspensos, sem depender exclusivamente de 'verified'.
+  // Conteúdos sensíveis sem aprovação clínica ficam ocultos até aprovação formal.
+  return nonSuspendedCatalog.filter((item) => {
     if (item.isSensitiveClinical && item.clinicalApprovalStatus !== 'clinically_approved') {
       return false;
     }
