@@ -2,16 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, UserPhase, MainNeed } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
-import { Baby, Heart, Check, Sparkles, Shield } from 'lucide-react';
-import {
-  calculateAgeInMonths,
-  formatBabyAgeDetailed,
-  birthDateBounds,
-  dueDateBounds,
-  validateBirthDate,
-  validateDueDate,
-  isDueDatePast
-} from '../utils/dateUtils';
+import { Baby, Heart, Check, Shield } from 'lucide-react';
 import { detectCountryFromDevice } from '../data/emergencyContacts';
 import { NameField, CountryField, CareCountryField } from '../components/ProfileFields';
 
@@ -23,15 +14,12 @@ interface OnboardingProps {
 
 export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfile, onOpenPrivacy }) => {
   const { language, t } = useLanguage();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [phase, setPhase] = useState<UserPhase>(initialProfile?.phase || 'baby');
   const [stageValue, setStageValue] = useState<number>(
     initialProfile?.stageValue ?? (initialProfile?.phase === 'pregnancy' ? 24 : 2)
   );
-  const [mainNeed, setMainNeed] = useState<MainNeed>(initialProfile?.mainNeed || 'understand_baby');
-  const [babyName, setBabyName] = useState<string>(initialProfile?.babyName || '');
-  const [birthDate, setBirthDate] = useState<string>(initialProfile?.birthDate || '');
-  const [dueDate, setDueDate] = useState<string>(initialProfile?.dueDate || '');
+  const [mainNeed] = useState<MainNeed>(initialProfile?.mainNeed || 'understand_baby');
   const [displayName, setDisplayName] = useState<string>(initialProfile?.displayName || '');
   // País sugerido pelo idioma do aparelho; a usuária confirma ou troca
   const [country, setCountry] = useState<string>(initialProfile?.country ?? detectCountryFromDevice());
@@ -42,52 +30,24 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
     setPhase(selectedPhase);
     if (selectedPhase === 'pregnancy') {
       setStageValue(24);
-      setBirthDate('');
     } else {
       setStageValue(2);
-      setDueDate('');
     }
   };
 
-  const de = t.onboarding.dateErrors;
-  const birthError = phase === 'baby' ? validateBirthDate(birthDate) : null;
-  const dueError = phase === 'pregnancy' ? validateDueDate(dueDate) : null;
-  const birthErrorText = birthError === 'future' ? de.birthFuture : birthError === 'tooOld' ? de.birthTooOld : birthError ? de.birthInvalid : null;
-  const dueErrorText = dueError === 'tooFar' ? de.dueTooFar : dueError === 'tooLongAgo' ? de.dueTooLongAgo : dueError ? de.dueInvalid : null;
-  const hasDateError = !!(birthErrorText || dueErrorText);
-  const birthLimits = birthDateBounds();
-  const dueLimits = dueDateBounds();
-
-  const handleBirthDateChange = (dateVal: string) => {
-    setBirthDate(dateVal);
-    // A etapa só é ajustada a partir de uma data plausível (um ano digitado errado não vira "1 a 2 anos")
-    if (dateVal && !validateBirthDate(dateVal)) {
-      const months = calculateAgeInMonths(dateVal);
-      if (months === 0) setStageValue(0);
-      else if (months <= 3) setStageValue(2);
-      else if (months <= 6) setStageValue(6);
-      else if (months <= 12) setStageValue(12);
-      else setStageValue(24);
-    }
-  };
-
-  const handleFinish = (need: MainNeed) => {
-    if (hasDateError) return;
-    setMainNeed(need);
-    const validBirthDate = phase === 'baby' && birthDate && !validateBirthDate(birthDate) ? birthDate : undefined;
-    const validDueDate = phase === 'pregnancy' && dueDate && !validateDueDate(dueDate) ? dueDate : undefined;
+  const handleFinish = () => {
     const tempProfile: UserProfile = {
       phase,
       stageValue,
       stageLabel: '',
-      mainNeed: need,
+      mainNeed,
       preferredLanguage: language,
       displayName: displayName.trim() || undefined,
       country: country || undefined,
       careCountry: careCountry || undefined,
-      babyName: babyName.trim() || undefined,
-      birthDate: validBirthDate,
-      dueDate: validDueDate,
+      babyName: initialProfile?.babyName,
+      birthDate: phase === 'baby' ? initialProfile?.birthDate : undefined,
+      dueDate: phase === 'pregnancy' ? initialProfile?.dueDate : undefined,
       createdAt: initialProfile?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -97,9 +57,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
 
   return (
     <div className="content-area" style={{ paddingTop: '20px' }}>
-      {/* Indicador de Progresso das 3 Etapas */}
-      <div style={{ display: 'flex', gap: '8px', width: '100%', marginBottom: '24px' }}>
-        {[1, 2, 3].map((s) => (
+      {/* Indicador de Progresso das 2 Etapas */}
+      <div style={{ display: 'flex', gap: '8px', width: '100%', marginBottom: '20px' }}>
+        {[1, 2].map((s) => (
           <div
             key={s}
             style={{
@@ -116,9 +76,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
       {step === 1 && (
         <div>
           <div style={{ marginBottom: '24px' }}>
-            <span className="tag-badge tag-primary" style={{ marginBottom: '8px' }}>
-              {t.onboarding.welcomeBadge}
-            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span className="tag-badge tag-primary">
+                {t.onboarding.welcomeBadge}
+              </span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                {t.onboarding.stepIndicator(1, 2)}
+              </span>
+            </div>
             <h1 className="card-title" style={{ fontSize: '1.45rem', marginTop: '6px' }}>
               {t.onboarding.step1Title}
             </h1>
@@ -195,13 +160,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
             </button>
           </div>
 
-          {/* Sobre você: nome opcional e país (para números de emergência) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '22px' }}>
-            <NameField value={displayName} onChange={setDisplayName} />
-            <CountryField value={country} onChange={setCountry} />
-            <CareCountryField value={careCountry} onChange={setCareCountry} />
-          </div>
-
           <div style={{ marginTop: '24px' }}>
             <button
               type="button"
@@ -212,18 +170,69 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
               {t.onboarding.nextBtn} →
             </button>
           </div>
+        </div>
+      )}
 
-          {/* Aviso Acolhedor de Privacidade Local (Sem Caixa Genérica de Consentimento) */}
+      {step === 2 && (
+        <div>
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: '2px 0',
+                  color: 'var(--text-muted)',
+                  fontSize: '0.84rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                ← {t.onboarding.backBtn}
+              </button>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                {t.onboarding.stepIndicator(2, 2)}
+              </span>
+            </div>
+            <h1 className="card-title" style={{ fontSize: '1.4rem', marginTop: '6px' }}>
+              {t.onboarding.personalizeTitle}
+            </h1>
+            <p className="card-subtitle">
+              {t.onboarding.personalizeSubtitle}
+            </p>
+          </div>
+
+          {/* Personalização: nome opcional e países */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <NameField value={displayName} onChange={setDisplayName} />
+            <CountryField value={country} onChange={setCountry} />
+            <CareCountryField value={careCountry} onChange={setCareCountry} />
+          </div>
+
+          <div style={{ marginTop: '24px' }}>
+            <button
+              type="button"
+              onClick={handleFinish}
+              className="btn btn-primary"
+              style={{ width: '100%', minHeight: '46px', fontSize: '0.92rem', justifyContent: 'center' }}
+            >
+              {t.onboarding.startBtn} →
+            </button>
+          </div>
+
+          {/* Aviso Compacto de Privacidade Local */}
           <div
             style={{
-              marginTop: '24px',
-              padding: '14px 16px',
+              marginTop: '20px',
+              padding: '12px 14px',
               backgroundColor: 'var(--bg-card)',
               border: '1px solid var(--border-light)',
               borderRadius: 'var(--radius-md)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '6px'
+              gap: '4px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--sage)', fontSize: '0.78rem', fontWeight: 700 }}>
@@ -253,324 +262,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
               </button>
             )}
           </div>
-        </div>
-      )}
-
-      {step === 2 && (
-        <div>
-          <div style={{ marginBottom: '20px' }}>
-            <span className="tag-badge tag-sage" style={{ marginBottom: '8px' }}>
-              {t.onboarding.stageBadge}
-            </span>
-            <h1 className="card-title" style={{ fontSize: '1.4rem', marginTop: '6px' }}>
-              {t.onboarding.step2Title}
-            </h1>
-            <p className="card-subtitle">
-              {t.onboarding.step2Subtitle}
-            </p>
-          </div>
-
-          {/* Campos Opcionais de Personalização */}
-          <div
-            style={{
-              backgroundColor: 'var(--bg-card)',
-              border: '1px solid var(--border-light)',
-              borderRadius: 'var(--radius-md)',
-              padding: '14px 16px',
-              marginBottom: '20px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px'
-            }}
-          >
-            {phase === 'baby' ? (
-              <>
-                <div>
-                  <label
-                    htmlFor="babyNameInput"
-                    style={{
-                      display: 'block',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: 'var(--text-main)',
-                      marginBottom: '4px'
-                    }}
-                  >
-                    {t.onboarding.optionalBabyNameLabel || 'Nome do bebê (opcional)'}
-                  </label>
-                  <input
-                    id="babyNameInput"
-                    type="text"
-                    value={babyName}
-                    onChange={(e) => setBabyName(e.target.value)}
-                    placeholder={t.onboarding.optionalBabyNamePlaceholder || 'Como podemos chamar o bebê?'}
-                    className="input-field"
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      fontSize: '0.88rem',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: 'var(--radius-sm)',
-                      backgroundColor: 'var(--bg-main)'
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="birthDateInput"
-                    style={{
-                      display: 'block',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: 'var(--text-main)',
-                      marginBottom: '4px'
-                    }}
-                  >
-                    {t.onboarding.optionalBirthDateLabel || 'Data de nascimento (opcional)'}
-                  </label>
-                  <input
-                    id="birthDateInput"
-                    type="date"
-                    value={birthDate}
-                    onChange={(e) => handleBirthDateChange(e.target.value)}
-                    min={birthLimits.min}
-                    max={birthLimits.max}
-                    aria-invalid={!!birthErrorText}
-                    aria-describedby={birthErrorText ? 'birthDateInputError' : undefined}
-                    className="input-field"
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      fontSize: '0.88rem',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: 'var(--radius-sm)',
-                      backgroundColor: 'var(--bg-main)'
-                    }}
-                  />
-                {birthErrorText && (
-                  <p id="birthDateInputError" role="alert" className="profile-date-error">{birthErrorText}</p>
-                )}
-                  {birthDate && !birthErrorText && (
-                    <div
-                      style={{
-                        marginTop: '8px',
-                        padding: '6px 10px',
-                        backgroundColor: 'var(--warm-light)',
-                        borderRadius: 'var(--radius-sm)',
-                        fontSize: '0.78rem',
-                        color: 'var(--primary-dark)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
-                    >
-                      <Sparkles size={14} color="var(--primary)" />
-                      <span>{formatBabyAgeDetailed(birthDate, language)}</span>
-                    </div>
-                  )}
-                  <span
-                    style={{
-                      display: 'block',
-                      fontSize: '0.72rem',
-                      color: 'var(--text-muted)',
-                      marginTop: '4px'
-                    }}
-                  >
-                    {t.onboarding.optionalExactAgeHint || 'Calcula automaticamente a idade exata e os dias de vida'}
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div>
-                <label
-                  htmlFor="dueDateInput"
-                  style={{
-                    display: 'block',
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    color: 'var(--text-main)',
-                    marginBottom: '4px'
-                  }}
-                >
-                  {t.onboarding.optionalDueDateLabel || 'Data prevista do parto (DPP, opcional)'}
-                </label>
-                <input
-                  id="dueDateInput"
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  min={dueLimits.min}
-                  max={dueLimits.max}
-                  aria-invalid={!!dueErrorText}
-                  aria-describedby={dueErrorText ? 'dueDateInputError' : undefined}
-                  className="input-field"
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    fontSize: '0.88rem',
-                    border: '1px solid var(--border-light)',
-                    borderRadius: 'var(--radius-sm)',
-                    backgroundColor: 'var(--bg-main)'
-                  }}
-                />
-              {dueErrorText && (
-                <p id="dueDateInputError" role="alert" className="profile-date-error">{dueErrorText}</p>
-              )}
-              {!dueErrorText && phase === 'pregnancy' && isDueDatePast(dueDate) && (
-                <p className="profile-date-hint">{de.duePassedHint}</p>
-              )}
-              </div>
-            )}
-          </div>
-
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 600 }}>
-            {phase === 'pregnancy'
-              ? (language === 'pt-BR' ? 'Trimestre gestacional:' : 'Gestational trimester:')
-              : (language === 'pt-BR' ? 'Faixa aproximada de desenvolvimento:' : 'Approximate developmental stage:')}
-          </div>
-
-          <div className="choice-list">
-            {(phase === 'pregnancy' ? t.onboarding.pregnancyStages : t.onboarding.babyStages).map((item) => {
-              const isSelected = stageValue === item.value;
-              return (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setStageValue(item.value)}
-                  className={`choice-option ${isSelected ? 'selected' : ''}`}
-                  style={{ textAlign: 'left', width: '100%' }}
-                >
-                  <span style={{ fontWeight: isSelected ? 600 : 500 }}>{item.label}</span>
-                  {isSelected ? (
-                    <Check size={18} color="var(--primary)" />
-                  ) : (
-                    <div
-                      style={{
-                        width: 18,
-                        height: 18,
-                        borderRadius: '50%',
-                        border: '1.5px solid var(--border-light)'
-                      }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="btn btn-secondary"
-              style={{ flex: 1, minHeight: '46px', fontSize: '0.88rem', justifyContent: 'center' }}
-            >
-              ← {t.onboarding.backBtn}
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(3)}
-              disabled={hasDateError}
-              className="btn btn-primary"
-              style={{ flex: 1.5, minHeight: '46px', fontSize: '0.92rem', justifyContent: 'center' }}
-            >
-              {t.onboarding.nextBtn} →
-            </button>
-          </div>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div>
-          <div style={{ marginBottom: '20px' }}>
-            <span className="tag-badge tag-warm" style={{ marginBottom: '8px' }}>
-              {t.onboarding.focusBadge}
-            </span>
-            <h1 className="card-title" style={{ fontSize: '1.4rem', marginTop: '6px' }}>
-              {t.onboarding.step3Title}
-            </h1>
-            <p className="card-subtitle">
-              {t.onboarding.step3Subtitle}
-            </p>
-          </div>
-
-          <div className="choice-list">
-            {(Object.keys(t.onboarding.needs) as MainNeed[]).map((key) => {
-              const item = t.onboarding.needs[key];
-              const isSelected = mainNeed === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setMainNeed(key)}
-                  className={`choice-option ${isSelected ? 'selected' : ''}`}
-                  style={{ textAlign: 'left', width: '100%' }}
-                >
-                  <div>
-                    <div style={{ fontWeight: isSelected ? 600 : 500 }}>{item.title}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      {item.subtitle}
-                    </div>
-                  </div>
-                  {isSelected ? (
-                    <Check size={18} color="var(--primary)" />
-                  ) : (
-                    <div
-                      style={{
-                        width: 18,
-                        height: 18,
-                        borderRadius: '50%',
-                        border: '1.5px solid var(--border-light)'
-                      }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
-            <button
-              type="button"
-              onClick={() => setStep(2)}
-              className="btn btn-secondary"
-              style={{ flex: 1, minHeight: '46px', fontSize: '0.88rem', justifyContent: 'center' }}
-            >
-              ← {t.onboarding.backBtn}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFinish(mainNeed)}
-              className="btn btn-primary"
-              style={{ flex: 1.5, minHeight: '46px', fontSize: '0.92rem', justifyContent: 'center' }}
-            >
-              {t.onboarding.startBtn} →
-            </button>
-          </div>
-        </div>
-      )}
-
-      {onOpenPrivacy && (
-        <div style={{ textAlign: 'center', marginTop: '24px', paddingBottom: '12px' }}>
-          <button
-            type="button"
-            onClick={onOpenPrivacy}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-muted)',
-              fontSize: '0.78rem',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            <Shield size={12} />
-            <span>{t.privacy.policyLink}</span>
-          </button>
         </div>
       )}
     </div>

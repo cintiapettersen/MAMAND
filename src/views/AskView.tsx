@@ -35,6 +35,63 @@ export const AskView: React.FC<AskViewProps> = ({ profile }) => {
         </div>
       </section>
 
+      <section
+        className="card"
+        style={{ marginBottom: '16px', opacity: 0.78 }}
+        aria-disabled="true"
+        data-testid="ask-disabled-preview"
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '8px' }}>
+          <label
+            htmlFor="askDisabledPreviewInput"
+            style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-main)' }}
+          >
+            {t.ask.inputTitle}
+          </label>
+          <span
+            style={{
+              fontSize: '0.72rem',
+              fontWeight: 600,
+              color: '#99631E',
+              backgroundColor: 'rgba(199, 107, 80, 0.1)',
+              padding: '2px 8px',
+              borderRadius: '999px'
+            }}
+          >
+            {language === 'en' ? 'Under review' : 'Em revisão'}
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <input
+            id="askDisabledPreviewInput"
+            type="text"
+            disabled
+            readOnly
+            value=""
+            placeholder={t.ask.inputPlaceholder}
+            style={{
+              flex: 1,
+              minHeight: '42px',
+              padding: '10px 12px',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-light)',
+              backgroundColor: 'var(--bg-soft, #f7f4f0)',
+              color: 'var(--text-muted)',
+              fontSize: '0.88rem',
+              cursor: 'not-allowed'
+            }}
+          />
+          <button
+            type="button"
+            disabled
+            className="btn btn-secondary"
+            style={{ width: 'auto', minHeight: '42px', padding: '0 16px', cursor: 'not-allowed' }}
+          >
+            {t.ask.consultBtn}
+          </button>
+        </div>
+      </section>
+
       <EmergencyStrip country={profile.country} />
     </div>
   );

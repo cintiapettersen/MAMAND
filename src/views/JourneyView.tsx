@@ -525,37 +525,12 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         </div>
       )}
 
-      {/* Topo padrão com Botão de Exportação */}
+      {/* Topo padrão */}
       <PageHeader
         kicker={t.journey.badge}
         icon={<Compass size={13} />}
         title={t.journey.title}
         subtitle={t.journey.subtitle}
-        action={
-          <div className="journey-header-actions">
-            {onOpenPrivacy && (
-              <button
-                type="button"
-                onClick={onOpenPrivacy}
-                className="btn btn-secondary journey-header-btn"
-                title={t.privacy.policyLink}
-                aria-label={t.privacy.policyLink}
-              >
-                <Shield size={15} color="var(--sage)" />
-                <span>{t.privacy.journeyLinkText}</span>
-              </button>
-            )}
-            <button
-              onClick={() => setIsExportMenuOpen(true)}
-              className="btn btn-secondary journey-header-btn"
-              title={t.journey.exportMenuBtn}
-              aria-label={t.journey.exportMenuBtn}
-            >
-              <Download size={15} />
-              <span>{language === 'en' ? 'Backup' : 'Exportar'}</span>
-            </button>
-          </div>
-        }
       />
 
       {/* Botão para Abrir Formulário quando recolhido */}
@@ -916,30 +891,43 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
           )}
 
           {/* Ações do Formulário */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginTop: '14px' }}>
             <button
               type="button"
-              onClick={handleAttemptCloseForm}
+              onClick={() => setIsExportMenuOpen(true)}
               className="btn btn-secondary"
-              style={{ width: 'auto', minHeight: '38px', padding: '8px 16px', fontSize: '0.84rem' }}
+              title={t.journey.exportMenuBtn}
+              aria-label={t.journey.exportMenuBtn}
+              style={{ width: 'auto', minHeight: '38px', padding: '8px 14px', fontSize: '0.84rem' }}
             >
-              {language === 'en' ? 'Cancel' : 'Cancelar'}
+              <Download size={15} />
+              <span>{language === 'en' ? 'Backup' : 'Exportar'}</span>
             </button>
-            <button
-              type="submit"
-              disabled={saveSuccess}
-              className="btn btn-primary"
-              style={{ width: 'auto', minHeight: '38px', padding: '8px 18px', fontSize: '0.84rem' }}
-            >
-              {saveSuccess ? (
-                <>
-                  <Check size={16} />
-                  <span>{t.journey.savedSuccessMsg}</span>
-                </>
-              ) : (
-                <span>{t.journey.saveRecordBtn}</span>
-              )}
-            </button>
+            <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
+              <button
+                type="button"
+                onClick={handleAttemptCloseForm}
+                className="btn btn-secondary"
+                style={{ width: 'auto', minHeight: '38px', padding: '8px 16px', fontSize: '0.84rem' }}
+              >
+                {language === 'en' ? 'Cancel' : 'Cancelar'}
+              </button>
+              <button
+                type="submit"
+                disabled={saveSuccess}
+                className="btn btn-primary"
+                style={{ width: 'auto', minHeight: '38px', padding: '8px 18px', fontSize: '0.84rem' }}
+              >
+                {saveSuccess ? (
+                  <>
+                    <Check size={16} />
+                    <span>{t.journey.savedSuccessMsg}</span>
+                  </>
+                ) : (
+                  <span>{t.journey.saveRecordBtn}</span>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       )}

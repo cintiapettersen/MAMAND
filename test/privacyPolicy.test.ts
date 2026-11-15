@@ -239,7 +239,6 @@ test('4. Integração Visual no Aplicativo (Onboarding, Perfil e Jornada)', () =
 
   // JourneyView
   assert.match(journeyContent, /onOpenPrivacy/, 'JourneyView deve aceitar callback de privacidade');
-  assert.match(journeyContent, /t\.privacy\.journeyLinkText/, 'JourneyView deve ter botão de privacidade no header');
 
   // App.tsx roteamento direto
   assert.match(appContent, /PrivacyPolicyView/, 'App deve importar PrivacyPolicyView');
