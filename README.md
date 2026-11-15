@@ -37,7 +37,7 @@ Para resguardar as famílias e manter conformidade com padrões de saúde públi
 - **Sem conta, sem login e sem servidores centrais:** O aplicativo não requer cadastro, e-mail, senha ou autenticação externa.
 - **Dados gravados exclusivamente no aparelho:** Registros da Jornada, consultas, exames e triagens são gravados no IndexedDB do navegador; perfil, ficha de nascimento e configurações residem no `localStorage`.
 - **Exclusão total e irreversível:** Função dedicada no perfil ("Apagar todos os meus dados deste aparelho") que limpa integralmente o IndexedDB e o localStorage com confirmação explícita.
-- **Política de Privacidade transparente:** Disponível in-app (`/privacy`) e em página HTML estática pré-compilada (`/privacy.html`), com identificação da controladora de dados indicada (`CREATIVE DESIGN PETTERSEN LTDA`), canais de atendimento operacionais e sem rastreadores comerciais (zero Google Analytics, Facebook Pixel ou cookies publicitários).
+- **Política de Privacidade transparente:** Disponível in-app (`/privacy`) e em página HTML estática pré-compilada (`/privacy.html`), identificando Cintia Pettersen (Noruega) como operadora e controladora atual, os canais de atendimento operacionais e a ausência de rastreadores comerciais (zero Google Analytics, Facebook Pixel ou cookies publicitários).
 - **Fontes 100% locais e offline:** Todas as fontes tipográficas (Fraunces, Nunito, Plus Jakarta Sans) são auto-hospedadas em WOFF2 e cacheadas pelo Service Worker, sem conexões a servidores externos (zero Google Fonts).
 - **Backups estruturados (schemaVersion 1.1):** Exportação aberta contendo registros da Jornada, Ficha de Nascimento e Exames/Triagens. Compatível com a restauração de backups legados 1.0.
 
@@ -94,7 +94,7 @@ Documentos: [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.m
 | Nome e identidade MAMAND | Não licenciados pelas licenças acima | [TRADEMARKS.md](TRADEMARKS.md) |
 
 - **Autoria e titularidade patrimonial:** Copyright 2026 **Cintia Pettersen** (pessoa física). O MAMAND foi concebido e desenvolvido por iniciativa pessoal da fundadora, que custeou pessoalmente o desenvolvimento, o domínio e a infraestrutura. Não houve cessão de direitos patrimoniais à pessoa jurídica.
-- **Vínculo institucional:** a empresa brasileira **CREATIVE DESIGN PETTERSEN LTDA** (CNPJ 24.325.181/0001-94) possui vínculo institucional com o projeto e com a candidatura ao **UNICEF FemTech Ventures 2026**, e consta como controladora de dados indicada na Política de Privacidade, sem transferência de direitos patrimoniais do software.
+- **Vínculo institucional:** a empresa brasileira **CREATIVE DESIGN PETTERSEN LTDA** (CNPJ 24.325.181/0001-94) mantém vínculo institucional com o projeto e figura como entidade proponente da candidatura ao **UNICEF FemTech Ventures 2026**, sem transferência de direitos patrimoniais do software e sem atuar como controladora de dados da operação pública atual. Eventual operação de projetos futuros pela empresa dependerá de formalização própria.
 - **Marca:** o nome **MAMAND** ainda não possui registro formal de marca e não há declaração de exclusividade jurídica sobre marca registrada; veja [TRADEMARKS.md](TRADEMARKS.md).
 - **Atribuição histórica:** os primeiros arquivos de documentação (commit `dac145c`, outubro de 2026) foram publicados sob a licença MIT; veja [NOTICE](NOTICE).
 - **Nome anterior:** o projeto se chamava "Primeiros 1.000 Dias" (*First 1,000 Days*); alguns identificadores internos ainda usam esse nome.

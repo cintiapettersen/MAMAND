@@ -8,10 +8,11 @@ import {
 } from '../src/data/privacyPolicyData.ts';
 
 test('1. Identificação Institucional do Controlador e Ausência de Contatos Fictícios ou Provisórios', () => {
-  // Verifica dados em PT-BR
-  assert.strictEqual(PRIVACY_POLICY_PT.controller.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
-  assert.strictEqual(PRIVACY_POLICY_PT.controller.cnpj, '24.325.181/0001-94');
-  assert.strictEqual(PRIVACY_POLICY_PT.controller.country, 'Brasil');
+  // Verifica dados em PT-BR (operadora/controladora atual: pessoa física na Noruega; LTDA como vínculo institucional)
+  assert.strictEqual(PRIVACY_POLICY_PT.controller.name, 'Cintia Pettersen');
+  assert.strictEqual(PRIVACY_POLICY_PT.controller.country, 'Noruega');
+  assert.strictEqual(PRIVACY_POLICY_PT.controller.institutionalPartner?.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
+  assert.strictEqual(PRIVACY_POLICY_PT.controller.institutionalPartner?.cnpj, '24.325.181/0001-94');
   assert.match(
     PRIVACY_POLICY_PT.controller.governanceNotice,
     /local-first/i,
@@ -43,9 +44,10 @@ test('1. Identificação Institucional do Controlador e Ausência de Contatos Fi
   assert.ok(!fullEnText.includes('Open Child Health Booklet'), 'Não deve conter referência à Open Child Health Booklet Initiative');
 
   // Verifica dados em EN
-  assert.strictEqual(PRIVACY_POLICY_EN.controller.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
-  assert.strictEqual(PRIVACY_POLICY_EN.controller.cnpj, '24.325.181/0001-94');
-  assert.strictEqual(PRIVACY_POLICY_EN.controller.country, 'Brazil');
+  assert.strictEqual(PRIVACY_POLICY_EN.controller.name, 'Cintia Pettersen');
+  assert.strictEqual(PRIVACY_POLICY_EN.controller.country, 'Norway');
+  assert.strictEqual(PRIVACY_POLICY_EN.controller.institutionalPartner?.corporateName, 'CREATIVE DESIGN PETTERSEN LTDA');
+  assert.strictEqual(PRIVACY_POLICY_EN.controller.institutionalPartner?.cnpj, '24.325.181/0001-94');
   assert.match(
     PRIVACY_POLICY_EN.controller.governanceNotice,
     /privacidade@mamand\.app/i,
@@ -320,10 +322,21 @@ test('7. Separação entre titularidade patrimonial (Cintia Pettersen) e control
 
   const viewSrc = fs.readFileSync(path.resolve('src/views/PrivacyPolicyView.tsx'), 'utf-8');
   assert.ok(!/Todos os direitos reservados|All rights reserved/i.test(viewSrc));
+  assert.ok(!/Razão Social:|Legal Corporate Name:/i.test(viewSrc), 'Controladora PF não deve exigir campo de Razão Social');
   assert.match(viewSrc, /Copyright © 2026 Cintia Pettersen/);
 
   const htmlContent = fs.readFileSync(path.resolve('public/privacy.html'), 'utf-8');
   assert.ok(!/Todos os direitos reservados|All rights reserved/i.test(htmlContent));
   assert.match(htmlContent, /Copyright © 2026 Cintia Pettersen/);
   assert.match(htmlContent, /Apache 2\.0/);
+
+  // Seções 5 e 6 devem deixar claro que Gateway Edge e Google Gemini estão inativos na distribuição pública
+  const sec5Pt = PRIVACY_POLICY_PT.sections.find((s) => s.id === 'assistente-gateway-ia')!.content.join(' ');
+  const sec6Pt = PRIVACY_POLICY_PT.sections.find((s) => s.id === 'logs-infraestrutura')!.content.join(' ');
+  const sec5En = PRIVACY_POLICY_EN.sections.find((s) => s.id === 'assistente-gateway-ia')!.content.join(' ');
+  const sec6En = PRIVACY_POLICY_EN.sections.find((s) => s.id === 'logs-infraestrutura')!.content.join(' ');
+  assert.match(sec5Pt, /temporariamente suspenso/i);
+  assert.match(sec6Pt, /INATIVO na distribuição pública atual/i);
+  assert.match(sec5En, /temporarily suspended/i);
+  assert.match(sec6En, /INACTIVE in the current public distribution/i);
 });

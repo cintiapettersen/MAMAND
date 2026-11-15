@@ -42,8 +42,9 @@ ${paragraphsHtml}${warningHtml}
       <!-- Identificação Institucional -->
       <div class="card card-controller">
         <h2 style="font-size: 1.05rem; margin-bottom: 8px;">${isPt ? 'Identificação do Controlador' : 'Data Controller Identification'}</h2>
-        <p><strong>${isPt ? 'Razão Social Responsável:' : 'Legal Corporate Name:'}</strong> ${escapeHtml(doc.controller.corporateName)}</p>
-        <p><strong>CNPJ:</strong> ${escapeHtml(doc.controller.cnpj)} • <strong>${isPt ? 'País:' : 'Country:'}</strong> ${escapeHtml(doc.controller.country)}</p>
+        <p><strong>${isPt ? 'Operadora e Controladora Atual:' : 'Current Operator & Data Controller:'}</strong> ${escapeHtml(doc.controller.name)} — ${escapeHtml(doc.controller.roleLabel)}</p>
+        <p><strong>${isPt ? 'País de residência:' : 'Country of residence:'}</strong> ${escapeHtml(doc.controller.country)}</p>
+        ${doc.controller.institutionalPartner ? `<p><strong>${isPt ? 'Vínculo Institucional (UNICEF FemTech Ventures 2026):' : 'Institutional Affiliation (UNICEF FemTech Ventures 2026):'}</strong> ${escapeHtml(doc.controller.institutionalPartner.corporateName)} (CNPJ ${escapeHtml(doc.controller.institutionalPartner.cnpj)}) — ${escapeHtml(doc.controller.institutionalPartner.roleNotice)}</p>` : ''}
         <p><strong>${isPt ? 'Canal de Privacidade (Titulares e Proteção de Dados):' : 'Privacy Channel (Data Protection & Rights):'}</strong> <a href="mailto:${escapeHtml(doc.controller.privacyEmail)}" style="color: var(--primary); text-decoration: underline; font-weight: 600;">${escapeHtml(doc.controller.privacyEmail)}</a></p>
         <p><strong>${isPt ? 'Contato Geral e Parcerias:' : 'General & Institutional Inquiries:'}</strong> <a href="mailto:${escapeHtml(doc.controller.generalEmail)}" style="color: var(--primary); text-decoration: underline; font-weight: 600;">${escapeHtml(doc.controller.generalEmail)}</a></p>
         <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 8px; line-height: 1.45;">
@@ -446,7 +447,7 @@ ${renderDocument(PRIVACY_POLICY_EN, 'en')}
 
     <!-- RODAPÉ -->
     <footer>
-      <p>MAMAND — Copyright © 2026 Cintia Pettersen (<span data-lang="pt-BR">código sob licença Apache 2.0</span><span data-lang="en">code licensed under Apache 2.0</span>). <span data-lang="pt-BR">Controladora de dados e vínculo institucional:</span><span data-lang="en">Data controller and institutional affiliate:</span> ${escapeHtml(PRIVACY_POLICY_PT.controller.corporateName)} (CNPJ ${escapeHtml(PRIVACY_POLICY_PT.controller.cnpj)}).</p>
+      <p>MAMAND — Copyright © 2026 Cintia Pettersen (<span data-lang="pt-BR">código sob licença Apache 2.0</span><span data-lang="en">code licensed under Apache 2.0</span>). <span data-lang="pt-BR">Operação e controladoria atual: ${escapeHtml(PRIVACY_POLICY_PT.controller.name)} (${escapeHtml(PRIVACY_POLICY_PT.controller.country)}). Vínculo institucional (UNICEF FemTech Ventures 2026):</span><span data-lang="en">Current operation & data controller: ${escapeHtml(PRIVACY_POLICY_EN.controller.name)} (${escapeHtml(PRIVACY_POLICY_EN.controller.country)}). Institutional affiliation (UNICEF FemTech Ventures 2026):</span> ${escapeHtml(PRIVACY_POLICY_PT.controller.institutionalPartner.corporateName)} (CNPJ ${escapeHtml(PRIVACY_POLICY_PT.controller.institutionalPartner.cnpj)}).</p>
       <div style="margin-top: 14px;">
         <a href="/" class="btn btn-primary">
           ← <span data-lang="pt-BR">Voltar ao MAMAND</span><span data-lang="en">Back to MAMAND</span>

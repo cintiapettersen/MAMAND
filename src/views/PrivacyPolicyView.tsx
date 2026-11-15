@@ -240,13 +240,19 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({
           </h2>
         </div>
         <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
-          <strong>{lang === 'pt-BR' ? 'Razão Social:' : 'Legal Corporate Name:'}</strong>{' '}
-          {doc.controller.corporateName}
+          <strong>{lang === 'pt-BR' ? 'Operadora e Controladora Atual:' : 'Current Operator & Data Controller:'}</strong>{' '}
+          {doc.controller.name} — {doc.controller.roleLabel}
         </p>
         <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
-          <strong>CNPJ:</strong> {doc.controller.cnpj} • <strong>{lang === 'pt-BR' ? 'País:' : 'Country:'}</strong>{' '}
+          <strong>{lang === 'pt-BR' ? 'País de residência:' : 'Country of residence:'}</strong>{' '}
           {doc.controller.country}
         </p>
+        {doc.controller.institutionalPartner && (
+          <p style={{ fontSize: '0.84rem', color: 'var(--text-main)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
+            <strong>{lang === 'pt-BR' ? 'Vínculo Institucional (UNICEF FemTech Ventures 2026):' : 'Institutional Affiliation (UNICEF FemTech Ventures 2026):'}</strong>{' '}
+            {doc.controller.institutionalPartner.corporateName} (CNPJ {doc.controller.institutionalPartner.cnpj}) — {doc.controller.institutionalPartner.roleNotice}
+          </p>
+        )}
         <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', margin: '0 0 6px 0', lineHeight: 1.5 }}>
           <strong>{lang === 'pt-BR' ? 'Canal de Privacidade (Titulares e Proteção de Dados):' : 'Privacy Channel (Data Protection & Rights):'}</strong>{' '}
           <a
@@ -497,9 +503,17 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({
           MAMAND — Copyright © 2026 Cintia Pettersen (
           {lang === 'pt-BR' ? 'código sob licença Apache 2.0' : 'code licensed under Apache 2.0'}).{' '}
           {lang === 'pt-BR'
-            ? 'Controladora de dados e vínculo institucional:'
-            : 'Data controller and institutional affiliate:'}{' '}
-          {doc.controller.corporateName} (CNPJ {doc.controller.cnpj}).
+            ? `Operação e controladoria atual: ${doc.controller.name} (${doc.controller.country}).`
+            : `Current operation & data controller: ${doc.controller.name} (${doc.controller.country}).`}
+          {doc.controller.institutionalPartner && (
+            <>
+              {' '}
+              {lang === 'pt-BR'
+                ? 'Vínculo institucional (UNICEF FemTech Ventures 2026):'
+                : 'Institutional affiliation (UNICEF FemTech Ventures 2026):'}{' '}
+              {doc.controller.institutionalPartner.corporateName} (CNPJ {doc.controller.institutionalPartner.cnpj}).
+            </>
+          )}
         </p>
 
         <button
