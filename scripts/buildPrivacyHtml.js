@@ -446,7 +446,7 @@ ${renderDocument(PRIVACY_POLICY_EN, 'en')}
 
     <!-- RODAPÉ -->
     <footer>
-      <p>© 2026 ${escapeHtml(PRIVACY_POLICY_PT.controller.corporateName)}. CNPJ ${escapeHtml(PRIVACY_POLICY_PT.controller.cnpj)}. <span data-lang="pt-BR">Todos os direitos reservados.</span><span data-lang="en">All rights reserved.</span></p>
+      <p>MAMAND — Copyright © 2026 Cintia Pettersen (<span data-lang="pt-BR">código sob licença Apache 2.0</span><span data-lang="en">code licensed under Apache 2.0</span>). <span data-lang="pt-BR">Controladora de dados e vínculo institucional:</span><span data-lang="en">Data controller and institutional affiliate:</span> ${escapeHtml(PRIVACY_POLICY_PT.controller.corporateName)} (CNPJ ${escapeHtml(PRIVACY_POLICY_PT.controller.cnpj)}).</p>
       <div style="margin-top: 14px;">
         <a href="/" class="btn btn-primary">
           ← <span data-lang="pt-BR">Voltar ao MAMAND</span><span data-lang="en">Back to MAMAND</span>

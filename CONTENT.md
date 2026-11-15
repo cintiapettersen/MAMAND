@@ -17,10 +17,13 @@ Os textos originais do MAMAND cuja titularidade estiver confirmada nesta
 seção são licenciados sob a
 [Creative Commons Atribuição 4.0 Internacional](https://creativecommons.org/licenses/by/4.0/deed.pt-br).
 
-> **⚠️ Pendente: confirmação da titular.** Nenhum item abaixo está
-> licenciado sob CC BY 4.0 até que a titular confirme a titularidade e a
-> possibilidade de licenciamento (pendências internas J3 e T1). Enquanto
-> isso, valem os termos gerais do repositório.
+> **⚠️ Pendente: confirmação da titular.** Os direitos patrimoniais sobre
+> os textos originais abaixo pertencem pessoalmente à autora **Cintia
+> Pettersen** (pessoa física), sem cessão à CREATIVE DESIGN PETTERSEN LTDA.
+> Nenhum item abaixo está licenciado sob CC BY 4.0 nesta etapa até que a
+> titular confirme formalmente a ativação e a possibilidade de licenciamento
+> (pendências internas J3 e T1). Enquanto isso, valem os termos gerais do
+> repositório (Apache License 2.0 para os arquivos do repositório).
 
 | Texto | Arquivo | Situação |
 |---|---|---|

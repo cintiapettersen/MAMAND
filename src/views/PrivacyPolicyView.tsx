@@ -494,8 +494,12 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({
         }}
       >
         <p style={{ marginBottom: '14px' }}>
-          © 2026 {doc.controller.corporateName}. CNPJ {doc.controller.cnpj}.{' '}
-          {lang === 'pt-BR' ? 'Todos os direitos reservados.' : 'All rights reserved.'}
+          MAMAND — Copyright © 2026 Cintia Pettersen (
+          {lang === 'pt-BR' ? 'código sob licença Apache 2.0' : 'code licensed under Apache 2.0'}).{' '}
+          {lang === 'pt-BR'
+            ? 'Controladora de dados e vínculo institucional:'
+            : 'Data controller and institutional affiliate:'}{' '}
+          {doc.controller.corporateName} (CNPJ {doc.controller.cnpj}).
         </p>
 
         <button

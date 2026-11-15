@@ -305,3 +305,25 @@ test('6. Consistência entre a Política de Privacidade e o Formato Real do Back
   assert.match(idbSrc, /records/, 'indexedDbService deve incluir records na carga JSON');
   assert.match(idbSrc, /birthRecord/, 'indexedDbService deve incluir birthRecord na carga JSON');
 });
+
+test('7. Separação entre titularidade patrimonial (Cintia Pettersen) e controladora de dados (CREATIVE DESIGN PETTERSEN LTDA)', () => {
+  const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf-8'));
+  assert.strictEqual(pkg.author, 'Cintia Pettersen');
+  assert.strictEqual(pkg.license, 'Apache-2.0');
+
+  const ptContext = PRIVACY_POLICY_PT.controller.initiativeContextNotice;
+  const enContext = PRIVACY_POLICY_EN.controller.initiativeContextNotice;
+  assert.match(ptContext, /Cintia Pettersen/);
+  assert.match(enContext, /Cintia Pettersen/);
+  assert.ok(!/titular do projeto|criada e desenvolvida pela CREATIVE DESIGN/i.test(ptContext));
+  assert.ok(!/created and developed by CREATIVE DESIGN/i.test(enContext));
+
+  const viewSrc = fs.readFileSync(path.resolve('src/views/PrivacyPolicyView.tsx'), 'utf-8');
+  assert.ok(!/Todos os direitos reservados|All rights reserved/i.test(viewSrc));
+  assert.match(viewSrc, /Copyright © 2026 Cintia Pettersen/);
+
+  const htmlContent = fs.readFileSync(path.resolve('public/privacy.html'), 'utf-8');
+  assert.ok(!/Todos os direitos reservados|All rights reserved/i.test(htmlContent));
+  assert.match(htmlContent, /Copyright © 2026 Cintia Pettersen/);
+  assert.match(htmlContent, /Apache 2\.0/);
+});
