@@ -82,4 +82,15 @@ test('4. Integração de rota /credits sem login e acesso institucional discreto
   assert.match(modalSrc, /onOpenCredits/);
   assert.match(creditsViewSrc, /CREDITS_DOC_PT/);
   assert.match(creditsViewSrc, /CREDITS_DOC_EN/);
+
+  const vercelConfig = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
+  assert.ok(Array.isArray(vercelConfig.rewrites), 'vercel.json deve definir rewrites SPA');
+  assert.ok(
+    vercelConfig.rewrites.some((r: { source: string; destination: string }) => r.source === '/credits' && r.destination === '/index.html'),
+    'vercel.json deve reescrever /credits para /index.html'
+  );
+  assert.ok(
+    !vercelConfig.rewrites.some((r: { source: string }) => r.source === '/(.*)'),
+    'vercel.json não deve usar rewrite genérico /(.*) que casa com /index.html'
+  );
 });
