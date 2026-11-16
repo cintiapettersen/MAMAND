@@ -27,16 +27,18 @@ seção são licenciados sob a
 
 | Texto | Arquivo | Situação |
 |---|---|---|
-| Cartas do dia | `src/data/dailyCards.ts` | aguardando confirmação |
-| Check-ins diários | `src/data/checkins.ts` | aguardando confirmação |
-| Rede de apoio, pedidos e cartinha | `src/data/supportCatalog.ts` | aguardando confirmação |
-| Mala da maternidade | `src/data/maternityChecklist.ts` | aguardando confirmação |
-| Textos gerais de interface (exceto marca `app.name`, textos de contenção clínica em `ask.*`, `care.*`, `healthChecks.*` e textos jurídicos em `privacy.*`) | `src/locales/pt-BR.ts`, `src/locales/en.ts` | aguardando confirmação |
+| Cartas do dia | `src/data/dailyCards.ts` | proposta CC BY 4.0 — aguardando confirmação |
+| Check-ins diários | `src/data/checkins.ts` | proposta CC BY 4.0 — aguardando confirmação |
+| Rede de apoio, pedidos e cartinha | `src/data/supportCatalog.ts` | proposta CC BY 4.0 — aguardando confirmação |
+| Mala da maternidade | `src/data/maternityChecklist.ts` | proposta CC BY 4.0 — aguardando confirmação |
 
-Atribuição sugerida, depois da confirmação:
+Os textos gerais de interface (`src/locales/pt-BR.ts`, `src/locales/en.ts`) permanecem sob a **Apache License 2.0** nesta etapa.
 
-> "Texto de MAMAND, por Cintia Pettersen, licenciado sob CC BY 4.0
-> (https://creativecommons.org/licenses/by/4.0/). Alterações: [descrever]."
+Atribuição sugerida, somente após eventual confirmação formal em https://mamand.app/credits:
+
+> "Conteúdo original de MAMAND, por Cintia Pettersen (https://mamand.app/credits).
+> Licença proposta: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+> Alterações: [descrever modificações, se houver]."
 
 A CC BY 4.0 não concede direitos sobre marcas (seção 2(b)(2) da licença) e
 não permite sugerir que a autora endossa uma adaptação.

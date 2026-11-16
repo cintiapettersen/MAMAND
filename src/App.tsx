@@ -18,6 +18,7 @@ import { SelfCareView } from './components/SelfCareView';
 import { MaternityChecklistView } from './components/MaternityChecklistView';
 import { HealthChecksView } from './components/HealthChecksView';
 import { PrivacyPolicyView } from './views/PrivacyPolicyView';
+import { CreditsView } from './views/CreditsView';
 import { SplashScreen } from './components/SplashScreen';
 import { AnalyticsConsentBanner } from './components/AnalyticsConsentBanner';
 import { VercelAnalyticsGate } from './components/VercelAnalyticsGate';
@@ -44,6 +45,7 @@ const MainApp: React.FC = () => {
   const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
   const [isHealthChecksOpen, setIsHealthChecksOpen] = useState<boolean>(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState<boolean>(false);
+  const [isCreditsOpen, setIsCreditsOpen] = useState<boolean>(false);
   const [resetCounter, setResetCounter] = useState<number>(0);
   const [analyticsConsent, setAnalyticsConsentState] = useState<AnalyticsConsentState>(() =>
     getAnalyticsConsent()
@@ -69,13 +71,32 @@ const MainApp: React.FC = () => {
     );
   };
 
+  const isCreditsUrl = () => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    return (
+      path === '/credits' ||
+      path === '/creditos' ||
+      path === '/credits.html' ||
+      hash === '#/credits' ||
+      hash === '#/creditos' ||
+      hash === '#credits' ||
+      hash === '#creditos'
+    );
+  };
+
   useEffect(() => {
     if (isPrivacyUrl()) {
       setIsPrivacyOpen(true);
     }
+    if (isCreditsUrl()) {
+      setIsCreditsOpen(true);
+    }
 
     const handlePopState = () => {
       setIsPrivacyOpen(isPrivacyUrl());
+      setIsCreditsOpen(isCreditsUrl());
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -87,6 +108,7 @@ const MainApp: React.FC = () => {
   }, []);
 
   const handleOpenPrivacy = () => {
+    setIsCreditsOpen(false);
     try {
       window.history.pushState({ privacy: true }, '', '/privacy');
     } catch {
@@ -99,6 +121,29 @@ const MainApp: React.FC = () => {
     setIsPrivacyOpen(false);
     try {
       if (window.history.state && window.history.state.privacy) {
+        window.history.back();
+      } else {
+        window.history.pushState({}, '', '/');
+      }
+    } catch {
+      window.location.hash = '';
+    }
+  };
+
+  const handleOpenCredits = () => {
+    setIsPrivacyOpen(false);
+    try {
+      window.history.pushState({ credits: true }, '', '/credits');
+    } catch {
+      window.location.hash = '/credits';
+    }
+    setIsCreditsOpen(true);
+  };
+
+  const handleCloseCredits = () => {
+    setIsCreditsOpen(false);
+    try {
+      if (window.history.state && window.history.state.credits) {
         window.history.back();
       } else {
         window.history.pushState({}, '', '/');
@@ -229,6 +274,21 @@ const MainApp: React.FC = () => {
     );
   }
 
+  if (isCreditsOpen) {
+    return (
+      <>
+        <VercelAnalyticsGate consent={analyticsConsent} />
+        <div className="app-container">
+          <CreditsView
+            onBack={handleCloseCredits}
+            initialLang={language}
+            onOpenPrivacy={handleOpenPrivacy}
+          />
+        </div>
+      </>
+    );
+  }
+
   if (isPrivacyOpen) {
     return (
       <>
@@ -266,6 +326,7 @@ const MainApp: React.FC = () => {
           onReset={handleResetProfile}
           onWipeAllData={handleWipeAllLocalData}
           onOpenPrivacy={handleOpenPrivacy}
+          onOpenCredits={handleOpenCredits}
           analyticsConsent={analyticsConsent}
           onChangeAnalyticsConsent={handleAnalyticsConsentChange}
         />
@@ -369,6 +430,53 @@ const MainApp: React.FC = () => {
               initialCategory={careCategory}
             />
           )}
+
+          <footer
+            aria-label={language === 'pt-BR' ? 'Informações institucionais' : 'Institutional information'}
+            style={{
+              textAlign: 'center',
+              padding: '0 20px 92px',
+              fontSize: '0.75rem',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '12px',
+              flexWrap: 'wrap'
+            }}
+          >
+            <button
+              type="button"
+              onClick={handleOpenCredits}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                padding: '2px 4px'
+              }}
+            >
+              {language === 'pt-BR' ? 'Créditos e Licenças' : 'Credits & Licenses'}
+            </button>
+            <span aria-hidden="true">·</span>
+            <button
+              type="button"
+              onClick={handleOpenPrivacy}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                padding: '2px 4px'
+              }}
+            >
+              {t.privacy.policyLink}
+            </button>
+          </footer>
 
           <Navigation
             activeTab={activeTab}
