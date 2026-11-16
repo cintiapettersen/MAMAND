@@ -1,6 +1,8 @@
 # First 1,000 Days — Decoupled Edge Gateway & RAG Engine
 
-Módulo desacoplado de backend projetado para implantação no **Cloudflare Workers**, implementando arquitetura RAG (Retrieval-Augmented Generation) com base de evidências oficiais verificadas e suporte ao modelo **Gemini 3.5 Flash-Lite**.
+> **Status atual (P0 / J4):** Módulo **inativo e sem deploy** na operação pública atual do MAMAND. Nenhum conteúdo de `evidenceCatalog.ts` possui revisão clínica profissional registrada, e os textos permanecem bloqueados na interface pública e sujeitos à análise jurídica **J4** sobre direitos de reutilização de fontes externas (ex.: OMS CC BY-NC-SA 3.0 IGO, Ministério da Saúde).
+
+Módulo desacoplado de backend projetado para implantação futura no **Cloudflare Workers**, implementando arquitetura RAG (Retrieval-Augmented Generation) com suporte ao modelo **Gemini 3.5 Flash-Lite**.
 
 ---
 
@@ -47,7 +49,7 @@ gateway/
 │   ├── types.ts               # Tipos TypeScript estritos da API
 │   ├── config.ts              # Constantes de configuração e limites
 │   ├── data/
-│   │   └── evidenceCatalog.ts # Catálogo oficial verificado (MS Brasil / OMS)
+│   │   └── evidenceFixtures.synthetic.ts # Fixtures sintéticas (rascunhos clínicos migrados; pendência J4)
 │   └── services/
 │       ├── ragService.ts      # Motor de busca semântica/lexical com relevância
 │       ├── safetyService.ts   # Salvaguarda conservadora de emergências clínicas

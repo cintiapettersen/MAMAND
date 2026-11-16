@@ -122,13 +122,9 @@ test('P0-3. Separação de estados de validação e bloqueio obrigatório de sus
   );
 });
 
-test('P0-4. Preservação dos conteúdos originais em pesquisa e módulos não clínicos', () => {
+test('P0-4. Isolamento de pesquisa migrada e preservação dos módulos não clínicos', () => {
   const archivePath = path.resolve('research/clinical-knowledge/care_contents_unreviewed_v0_1.json');
-  assert.ok(fs.existsSync(archivePath), 'Arquivo de pesquisa deve existir');
-  const archive = JSON.parse(fs.readFileSync(archivePath, 'utf8'));
-  assert.strictEqual(archive.pt.length, 30);
-  assert.strictEqual(archive.en.length, 30);
-  assert.ok(archive.pt.every((i: any) => typeof i.educationalText === 'string' && i.educationalText.length > 0));
+  assert.ok(!fs.existsSync(archivePath), 'Arquivo de pesquisa deve estar migrado fora da versão pública corrente');
 
   assert.ok(getDailyCards('pt-BR').length > 0);
   assert.ok(getDailyCards('en').length > 0);

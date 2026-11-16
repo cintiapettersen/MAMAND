@@ -19,30 +19,11 @@ import type { UserProfile } from '../src/types/index.ts';
  * Valida o bloqueio real nos caminhos de UI, Home, RAG, Mock e integridade de pesquisa.
  */
 
-test('1. Isolamento da Biblioteca de Pesquisa: Validação estrutural de mamand_biblioteca_v0_1.json', () => {
-  const jsonPath = path.resolve('research/clinical-knowledge/mamand_biblioteca_v0_1.json');
-  assert.ok(fs.existsSync(jsonPath), 'mamand_biblioteca_v0_1.json deve existir na pasta de pesquisa');
-
-  const raw = fs.readFileSync(jsonPath, 'utf-8');
-  const data = JSON.parse(raw);
-
-  assert.strictEqual(data.project, 'MAMAND');
-  assert.strictEqual(data.library_version, '0.1.0');
-  assert.strictEqual(data.release_status, 'draft_not_for_production');
-  assert.strictEqual(data.entries.length, 3, 'Deve conter exatamente as 3 fichas');
-
-  for (const entry of data.entries) {
-    assert.ok(entry.id.startsWith('MAMAND-BEBE-'), 'ID deve seguir padrão MAMAND-BEBE-');
-    assert.strictEqual(entry.publication_allowed, false, 'publication_allowed DEVE ser false');
-    assert.strictEqual(entry.review.clinical, 'pending', 'Revisão clínica DEVE ser pending');
-    assert.ok(entry.sources.length > 0, 'Deve conter fontes documentadas');
-    assert.ok(Array.isArray(entry.allowed_intents) && entry.allowed_intents.length > 0, 'Deve definir escopo permitido');
-    assert.ok(Array.isArray(entry.excluded_intents) && entry.excluded_intents.length > 0, 'Deve definir escopo excluído');
-  }
-
-  assert.strictEqual(data.assistant_rules.only_approved_entries, true);
-  assert.strictEqual(data.assistant_rules.never_generate_new_clinical_guidance, true);
-  assert.strictEqual(data.assistant_rules.do_not_answer_out_of_scope, true);
+test('1. Isolamento da Biblioteca de Pesquisa: rascunhos clínicos migrados para repositório privado', () => {
+  assert.ok(!fs.existsSync(path.resolve('research/clinical-knowledge/mamand_biblioteca_v0_1.json')));
+  assert.ok(!fs.existsSync(path.resolve('research/clinical-knowledge/care_contents_unreviewed_v0_1.json')));
+  assert.ok(!fs.existsSync(path.resolve('src/data/evidenceCatalog.ts')));
+  assert.ok(!fs.existsSync(path.resolve('gateway/src/data/evidenceCatalog.ts')));
 });
 
 test('2. Isolamento de Produção: Arquivo de pesquisa NÃO deve constar em public/ nem vazar para dist/', () => {
@@ -147,19 +128,16 @@ test('8. Bloqueio Estrito de Conexões Externas no Assistente: Zero Envio de Per
       updatedAt: new Date().toISOString()
     };
 
-    // Caso A: Pergunta clínica legítima dentro do catálogo
+    // Caso A: Pergunta clínica sem catálogo clínico público ativo (recusa segura após migração J4)
     const withinCatalogResult = await consultEducationalAssistant(
       'Qual a posição recomendada para o sono do bebê?',
       dummyProfile,
       'pt-BR'
     );
-    assert.strictEqual(fetchCallCount, 0, 'Consulta legítima não deve disparar fetch externo');
+    assert.strictEqual(fetchCallCount, 0, 'Consulta não deve disparar fetch externo');
     assert.strictEqual(withinCatalogResult.mode, 'mock', 'Modo deve ser estritamente mock local');
-    assert.strictEqual(withinCatalogResult.status, 'success', 'Status deve ser success para pergunta válida do catálogo');
-    assert.ok(withinCatalogResult.citations.length > 0, 'Deve conter citações clínicas verificadas');
-    for (const c of withinCatalogResult.citations) {
-      assert.strictEqual(c.validationStatus, 'verified', 'Todas as citações retornadas devem ser verified');
-    }
+    assert.strictEqual(withinCatalogResult.status, 'out_of_catalog', 'Sem catálogo clínico aprovado, status deve ser out_of_catalog');
+    assert.strictEqual(withinCatalogResult.citations.length, 0, 'Não deve retornar citações não revisadas');
 
     // Caso B: Pergunta fora do catálogo clínico (NÃO deve alucinar nem inventar condutas)
     const outOfCatalogResult = await consultEducationalAssistant(

@@ -66,14 +66,13 @@ O app opera de forma autônoma e não requer chaves de API externas para execuç
 ```
 ├── src/          # Aplicativo React + TypeScript
 │   ├── config/   # Regras de disponibilidade de conteúdo e parâmetros clínicos
-│   ├── data/     # Catálogo de temas, evidências, contatos de emergência e privacidade
+│   ├── data/     # Metadados de temas, fixtures sintéticas, emergência e privacidade
 │   ├── domain/   # Regras de exames e triagens, consultas, países e resumos
-│   ├── services/ # IndexedDB v2, assistente educativo, wipe local e armazenamento
+│   ├── services/ # IndexedDB v2, motor RAG com fixtures sintéticas, wipe local e armazenamento
 │   ├── styles/   # Folhas de estilo locais (sem fontes externas)
-│   └── views/    # Hoje, Pergunte, Jornada, Cuidados, Exames e Política de Privacidade
+│   └── views/    # Hoje, Pergunte, Jornada, Cuidados, Exames, Créditos e Política de Privacidade
 ├── public/       # Fontes WOFF2 locais, privacy.html, Service Worker e manifesto PWA
-├── research/     # Base clínica estruturada (mamand_biblioteca_v0_1.json)
-├── gateway/      # Módulo desacoplado de gateway RAG e integração com IA privada
+├── gateway/      # Módulo desacoplado de gateway RAG (fixtures sintéticas; inativo)
 ├── scripts/      # Script gerador de privacy.html e rotinas de validação
 ├── test/         # Suíte de testes automatizados do aplicativo e salvaguardas
 └── docs/         # Documentação de governança, arquitetura e convenções

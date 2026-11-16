@@ -47,9 +47,9 @@ não permite sugerir que a autora endossa uma adaptação.
 
 ### 2.1 Natureza do conteúdo de saúde
 
-Nesta distribuição, a biblioteca de Cuidados (`src/data/contents.ts`) traz só as informações básicas de cada tema: título, categoria, fase, tema, fonte e situação da revisão. Os textos completos (`educationalText`) e as ideias práticas (`practicalAction`) sem autorização de publicação foram removidos do bundle público e preservados integralmente em `research/clinical-knowledge/care_contents_unreviewed_v0_1.json` para futura revisão profissional. O catálogo de evidências do assistente experimental também não é importado pelo frontend público.
+Nesta distribuição, a biblioteca de Cuidados (`src/data/contents.ts`) traz só as informações básicas de cada tema: título, categoria, fase, tema, fonte e situação da revisão. Os textos completos (`educationalText`), as ideias práticas (`practicalAction`), o catálogo experimental de evidências (`evidenceCatalog.ts`) e os rascunhos de pesquisa (`research/clinical-knowledge/*.json`) foram migrados para o repositório privado `cintiapettersen/mamand-clinical-research` para futura revisão profissional e análise jurídica (pendência J4), mantendo no repositório público apenas fixtures sintéticas (`evidenceFixtures.synthetic.ts`).
 
-Versões anteriores deste repositório (até o commit `7d43d3f`) incluem os textos completos e o catálogo de evidências. Eles são resumos escritos para o MAMAND que citam as publicações de referência, sem revisão profissional.
+Esta migração não altera o histórico público anterior do Git nem resolve automaticamente a análise jurídica J4 sobre fontes externas. Versões anteriores deste repositório (até o commit `7d43d3f` e histórico anterior à migração) ainda contêm esses arquivos no histórico do Git. Eles são resumos escritos para o MAMAND que citam as publicações de referência, sem revisão profissional.
 
 - **Sem revisão clínica profissional documentada.** Nenhum conteúdo de saúde deste repositório passou, até agora, por revisão clínica profissional documentada. Os estados de validação são separados em cinco dimensões independentes:
   - **Fonte bibliográfica verificada** (`sourceVerified` / `hasVerifiableSource` / legado `verified`): confirma apenas que a referência citada existe; **não equivale a revisão clínica** e **não autoriza publicação**.

@@ -215,7 +215,7 @@ export const CREDITS_DOC_PT: CreditsDocument = {
     {
       category: 'Conteúdos clínicos em revisão e diretrizes externas (pendência J4)',
       detail:
-        'Metadados de src/data/contents.ts, catálogos experimentais em src/data/evidenceCatalog.ts e gateway/src/data/evidenceCatalog.ts, bem como os rascunhos em research/clinical-knowledge/ (bloqueados no aplicativo público e sujeitos à análise jurídica J4 sobre diretrizes externas).'
+        'Metadados de src/data/contents.ts e rascunhos clínicos experimentais (anteriormente em src/data/evidenceCatalog.ts, gateway/src/data/evidenceCatalog.ts e research/clinical-knowledge/), migrados para repositório privado de pesquisa, bloqueados no aplicativo público e sujeitos à análise jurídica J4 sobre diretrizes externas.'
     },
     {
       category: 'Componentes, fontes e materiais de terceiros',
@@ -334,7 +334,7 @@ export const CREDITS_DOC_EN: CreditsDocument = {
     {
       category: 'Clinical content under review & external guidelines (pending J4)',
       detail:
-        'Metadata in src/data/contents.ts, experimental catalogs in src/data/evidenceCatalog.ts and gateway/src/data/evidenceCatalog.ts, and drafts in research/clinical-knowledge/ (blocked from the public app and subject to legal review J4 regarding external guidelines).'
+        'Metadata in src/data/contents.ts and experimental clinical drafts (formerly in src/data/evidenceCatalog.ts, gateway/src/data/evidenceCatalog.ts, and research/clinical-knowledge/), migrated to a private research repository, blocked from the public app, and subject to legal review J4 regarding external guidelines.'
     },
     {
       category: 'Third-party components, fonts, and protected materials',
