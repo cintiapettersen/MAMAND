@@ -1,6 +1,6 @@
 # Arquitetura do MAMAND
 
-> **Situação (novembro de 2026).** Esta distribuição pública contém só o aplicativo local-first. A aba Pergunte exibe apenas o aviso de pausa para revisão profissional e os contatos oficiais de emergência por país (`EmergencyStrip`), sem formulário de perguntas nem importação de `evidenceCatalog`, `ragService`, `mockEngine` ou `askService` no bundle público. Os textos completos de Cuidados (`educationalText` e `practicalAction`) sem autorização de publicação também foram removidos do bundle público e preservados em `research/clinical-knowledge/care_contents_unreviewed_v0_1.json`. Nenhum conteúdo de saúde tem revisão profissional registrada. Os dados ficam só no aparelho, **sem criptografia própria**.
+> **Situação (novembro de 2026).** Esta distribuição pública contém só o aplicativo local-first. A aba Pergunte exibe apenas o aviso de pausa para revisão profissional e os contatos oficiais de emergência por país (`EmergencyStrip`), sem formulário de perguntas nem importação de catálogos clínicos, `ragService`, `mockEngine` ou `askService` no bundle público. Os rascunhos clínicos experimentais (textos completos de Cuidados e catálogos de evidências não revisados) foram transferidos para repositório privado de pesquisa (`cintiapettersen/mamand-clinical-research`), permanecendo no código público apenas fixtures sintéticas para testes técnicos do motor RAG. Nenhum conteúdo de saúde tem revisão profissional registrada. Os dados ficam só no aparelho, **sem criptografia própria**.
 
 ## 1. Visão geral
 

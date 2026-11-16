@@ -27,7 +27,7 @@
 Para resguardar as famílias e manter conformidade com padrões de saúde pública e Digital Public Goods (DPG):
 
 - **Ausência de validação clínica formal:** O MAMAND é um protótipo educativo e de registro pessoal. **Nenhum conteúdo possui validação médica, reconhecimento da OMS ou aprovação da DPGA.** A indicação de fonte bibliográfica verificada (`sourceVerified` / `source_based` / legado `verified`) atesta apenas a conformidade documental com publicações oficiais identificáveis (Ministério da Saúde, OMS, UNICEF, AAP), **não equivale a revisão clínica** e **não autoriza publicação automática**.
-- **Orientações práticas de Cuidados removidas do bundle público:** Os campos `educationalText` e `practicalAction` dos conteúdos sem revisão clínica foram removidos do bundle de produção e preservados em `research/clinical-knowledge/care_contents_unreviewed_v0_1.json`. Na interface pública (`canShowCareInstructions`), apenas conteúdos com `validationStatus: 'clinically_reviewed'`, registro `clinicalReview`, `publicationAllowed: true` e ausência de `suspendedReason` podem ser exibidos.
+- **Orientações práticas de Cuidados removidas do bundle público:** Os campos `educationalText` e `practicalAction` dos conteúdos sem revisão clínica foram removidos do bundle de produção e migrados para o repositório privado de pesquisa (`cintiapettersen/mamand-clinical-research`), mantendo apenas metadados básicos no catálogo público. Na interface pública (`canShowCareInstructions`), apenas conteúdos com `validationStatus: 'clinically_reviewed'`, registro `clinicalReview`, `publicationAllowed: true` e ausência de `suspendedReason` podem ser exibidos.
 - **Aba Pergunte em contenção pública:** A aba Pergunte permanece na navegação exibindo aviso acolhedor de que o recurso aguarda revisão profissional e disponibilizando os contatos oficiais de emergência por país (`EmergencyStrip`), sem respostas clínicas automáticas nem importação de `evidenceCatalog` ou IA externa no frontend público.
 
 ---
@@ -78,7 +78,18 @@ O app opera de forma autônoma e não requer chaves de API externas para execuç
 └── docs/         # Documentação de governança, arquitetura e convenções
 ```
 
-Documentos: [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.md), [CONTENT.md](CONTENT.md), [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md).
+Documentos: [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.md), [CONTENT.md](CONTENT.md), [ROADMAP.md](ROADMAP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+---
+
+## Alinhamento aos Objetivos de Desenvolvimento Sustentável (ODS / SDGs)
+
+Como ferramenta de código aberto voltada à saúde materna e da primeira infância, a **contribuição pretendida** do MAMAND alinha-se aos seguintes ODS da ONU:
+
+- **ODS 3 — Saúde e Bem-Estar** *(em especial metas 3.1 e 3.2)*: apoiar gestantes e famílias no registro contínuo de informações de rotina, consultas e exames/triagens para preparação de atendimentos presenciais e acesso rápido a contatos oficiais de emergência por país.
+- **ODS 5 — Igualdade de Gênero**: oferecer apoio prático à organização da rede de cuidado, autonomia informacional e redução da sobrecarga invisível no puerpério, sem exigir conta ou expor dados pessoais.
+
+> **Distinção importante:** o alinhamento acima descreve a **finalidade educativa e de registro pretendida** pelo software aberto. O MAMAND ainda está em fase de protótipo e **não possui estudo de impacto clínico comprovado, validação médica formal nem reconhecimento oficial da DPGA ou da OMS**.
 
 ---
 

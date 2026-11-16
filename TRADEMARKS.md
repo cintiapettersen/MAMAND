@@ -1,7 +1,8 @@
 # Política de marca do MAMAND
 
-O código do MAMAND é aberto (Apache License 2.0), e os textos originais
-confirmados em `CONTENT.md` são livres (CC BY 4.0). O nome **MAMAND** e o
+O código do MAMAND é aberto (Apache License 2.0), e `CONTENT.md` registra a
+proposta ainda pendente de eventual licenciamento sob CC BY 4.0 apenas para
+textos originais não clínicos formalmente confirmados. O nome **MAMAND** e o
 **logotipo** são outra coisa: eles identificam a origem do projeto. Esta
 política existe para que ninguém confunda uma versão modificada,
 especialmente uma com conteúdo de saúde alterado, com o MAMAND.
@@ -31,8 +32,9 @@ especialmente uma com conteúdo de saúde alterado, com o MAMAND.
 ## 1. Uso dos arquivos abertos: livre
 
 Os arquivos do repositório podem ser usados, copiados, modificados e
-redistribuídos nos termos da Apache License 2.0. Para os textos confirmados
-em `CONTENT.md`, valem os termos da CC BY 4.0.
+redistribuídos nos termos da Apache License 2.0. Caso os textos elegíveis
+listados em `CONTENT.md` venham a ter a CC BY 4.0 formalmente ativada pela
+titular, valerão os termos dessa licença para aqueles itens.
 
 > **⚠️ Pendente: decisão da titular.** Os ícones e o símbolo em `public/` e
 > em `src/components/SplashScreen.tsx` estão no repositório e, sem outra indicação, seguem a Apache 2.0. Ainda não
