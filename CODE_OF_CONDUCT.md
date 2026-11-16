@@ -1,23 +1,25 @@
-# Código de Conduta
+**Language:** English | [Português](docs/pt-BR/CODE_OF_CONDUCT.md)
 
-## Nosso compromisso
+# Code of Conduct
 
-Para manter um ambiente acolhedor, seguro e respeitoso para todas as pessoas que contribuem, testam, auditam ou utilizam o **MAMAND**, comprometemo-nos a tornar a participação no projeto livre de assédio e discriminação, independentemente de idade, tamanho corporal, deficiência, etnia, identidade e expressão de gênero, nível de experiência, nacionalidade, aparência pessoal, raça, religião ou identidade e orientação sexual.
+## Our Pledge
 
-## Comportamentos esperados
+To foster a welcoming, safe, and respectful environment for everyone contributing to, testing, auditing, or using **MAMAND**, we pledge to make participation in our project a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
-- Usar linguagem respeitosa, empática e construtiva em issues, pull requests e revisões.
-- Aceitar críticas técnicas fundamentadas com abertura e foco na qualidade do projeto e na segurança das famílias usuárias.
-- Respeitar os limites clínicos e éticos do projeto (não introduzir orientações médicas sem revisão profissional documentada).
+## Expected Behavior
 
-## Comportamentos inaceitáveis
+- Use respectful, empathetic, and constructive language in issues, pull requests, and reviews.
+- Gracefully accept well-founded technical feedback focused on project quality and user safety.
+- Respect the project's clinical and ethical boundaries (do not introduce medical guidance without documented professional review).
 
-- Assédio, intimidação, insultos, ataques pessoais ou comentários discriminatórios.
-- Publicação de informações privadas de terceiros sem permissão (*doxxing*).
-- Tentativas deliberadas de contornar salvaguardas de privacidade ou contenção clínica.
+## Unacceptable Behavior
 
-## Aplicação e contato
+- Harassment, intimidation, insults, personal attacks, or discriminatory comments.
+- Publishing others' private information without explicit permission (*doxxing*).
+- Deliberate attempts to bypass privacy safeguards or clinical containment controls.
 
-Ocorrências de comportamento inadequado podem ser reportadas de forma confidencial para `hello@mamand.app`. Todas as comunicações serão analisadas pela mantenedora do projeto (Cintia Pettersen) com confidencialidade e proporcionalidade.
+## Enforcement and Contact
 
-*Adaptado do Contributor Covenant (versão 2.1).*
+Instances of unacceptable behavior may be reported confidentially to `hello@mamand.app`. All reports will be reviewed by the project maintainer (Cintia Pettersen) with confidentiality and fairness.
+
+*Adapted from the Contributor Covenant (version 2.1).*

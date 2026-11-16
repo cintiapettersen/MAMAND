@@ -1,28 +1,30 @@
-# Política de Segurança e Divulgação Responsável
+**Language:** English | [Português](docs/pt-BR/SECURITY.md)
 
-## Escopo e arquitetura
+# Security Policy & Responsible Vulnerability Disclosure
 
-O **MAMAND** é uma Progressive Web App (PWA) *local-first* e estática:
+## Scope and Architecture
 
-- Os dados inseridos pela pessoa usuária permanecem exclusivamente no dispositivo (`IndexedDB` e `localStorage`), sem contas ou servidor central de aplicação.
-- O módulo `gateway/` é desacoplado e está **inativo e sem deploy** na operação pública atual.
-- Conteúdos clínicos sem revisão profissional e assistente de IA permanecem bloqueados no aplicativo público.
+**MAMAND** is a static, *local-first* Progressive Web App (PWA):
 
-## Como reportar uma vulnerabilidade
+- User-entered data remains exclusively on the user's device (`IndexedDB` and `localStorage`), with no user accounts or central application database.
+- The `gateway/` module is decoupled and **inactive with no active deployment** in the current public operation.
+- Unreviewed clinical content and the AI assistant remain disabled in the public app.
 
-Se você identificar uma falha de segurança, exposição indevida de dados ou risco clínico/técnico no código público do MAMAND:
+## Reporting a Vulnerability
 
-1. **Não** abra uma issue pública com detalhes exploráveis.
-2. Envie o relato de forma privada por um dos canais abaixo:
-   - **GitHub Private Vulnerability Reporting** (aba *Security → Advisories* do repositório), quando disponível; ou
-   - **E-mail:** `hello@mamand.app` (assunto sugerido: `[SECURITY] Descrição breve`).
-3. Inclua, sempre que possível:
-   - Passos para reproduzir ou arquivo/linha afetada;
-   - Impacto potencial (ex.: XSS, vazamento no Service Worker, exposição de dados locais ou regressão de contenção clínica P0);
-   - Versão ou commit analisado.
+If you discover a security vulnerability, unintended data exposure, or clinical/technical containment regression in MAMAND's public codebase:
 
-## Compromisso de resposta
+1. **Do not** open a public GitHub issue with exploitable details.
+2. Report it privately through either channel below:
+   - **GitHub Private Vulnerability Reporting** (*Security → Advisories* tab on the repository), when enabled; or
+   - **Email:** `hello@mamand.app` (suggested subject: `[SECURITY] Brief description`).
+3. Whenever possible, include:
+   - Steps to reproduce or affected file/line;
+   - Potential impact (e.g., XSS, Service Worker cache leak, local data exposure, or P0 clinical containment regression);
+   - Version or commit analyzed.
 
-- Confirmaremos o recebimento do relato em até **5 dias úteis**.
-- Avaliaremos a severidade e trabalharemos em correção antes da divulgação pública coordenada.
-- Este canal destina-se exclusivamente a segurança técnica e proteção de dados — **não** realiza atendimento médico ou suporte clínico.
+## Response Commitment
+
+- We will acknowledge receipt within **5 business days**.
+- We will assess severity and work on a fix prior to coordinated public disclosure.
+- This channel is strictly for technical security and data protection — it does **not** provide medical advice or clinical support.
