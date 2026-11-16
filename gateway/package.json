@@ -20,7 +20,10 @@
     "gemini",
     "dpg"
   ],
-  "author": "Open Child Health Booklet Contributors",
+  "author": "Cintia Pettersen",
+  "contributors": [
+    "Open Child Health Booklet Contributors"
+  ],
   "license": "Apache-2.0",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241022.0",

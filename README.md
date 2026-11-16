@@ -88,7 +88,7 @@ Documentos: [ARCHITECTURE.md](ARCHITECTURE.md), [LOCALIZATION.md](LOCALIZATION.m
 | Material | Licença | Detalhes |
 |---|---|---|
 | Código-fonte | [Apache License 2.0](LICENSE) | [NOTICE](NOTICE) |
-| Textos originais listados em [CONTENT.md](CONTENT.md) | CC BY 4.0, ainda pendente de confirmação da titular | [CONTENT.md](CONTENT.md) |
+| Textos originais listados em [CONTENT.md](CONTENT.md) | Apache License 2.0 no repositório; eventual adoção de CC BY 4.0 aguarda confirmação da titular | [CONTENT.md](CONTENT.md) |
 | Publicações de saúde citadas | Termos de cada instituição | [CONTENT.md](CONTENT.md) |
 | Dependências e fontes tipográficas | Licenças próprias (MIT, ISC, OFL 1.1) | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
 | Nome e identidade MAMAND | Não licenciados pelas licenças acima | [TRADEMARKS.md](TRADEMARKS.md) |

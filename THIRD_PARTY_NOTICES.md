@@ -12,6 +12,7 @@ textos completos dessas licenças são publicados junto com o app, em
 | React DOM | 18.3.1 | MIT | Facebook, Inc. and its affiliates (Meta) | `public/licenses/react-dom.txt` |
 | scheduler | 0.23.2 | MIT | Facebook, Inc. and its affiliates (Meta) | `public/licenses/scheduler.txt` |
 | Lucide (lucide-react) | 0.460.0 | ISC; partes derivadas do Feather sob MIT | Lucide Contributors; Cole Bemis (Feather) | `public/licenses/lucide-react.txt` |
+| @vercel/analytics | 2.0.1 | MIT | Vercel, Inc. | `public/licenses/vercel-analytics.txt` |
 
 ## 2. Fontes tipográficas (SIL Open Font License 1.1)
 
