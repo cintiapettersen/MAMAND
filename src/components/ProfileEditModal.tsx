@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile, UserPhase, MainNeed } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocalizedStageLabel } from '../locales';
-import { Baby, Heart, X, Check, Sparkles, Trash2, AlertTriangle, ShieldAlert, Shield } from 'lucide-react';
+import { Baby, Heart, X, Check, Sparkles, Trash2, AlertTriangle, ShieldAlert, Shield, Scale } from 'lucide-react';
 import {
   calculateAgeInMonths,
   formatBabyAgeDetailed,
@@ -24,6 +24,7 @@ interface ProfileEditModalProps {
   onReset: () => void;
   onWipeAllData?: () => Promise<void> | void;
   onOpenPrivacy?: () => void;
+  onOpenCredits?: () => void;
   analyticsConsent?: AnalyticsConsentState;
   onChangeAnalyticsConsent?: (decision: 'granted' | 'denied') => void;
 }
@@ -36,6 +37,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   onReset,
   onWipeAllData,
   onOpenPrivacy,
+  onOpenCredits,
   analyticsConsent,
   onChangeAnalyticsConsent
 }) => {
@@ -430,30 +432,66 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             </div>
           )}
 
-          {/* Link para Política de Privacidade */}
-          {onOpenPrivacy && (
-            <div style={{ textAlign: 'center', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-light)' }}>
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenPrivacy();
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-muted)',
-                  fontSize: '0.76rem',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-              >
-                <Shield size={12} />
-                <span>{t.privacy.policyLink}</span>
-              </button>
+          {/* Links para Política de Privacidade e Créditos e Licenças */}
+          {(onOpenPrivacy || onOpenCredits) && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '14px',
+                flexWrap: 'wrap',
+                marginTop: '12px',
+                paddingTop: '12px',
+                borderTop: '1px solid var(--border-light)'
+              }}
+            >
+              {onOpenCredits && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenCredits();
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    fontSize: '0.76rem',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <Scale size={12} />
+                  <span>{language === 'pt-BR' ? 'Créditos e Licenças' : 'Credits & Licenses'}</span>
+                </button>
+              )}
+              {onOpenPrivacy && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenPrivacy();
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    fontSize: '0.76rem',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <Shield size={12} />
+                  <span>{t.privacy.policyLink}</span>
+                </button>
+              )}
             </div>
           )}
 
