@@ -1,59 +1,51 @@
-# Como contribuir com o MAMAND
+**Language:** English | [Português](docs/pt-BR/CONTRIBUTING.md)
 
-Obrigada por querer ajudar!
+# Contributing to MAMAND
 
-## Licença das contribuições
+Thank you for wanting to help!
 
-- **Código e textos do repositório:** todas as contribuições aceitas neste repositório entram sob a **Apache License 2.0** (seção 5 da licença). Eventual adoção futura de CC BY 4.0 para textos educativos originais específicos permanece apenas como proposta pendente em `CONTENT.md` e não está vigente.
-- **Copyright:** você mantém o copyright do que escreveu. Não pedimos cessão
-  de direitos.
+## Contribution Licensing
 
-## Certificado de Origem do Desenvolvedor (DCO)
+- **Code and repository texts:** all accepted contributions to this repository are licensed under the **Apache License 2.0** (Section 5 of the license). Any future adoption of CC BY 4.0 for specific original educational texts remains solely a pending proposal in [CONTENT.md](CONTENT.md) and is not currently in force.
+- **Copyright:** you retain the copyright to your contributions. We do not require copyright assignment.
 
-Usamos o [Developer Certificate of Origin 1.1](https://developercertificate.org/).
-Ao assinar um commit, você declara que tem o direito de enviar aquela
-contribuição sob a licença do projeto.
+## Developer Certificate of Origin (DCO)
 
-Para assinar, faça o commit com `-s`:
+We use the [Developer Certificate of Origin 1.1](https://developercertificate.org/).
+By signing off a commit, you certify that you have the right to submit that contribution under the project's license.
 
-```
-git commit -s -m "Descrição da mudança"
-```
+Sign commits with `-s`:
 
-Isso adiciona ao commit uma linha com seu nome e e-mail reais:
-
-```
-Signed-off-by: Seu Nome <seu@email>
+```bash
+git commit -s -m "Describe your change"
 ```
 
-Pull requests com commits sem essa linha não são aceitos.
+This appends a line with your real name and email address:
 
-## Conteúdo de saúde
-
-- Toda contribuição de conteúdo clínico precisa indicar a fonte oficial, com
-  publicação, edição e página ou seção.
-- Conteúdo novo entra sempre como `validationStatus: 'pending_review'`.
-- Não copie trechos literais nem imagens de publicações de terceiros. Escreva
-  um resumo próprio e cite a fonte.
-- Só a revisão clínica do projeto pode mudar um item para
-  `clinically_reviewed`, sempre com o registro em `clinicalReview` (quem
-  revisou, credencial, data e referência). Citar uma instituição não é revisão
-  clínica: nesse caso o status é `source_based`.
-
-## Ferramentas de IA
-
-Contribuições feitas com ajuda de ferramentas de IA são aceitas. Quem assina
-o DCO continua responsável por revisar o resultado e garantir que pode
-enviá-lo. Indique o uso de IA na descrição do pull request.
-
-## Marca
-
-Contribuir não concede o direito de usar o nome ou o logotipo MAMAND. Veja
-`TRADEMARKS.md`.
-
-## Antes de abrir um pull request
-
+```text
+Signed-off-by: Your Name <your@email>
 ```
+
+Pull requests containing commits without a `Signed-off-by` line will not be accepted.
+
+## Health Content
+
+- Any clinical content contribution must specify the official source, including publication, edition, and page or section.
+- New content always enters as `validationStatus: 'pending_review'`.
+- Do not copy verbatim passages or images from third-party publications. Write an original summary and cite the source.
+- Only the project's clinical review process may change an item to `clinically_reviewed`, always with a `clinicalReview` record (reviewer name, credential, date, and reference). Citing an institution is not clinical review: in that case, the status is `source_based`.
+
+## AI Tools
+
+Contributions created with the assistance of AI tools are accepted. Whoever signs the DCO remains responsible for reviewing the output and ensuring they have the right to submit it. Disclose AI assistance in the pull request description.
+
+## Trademark
+
+Contributing does not grant the right to use the MAMAND name or logo. See [TRADEMARKS.md](TRADEMARKS.md).
+
+## Before Opening a Pull Request
+
+```bash
 npm ci
 npm run typecheck
 npm test

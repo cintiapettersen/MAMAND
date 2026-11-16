@@ -1,74 +1,70 @@
-# Diretrizes de Internacionalização e Localização (i18n)
-*Internationalization and Localization Guidelines*
+**Language:** English | [Português](docs/pt-BR/LOCALIZATION.md)
 
-> **Contexto:** Este documento estabelece a arquitetura bilíngue (`pt-BR` e `en`) do aplicativo **Primeiros 1.000 Dias** (*First 1,000 Days*), concebido como um bem público digital aberto para apoiar gestantes, mães e cuidadores nos primeiros 1.000 dias de vida da criança.
+# Internationalization and Localization Guidelines (i18n)
 
----
-
-## 1. Princípios de Localização e Governança Clínica
-
-A tradução e localização de um aplicativo de saúde materna e infantil diferem fundamentalmente da tradução de interfaces utilitárias convencionais:
-
-1. **Separação entre Código e Linguagem:**  
-   Nenhum texto de interface ou orientação de cuidado é fixado (*hardcoded*) na lógica de renderização. Todos os elementos derivam de dicionários fortemente tipados em TypeScript (`src/locales/`).
-
-2. **Proibição de Tradução Dinâmica por IA em Tempo de Execução:**  
-   Não utilizamos APIs de inteligência artificial generativa em segundo plano para traduzir textos médicos em tempo real. Toda tradução de saúde deve ser estática, determinística, auditável e previamente revisada para evitar alucinações terminológicas ou recomendações clínicas equivocadas.
-
-3. **Integridade de Fontes Oficiais:**  
-   A tradução de um conteúdo para inglês **não substitui** sua fonte oficial de origem por uma instituição estrangeira aleatória. As referências originais (como o Ministério da Saúde do Brasil e a Sociedade Brasileira de Pediatria) são mantidas e descritas com precisão em inglês, acompanhadas de diretrizes correlatas da OMS (*World Health Organization*) quando aplicável.
-
-4. **Identificação Transparente de Conteúdo Demonstrativo e em Revisão:**  
-   Orientações que ainda não passaram por validação clínica formal e colegiada permanecem expressamente categorizadas como `validationStatus: 'demonstrative'` ou `'pending_review'` em todos os idiomas. Manejos práticos empíricos (como técnicas de massagem ou manobras posturais) não são apresentados como tratamentos garantidos.
-
-5. **Paridade Rigorosa de Formulários e Modais:**  
-   Todas as mensagens de validação, avisos de privacidade, confirmações de risco irreversível e fluxos de importação/restauração de backup possuem paridade de 100% entre português e inglês, garantindo a mesma clareza ética a usuárias de qualquer nacionalidade.
+> **Context:** This document defines the bilingual architecture (`en` and `pt-BR`) of **MAMAND** (formerly "Primeiros 1.000 Dias" / *First 1,000 Days*), designed as an open-source digital public good supporting pregnant people, mothers, and caregivers during the child's first 1,000 days.
 
 ---
 
-## 2. Estrutura de Arquivos
+## 1. Localization Principles and Clinical Governance
+
+Translating and localizing a maternal and child health app differs fundamentally from translating conventional utility software:
+
+1. **Separation of Code and Language:**  
+   No UI string or care label is hardcoded in rendering logic. All interface copy comes from strongly typed TypeScript dictionaries (`src/locales/`).
+
+2. **Prohibition of Runtime AI Translation:**  
+   We do not use generative AI APIs in the background to translate health texts in real time. All health-related translations must be static, deterministic, auditable, and pre-reviewed to prevent terminological hallucinations or unsafe clinical guidance.
+
+3. **Integrity of Official Sources:**  
+   Translating content into English **never replaces** its original official source with an arbitrary foreign institution. Original references (such as the Brazilian Ministry of Health and the Brazilian Society of Pediatrics) are preserved and accurately described in English alongside correlated WHO guidelines where applicable.
+
+4. **Transparent Identification of Demonstrative & Unreviewed Content:**  
+   Guidance without formal clinical review remains explicitly categorized as `validationStatus: 'demonstrative'` or `'pending_review'` in all languages.
+
+5. **Strict Parity Across Forms and Modals:**  
+   All validation messages, privacy notices, irreversible-action confirmations, and backup/restore flows maintain 100% parity between Portuguese and English.
+
+---
+
+## 2. File Structure
 
 ```
 src/
 ├── locales/
-│   ├── types.ts          # Contrato de tipos TypeScript (TranslationDictionary)
-│   ├── pt-BR.ts          # Português brasileiro (idioma padrão e mercado piloto)
-│   ├── en.ts             # Inglês internacional (segunda língua para avaliação global)
-│   └── index.ts          # Provedor de dicionários e utilitários de formatação
+│   ├── types.ts              # TypeScript type contract (TranslationDictionary)
+│   ├── pt-BR.ts              # Brazilian Portuguese dictionary
+│   ├── en.ts                 # International English dictionary
+│   └── index.ts              # Dictionary provider and formatting helpers
 ├── context/
-│   └── LanguageContext.tsx # Contexto reativo com persistência local (localStorage/IndexedDB)
+│   └── LanguageContext.tsx   # Reactive context with local persistence
 ├── components/
-│   └── LanguageSelector.tsx # Seletor discreto de texto (PT | EN) sem bandeiras nacionais
+│   └── LanguageSelector.tsx  # Discreet text selector (PT | EN) without national flags
 └── data/
-    ├── contents.ts       # Acervo educativo bilíngue com IDs semânticos invariantes
-    └── checkins.ts       # Banco de perguntas de check-in diário bilíngue
+    ├── contents.ts           # Bilingual topic metadata with invariant semantic IDs
+    └── checkins.ts           # Bilingual daily check-in questions
 ```
 
 ---
 
-## 3. Como Contribuir com um Novo Idioma
+## 3. How to Contribute a New Language
 
-Para adicionar um novo idioma (por exemplo, Espanhol `es`, Francês `fr` ou línguas indígenas brasileiras):
+To add a new language (e.g., Spanish `es`, French `fr`, or Indigenous languages):
 
-### Passo 1: Criar o Arquivo de Dicionário
-Crie `src/locales/[codigo].ts` implementando rigorosamente a interface `TranslationDictionary` de `src/locales/types.ts`.
-O compilador TypeScript (`tsc`) verificará em tempo de compilação se todas as chaves foram preenchidas.
+### Step 1: Create the Dictionary File
+Create `src/locales/[code].ts` implementing `TranslationDictionary` from `src/locales/types.ts`. The TypeScript compiler (`tsc`) will verify at build time that every key is present.
 
-### Passo 2: Traduzir o Acervo Educativo e Check-ins
-Em `src/data/contents.ts` e `src/data/checkins.ts`, adicione o catálogo correspondente mantendo os **mesmos identificadores canônicos** (`id: 'mom-rest-fragmented'`, `id: 'baby-tummy-time-gentle'`, etc.). O motor de regras local opera exclusivamente com base em IDs semânticos e critérios de fase, garantindo paridade de comportamento clínico em qualquer idioma.
+### Step 2: Translate Non-Clinical Data Catalogs
+In `src/data/contents.ts` and `src/data/checkins.ts`, add the corresponding localized entries preserving the **exact canonical IDs** (`id: 'mom-rest-fragmented'`, etc.).
 
-### Passo 3: Revisão por Profissional de Saúde
-Toda adição de orientações deve passar por revisão por profissional de saúde materno-infantil ou citar diretamente guia oficial de ministério de saúde ou organismo multilateral reconhecido.
+### Step 3: Health Professional Review
+Any health guidance addition must undergo review by a qualified maternal-child health professional or directly cite an official Ministry of Health or multilateral organization guideline.
 
 ---
 
-## 4. Alinhamento com o Digital Public Goods Standard
+## 4. Alignment with the Digital Public Goods Standard
 
-Este projeto foi desenhado buscando consonância com os princípios do **Digital Public Goods Standard** (DPG Alliance):
-
-- **Indicador 5 (Documentação Aberta):** A arquitetura de internacionalização, modelos de dados e procedimentos de contribuição são públicos e auditáveis.
-- **Indicador 6 (Extração e Soberania dos Dados):** O aplicativo oferece exportação integral em formato aberto (.JSON) e resumo legível (.TXT) diretamente no idioma ativo do usuário.
-- **Indicador 7 (Melhores Práticas de Privacidade):** A preferência de idioma é armazenada estritamente no dispositivo da usuária (`localStorage`), sem cookies de rastreamento ou envio de metadados a servidores externos.
-- **Indicadores 8 e 9 (Prevenção de Danos / Do No Harm):** Todo conteúdo exibe avisos explícitos de que o aplicativo é educativo e não substitui consultas presenciais. Nenhuma IA traduz orientações de saúde sem curadoria humana prévia.
-
-> *Nota de Transparência:* Este projeto adota as diretrizes técnicas do padrão DPG como referência de arquitetura aberta e de proteção a populações vulneráveis. O software encontra-se em fase de preparação para submissão e **não alega credenciamento, certificação ou reconhecimento oficial prévio** por parte da Digital Public Goods Alliance.
+- **Indicator 5 (Documentation):** Internationalization architecture, data models, and contribution workflows are public and auditable.
+- **Indicator 6 (Mechanism for Extracting Data):** Full export in open JSON format and readable TXT summary in the user's active language.
+- **Indicator 7 (Privacy & Applicable Laws):** Language preference is stored strictly on the user's device (`localStorage`), without tracking cookies or external server transmission.
+- **Indicators 8 & 9 (Standards & Do No Harm):** All content displays explicit disclaimers that the app is educational and does not replace in-person healthcare.
