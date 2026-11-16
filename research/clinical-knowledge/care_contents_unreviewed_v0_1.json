@@ -2,6 +2,7 @@
   "project": "MAMAND",
   "release_status": "draft_not_for_production",
   "note": "Original unreviewed Care Library texts preserved for clinical review; stripped from public frontend bundle.",
+  "license_notice": "Unreviewed editorial drafts citing external clinical guidelines. Excluded from public bundle and CC BY 4.0 proposal; subject to pending clinical review and legal review (J4) regarding third-party source reuse terms.",
   "pt": [
     {
       "id": "mom-rest-fragmented",

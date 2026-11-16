@@ -71,6 +71,11 @@ Versões anteriores deste repositório (até o commit `7d43d3f`) incluem os text
 - **As publicações originais não são relicenciadas.** As licenças do MAMAND
   não se aplicam a elas, que continuam sob os direitos e termos das
   instituições autoras.
+- **Inventário e contenção J4:** o mapeamento detalhado de
+  `src/data/evidenceCatalog.ts`, `gateway/src/data/evidenceCatalog.ts`,
+  `gateway/scripts/localGateway.cjs` e `research/clinical-knowledge/*.json`
+  consta em [docs/governanca/j4-inventario-conteudos-clinicos.md](docs/governanca/j4-inventario-conteudos-clinicos.md).
+  A pendência J4 permanece aberta até revisão jurídica específica.
 
 ### 2.2 Instituições citadas
 

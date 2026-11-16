@@ -1,3 +1,9 @@
+// AVISO DE CONTENÇÃO CLÍNICA E PENDÊNCIA J4:
+// Catálogo experimental desabilitado no aplicativo público e sem deploy ativo.
+// Nenhum item possui revisão clínica profissional (o campo legado 'verified' indica apenas
+// conferência bibliográfica, não aprovação médica). Os textos estão sujeitos à pendência
+// jurídica J4 sobre termos de reutilização das fontes citadas (ex.: OMS CC BY-NC-SA 3.0 IGO,
+// Ministério da Saúde) e NÃO estão licenciados sob CC BY 4.0 nem liberados para uso clínico.
 import type { EvidenceChunk } from '../types.ts';
 
 export const EVIDENCE_CATALOG: EvidenceChunk[] = [
