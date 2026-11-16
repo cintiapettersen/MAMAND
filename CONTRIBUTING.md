@@ -4,9 +4,7 @@ Obrigada por querer ajudar!
 
 ## Licença das contribuições
 
-- **Código:** entra sob a **Apache License 2.0** (seção 5 da licença).
-- **Textos originais:** contribuições para os textos listados em `CONTENT.md`
-  entram sob **CC BY 4.0**.
+- **Código e textos do repositório:** todas as contribuições aceitas neste repositório entram sob a **Apache License 2.0** (seção 5 da licença). Eventual adoção futura de CC BY 4.0 para textos educativos originais específicos permanece apenas como proposta pendente em `CONTENT.md` e não está vigente.
 - **Copyright:** você mantém o copyright do que escreveu. Não pedimos cessão
   de direitos.
 
