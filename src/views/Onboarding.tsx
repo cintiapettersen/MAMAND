@@ -23,7 +23,7 @@ interface OnboardingProps {
 
 export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfile, onOpenPrivacy }) => {
   const { language, t } = useLanguage();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [phase, setPhase] = useState<UserPhase>(initialProfile?.phase || 'baby');
   const [stageValue, setStageValue] = useState<number>(
     initialProfile?.stageValue ?? (initialProfile?.phase === 'pregnancy' ? 24 : 2)
@@ -97,9 +97,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
 
   return (
     <div className="content-area" style={{ paddingTop: '20px' }}>
-      {/* Indicador de Progresso das 3 Etapas */}
-      <div style={{ display: 'flex', gap: '8px', width: '100%', marginBottom: '24px' }}>
-        {[1, 2, 3].map((s) => (
+      {/* Indicador de Progresso das 4 Etapas */}
+      <div style={{ display: 'flex', gap: '8px', width: '100%', marginBottom: '20px' }}>
+        {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
             style={{
@@ -116,9 +116,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
       {step === 1 && (
         <div>
           <div style={{ marginBottom: '24px' }}>
-            <span className="tag-badge tag-primary" style={{ marginBottom: '8px' }}>
-              {t.onboarding.welcomeBadge}
-            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span className="tag-badge tag-primary">
+                {t.onboarding.welcomeBadge}
+              </span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                {t.onboarding.stepIndicator(1, 4)}
+              </span>
+            </div>
             <h1 className="card-title" style={{ fontSize: '1.45rem', marginTop: '6px' }}>
               {t.onboarding.step1Title}
             </h1>
@@ -195,13 +200,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
             </button>
           </div>
 
-          {/* Sobre você: nome opcional e país (para números de emergência) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '22px' }}>
-            <NameField value={displayName} onChange={setDisplayName} />
-            <CountryField value={country} onChange={setCountry} />
-            <CareCountryField value={careCountry} onChange={setCareCountry} />
-          </div>
-
           <div style={{ marginTop: '24px' }}>
             <button
               type="button"
@@ -212,18 +210,69 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
               {t.onboarding.nextBtn} →
             </button>
           </div>
+        </div>
+      )}
 
-          {/* Aviso Acolhedor de Privacidade Local (Sem Caixa Genérica de Consentimento) */}
+      {step === 2 && (
+        <div>
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: '2px 0',
+                  color: 'var(--text-muted)',
+                  fontSize: '0.84rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                ← {t.onboarding.backBtn}
+              </button>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                {t.onboarding.stepIndicator(2, 4)}
+              </span>
+            </div>
+            <h1 className="card-title" style={{ fontSize: '1.4rem', marginTop: '6px' }}>
+              {t.onboarding.personalizeTitle}
+            </h1>
+            <p className="card-subtitle">
+              {t.onboarding.personalizeSubtitle}
+            </p>
+          </div>
+
+          {/* Personalização: nome opcional e países */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <NameField value={displayName} onChange={setDisplayName} />
+            <CountryField value={country} onChange={setCountry} />
+            <CareCountryField value={careCountry} onChange={setCareCountry} />
+          </div>
+
+          <div style={{ marginTop: '24px' }}>
+            <button
+              type="button"
+              onClick={() => setStep(3)}
+              className="btn btn-primary"
+              style={{ width: '100%', minHeight: '46px', fontSize: '0.92rem', justifyContent: 'center' }}
+            >
+              {t.onboarding.nextBtn} →
+            </button>
+          </div>
+
+          {/* Aviso Compacto de Privacidade Local */}
           <div
             style={{
-              marginTop: '24px',
-              padding: '14px 16px',
+              marginTop: '20px',
+              padding: '12px 14px',
               backgroundColor: 'var(--bg-card)',
               border: '1px solid var(--border-light)',
               borderRadius: 'var(--radius-md)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '6px'
+              gap: '4px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--sage)', fontSize: '0.78rem', fontWeight: 700 }}>
@@ -256,12 +305,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
         </div>
       )}
 
-      {step === 2 && (
+      {step === 3 && (
         <div>
           <div style={{ marginBottom: '20px' }}>
-            <span className="tag-badge tag-sage" style={{ marginBottom: '8px' }}>
-              {t.onboarding.stageBadge}
-            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span className="tag-badge tag-sage">
+                {t.onboarding.stageBadge}
+              </span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                {t.onboarding.stepIndicator(3, 4)}
+              </span>
+            </div>
             <h1 className="card-title" style={{ fontSize: '1.4rem', marginTop: '6px' }}>
               {t.onboarding.step2Title}
             </h1>
@@ -348,9 +402,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
                       backgroundColor: 'var(--bg-main)'
                     }}
                   />
-                {birthErrorText && (
-                  <p id="birthDateInputError" role="alert" className="profile-date-error">{birthErrorText}</p>
-                )}
+                  {birthErrorText && (
+                    <p id="birthDateInputError" role="alert" className="profile-date-error">{birthErrorText}</p>
+                  )}
                   {birthDate && !birthErrorText && (
                     <div
                       style={{
@@ -414,12 +468,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
                     backgroundColor: 'var(--bg-main)'
                   }}
                 />
-              {dueErrorText && (
-                <p id="dueDateInputError" role="alert" className="profile-date-error">{dueErrorText}</p>
-              )}
-              {!dueErrorText && phase === 'pregnancy' && isDueDatePast(dueDate) && (
-                <p className="profile-date-hint">{de.duePassedHint}</p>
-              )}
+                {dueErrorText && (
+                  <p id="dueDateInputError" role="alert" className="profile-date-error">{dueErrorText}</p>
+                )}
+                {!dueErrorText && phase === 'pregnancy' && isDueDatePast(dueDate) && (
+                  <p className="profile-date-hint">{de.duePassedHint}</p>
+                )}
               </div>
             )}
           </div>
@@ -462,7 +516,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
           <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
             <button
               type="button"
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
               className="btn btn-secondary"
               style={{ flex: 1, minHeight: '46px', fontSize: '0.88rem', justifyContent: 'center' }}
             >
@@ -470,7 +524,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
             </button>
             <button
               type="button"
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               disabled={hasDateError}
               className="btn btn-primary"
               style={{ flex: 1.5, minHeight: '46px', fontSize: '0.92rem', justifyContent: 'center' }}
@@ -481,12 +535,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
         </div>
       )}
 
-      {step === 3 && (
+      {step === 4 && (
         <div>
           <div style={{ marginBottom: '20px' }}>
-            <span className="tag-badge tag-warm" style={{ marginBottom: '8px' }}>
-              {t.onboarding.focusBadge}
-            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span className="tag-badge tag-warm">
+                {t.onboarding.focusBadge}
+              </span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                {t.onboarding.stepIndicator(4, 4)}
+              </span>
+            </div>
             <h1 className="card-title" style={{ fontSize: '1.4rem', marginTop: '6px' }}>
               {t.onboarding.step3Title}
             </h1>
@@ -533,7 +592,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
           <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
             <button
               type="button"
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               className="btn btn-secondary"
               style={{ flex: 1, minHeight: '46px', fontSize: '0.88rem', justifyContent: 'center' }}
             >
@@ -551,7 +610,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialProfi
         </div>
       )}
 
-      {onOpenPrivacy && (
+      {step !== 2 && onOpenPrivacy && (
         <div style={{ textAlign: 'center', marginTop: '24px', paddingBottom: '12px' }}>
           <button
             type="button"

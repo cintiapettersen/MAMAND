@@ -42,6 +42,9 @@ export interface TranslationDictionary {
     focusBadge: string;
     step1Title: string;
     step1Subtitle: string;
+    stepIndicator: (current: number, total: number) => string;
+    personalizeTitle: string;
+    personalizeSubtitle: string;
     phasePregnancyTitle: string;
     phasePregnancyDesc: string;
     phaseBabyTitle: string;
