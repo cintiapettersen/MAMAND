@@ -8,7 +8,7 @@ export const SYNTHETIC_EVIDENCE_FIXTURES: EvidenceChunk[] = [
     id: 'fixture-synthetic-routine-01',
     phase: 'baby',
     stageRange: '0-12m',
-    topic: 'synthetic_routine',
+    topic: 'maternal_rest',
     title_pt: 'Fixture sintética: organização de rotina e descanso',
     title_en: 'Synthetic fixture: routine organization and rest',
     summary_pt:
@@ -25,6 +25,7 @@ export const SYNTHETIC_EVIDENCE_FIXTURES: EvidenceChunk[] = [
     document: 'Sem fonte clínica externa (fixture técnica)',
     edition: 'v1.0-synthetic',
     sectionOrPage: 'N/A',
+    url: 'https://mamand.app/credits',
     validationStatus: 'pending_review',
     publicationAllowed: false,
     countryJurisdiction: 'GLOBAL'
@@ -33,7 +34,7 @@ export const SYNTHETIC_EVIDENCE_FIXTURES: EvidenceChunk[] = [
     id: 'fixture-synthetic-pregnancy-02',
     phase: 'pregnancy',
     stageRange: 'all',
-    topic: 'synthetic_preparation',
+    topic: 'development',
     title_pt: 'Fixture sintética: preparação do ambiente na gestação',
     title_en: 'Synthetic fixture: environment preparation in pregnancy',
     summary_pt:
@@ -50,6 +51,7 @@ export const SYNTHETIC_EVIDENCE_FIXTURES: EvidenceChunk[] = [
     document: 'Sem fonte clínica externa (fixture técnica)',
     edition: 'v1.0-synthetic',
     sectionOrPage: 'N/A',
+    url: 'https://mamand.app/credits',
     validationStatus: 'pending_review',
     publicationAllowed: false,
     countryJurisdiction: 'GLOBAL'
