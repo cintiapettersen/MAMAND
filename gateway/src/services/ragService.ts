@@ -1,5 +1,5 @@
-import type { RetrievalResult, SupportedLang, UserPhase } from '../types.ts';
-import { EVIDENCE_CATALOG } from '../data/evidenceCatalog.ts';
+import type { EvidenceChunk, RetrievalResult, SupportedLang, UserPhase } from '../types.ts';
+import { SYNTHETIC_EVIDENCE_FIXTURES } from '../data/evidenceFixtures.synthetic.ts';
 import { CONFIG } from '../config.ts';
 
 const STOP_WORDS = new Set([
@@ -195,7 +195,7 @@ export function retrieveRelevantEvidence(
   phase?: UserPhase,
   lang: SupportedLang = 'pt-BR',
   topK: number = CONFIG.TOP_K_CHUNKS,
-  options?: { includePendingReview?: boolean }
+  options?: { includePendingReview?: boolean; catalog?: EvidenceChunk[] }
 ): RetrievalResult[] {
   const normalizedQuery = normalizeText(query);
   const queryTokens = tokenize(query);
@@ -287,8 +287,9 @@ export function retrieveRelevantEvidence(
     normalizedQuery.includes('latch');
 
   const scoredResults: RetrievalResult[] = [];
+  const activeCatalog = options?.catalog ?? SYNTHETIC_EVIDENCE_FIXTURES;
 
-  for (const chunk of EVIDENCE_CATALOG) {
+  for (const chunk of activeCatalog) {
     // SALVAGUARDA DE SEGURANÇA CLÍNICA (Fail-Safe):
     // Bloqueia categoricamente itens com status pending_review, ausente, inválido ou sem liberação
     // Exceto se explicitamente solicitado em ambiente interno/auditoria

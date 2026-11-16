@@ -6,7 +6,7 @@ import { checkEmergencySafety } from './services/safetyService';
 import { retrieveRelevantEvidence } from './services/ragService';
 import { generateMockAnswer } from './services/mockEngine';
 import { callGeminiFlashLite } from './services/geminiEngine';
-import { EVIDENCE_CATALOG } from './data/evidenceCatalog';
+import { SYNTHETIC_EVIDENCE_FIXTURES } from './data/evidenceFixtures.synthetic';
 
 function corsHeaders(origin: string = '*'): HeadersInit {
   return {
@@ -43,7 +43,7 @@ export default {
           status: 'healthy',
           mode: isMock ? 'mock' : 'live',
           model: env.GEMINI_MODEL || CONFIG.DEFAULT_MODEL,
-          evidenceChunksCount: EVIDENCE_CATALOG.length,
+          evidenceChunksCount: SYNTHETIC_EVIDENCE_FIXTURES.length,
           dailyRequestsCount: quota.count,
           dailyQuotaLimit: maxDaily,
           quotaRemaining: Math.max(0, maxDaily - quota.count),
