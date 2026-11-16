@@ -5,7 +5,7 @@ Este repositório reúne três tipos de material, cada um com regras próprias.
 | Tipo | Licença | Onde está |
 |---|---|---|
 | Código-fonte | Apache License 2.0 (`LICENSE`) | `src/`, `test/`, `public/` |
-| Textos originais do MAMAND | CC BY 4.0, apenas os itens confirmados na seção 1 | ver seção 1 |
+| Textos originais do MAMAND | Apache License 2.0 no repositório (eventual CC BY 4.0 pendente de confirmação na seção 1) | ver seção 1 |
 | Publicações e referências de terceiros | termos de cada instituição | ver seção 2 |
 
 O nome MAMAND e o logotipo não são licenciados por nenhuma dessas licenças.
@@ -28,9 +28,10 @@ seção são licenciados sob a
 | Texto | Arquivo | Situação |
 |---|---|---|
 | Cartas do dia | `src/data/dailyCards.ts` | aguardando confirmação |
+| Check-ins diários | `src/data/checkins.ts` | aguardando confirmação |
 | Rede de apoio, pedidos e cartinha | `src/data/supportCatalog.ts` | aguardando confirmação |
 | Mala da maternidade | `src/data/maternityChecklist.ts` | aguardando confirmação |
-| Textos de interface | `src/locales/pt-BR.ts`, `src/locales/en.ts` | aguardando confirmação |
+| Textos gerais de interface (exceto marca `app.name`, textos de contenção clínica em `ask.*`, `care.*`, `healthChecks.*` e textos jurídicos em `privacy.*`) | `src/locales/pt-BR.ts`, `src/locales/en.ts` | aguardando confirmação |
 
 Atribuição sugerida, depois da confirmação:
 
@@ -78,10 +79,13 @@ Versões anteriores deste repositório (até o commit `7d43d3f`) incluem os text
 |---|---|---|
 | Ministério da Saúde do Brasil (Caderneta da Criança, Caderneta da Gestante, Guia Alimentar) | citação e resumo | Publicações do governo não são automaticamente de domínio público; termos a confirmar. |
 | Organização Mundial da Saúde (OMS/WHO) | citação e resumo | Muitas publicações usam CC BY-NC-SA 3.0 IGO; não reproduzir trechos literais em contexto comercial. |
+| Organização Pan-Americana da Saúde (OPAS/PAHO) | citação | Referenciada em conjunto com o Ministério da Saúde no Guia Alimentar para Crianças Brasileiras Menores de 2 Anos. |
 | UNICEF | citação | — |
 | Sociedade Brasileira de Pediatria (SBP), FEBRASGO | citação | — |
 | American Academy of Pediatrics (AAP), ACOG, AASM, CDC | citação | — |
 | NHS (Reino Unido) | citação | — |
+| Cruz Vermelha e Conselho Europeu de Ressuscitação (ERC) | citação | Referenciados em temas de primeiros socorros/engasgo. |
+| Cartão de Cor das Fezes (Infant Stool Colour Card) | citação | Referenciado em tema de triagem de atresia biliar. |
 | Contran (Brasil) | citação de norma | — |
 | LactMed® (National Library of Medicine / NIH) | planejado, ainda não integrado | Exige a citação "LactMed database, National Library of Medicine". A NLM não endossa produtos nem revisa traduções. |
 

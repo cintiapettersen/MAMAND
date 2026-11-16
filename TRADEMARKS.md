@@ -13,9 +13,9 @@ especialmente uma com conteúdo de saúde alterado, com o MAMAND.
 
 - O nome **MAMAND™**.
 - O logotipo: a palavra "MAMAND" na composição visual usada no app.
-- O símbolo do app: a figura de mãe e bebê formando um coração, em traço
-  rosa claro sobre fundo terracota (ícones em `public/` e o desenho vetorial
-  da tela de abertura em `src/components/SplashScreen.tsx`).
+- O símbolo do app:
+  - Ícones do aplicativo em `public/` (`icon-192.svg`, `icon-512.svg` e versões PNG): coração coral orgânico isolado (`#C76B50`) sobre fundo claro (`#FAF7F2` / `#FBF0EB`).
+  - Desenho vetorial da tela de abertura em `src/components/SplashScreen.tsx`: dois anéis estilizados representando mãe e bebê formando um coração.
 
 **Titular de origem:** Cintia Pettersen, pessoa física (sem cessão de direitos patrimoniais à CREATIVE DESIGN PETTERSEN LTDA).
 
