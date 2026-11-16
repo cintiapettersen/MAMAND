@@ -28,8 +28,8 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Run test suite
-        run: npm test
-
       - name: Build production bundle
         run: npm run build
+
+      - name: Run test suite (including built-asset checks)
+        run: npm test
