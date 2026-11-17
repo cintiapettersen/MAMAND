@@ -266,14 +266,6 @@ const MainApp: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{t.common.loading}</div>
-      </div>
-    );
-  }
-
   if (isCreditsOpen) {
     return (
       <>
@@ -302,6 +294,14 @@ const MainApp: React.FC = () => {
           />
         </div>
       </>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{t.common.loading}</div>
+      </div>
     );
   }
 
